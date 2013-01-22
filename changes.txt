@@ -1,0 +1,8 @@
+0.1.2
+Enabled Medium Turbo mode to speedup everything, usb; new kernel, added raspberry packages.
+
+0.1.1
+Updates, fixed some small bugs, updated webclient
+
+0.1
+Initial release
