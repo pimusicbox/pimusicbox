@@ -23,8 +23,7 @@
 		<h2>Pi MusicBox</h2>
 		<p>
 			Operate Spotify from your couch with this ready to eat Music Box software for the Raspberry Pi. 
-			<br/><br/>A lot of people have
-			problems getting the Pi to work as a Spotify-player. This bootable image makes it a lot
+			<br/><br/>A lot of people have problems getting the Pi to work as a Spotify-player. This bootable image makes it a lot
 			easier. As a bonus, it includes AirTunes support.
 		</p>
 
@@ -39,14 +38,14 @@
 				AirTunes streaming
 			</li>
 			<li>
-				No need for tinkering, no need to setup things in the Linux
+				No need for tinkering, no need to use the Linux
 				commandline
 				<br />
 			</li>
 			<li>
 				USB Audio support (Soundcard, speakers, headphones). The analog port
 				works very well, but with an external USB soundcard it's of better
-				quality.
+				quality. Also the analog port, for now has a small noise when playing a song in Spotify.
 				<br />
 			</li>
 			<li>
@@ -86,17 +85,13 @@
 		<h3> Instructions</h3>
 		<ul>
 			<li>
-				Download the <a href="musicbox.zip" title="musicbox.zip">image
-				here</a>. It's around 1G in (compressed) size; 4G uncompressed.
+				Download the <a href="musicbox0.01.3.zip" title="musicbox.zip">image
+				here</a>. It's around 300MB in (compressed) size; 2GB uncompressed.
 			</li>
 			<li>
-				Extract the zip-file. Put the resulting image on your SD Card by following <a href="http://elinux.org/RPi_Easy_SD_Card_Setup">these
-				instuctions</a>. The image is for a 4GB card, but you can put it on a
-				2GB one, using
-				<code>
-					dd
-				</code> in OS X/Linux. It gives an error because
-				the image is too big, but that's no problem because it's empty space.
+				Extract the zip-file. Put the resulting image on your SD Card by following <a href="http://elinux.org/RPi_Easy_SD_Card_Setup#Easy_way">these
+				instuctions</a>. The image is for a 2GB card, but you can put it on a
+				larger one. It could even fit on a 1GB card, but that needs some work.
 			</li>
 			<li>
 				If you're on Windows, download an editor which supports Unix editing.
@@ -119,7 +114,7 @@
 			<li>
 				Optional (if you have a Wifi-adapter): edit
 				<code>
-					wpa_supplicant.conf
+					wpa.conf
 				</code>
 				for your Wifi
 				credentials if you want Wifi (WPA security only)
@@ -249,7 +244,7 @@
 		<p>
 			Have fun!<br/><br/>
 			I could use some help with the image. Feel free to contact me!
-			<br/>
+			<br/><br/>
 			-Wouter van Wijk (wouter-van-wijk -at_-g-mail dot-kom but remove the -)
 			<br />
 		</p>
