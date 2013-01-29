@@ -8,18 +8,26 @@ read IMGVERSION
 MNT='/mnt/tmp'$IMGVERSION
 MNT2='/mnt/tmp'$IMGVERSION'2'
 
-#echo $DRIVE
-#echo $PART1
-#echo $MNT
-#read I
+cd /data/pi
 
-cd /data
 mkdir $MNT
 mkdir $MNT2
 mount $PART1 $MNT
 cp $MNT/config /tmp
 rm -r $MNT/config
 cp -r /data/pi/config $MNT
+#apple
+rm -r $MNT/.Trashes
+rm -r $MNT/.fseventsd
+rm -r $MNT/.Spotlight-V100
+rm $MNT/._.Trashes
+rm $MNT/*.DS_Store
+rm -r $MNT/config/.Trashes
+rm -r $MNT/config/.fseventsd
+rm -r $MNT/config/.Spotlight-V100
+rm $MNT/config/._.Trashes
+rm $MNT/config/*.DS_Store
+
 echo "Zero FAT"
 dd if=/dev/zero of=$MNT/zero bs=1M
 rm $MNT/zero
@@ -28,6 +36,9 @@ mount $PART2 $MNT2
 #remove network settings
 rm $MNT2/var/lib/dhcp/*.leases
 rm $MNT2/etc/udev/rules.d/*.rules
+#logs
+rm $MNT2/var/log/*
+rm $MNT2/var/log/apt/*
 #remove spotify/audio settings
 rm -r $MNT2/root/.cache
 rm -r $MNT2/root/.gstreamer-0.10
@@ -54,7 +65,7 @@ dd bs=1M if=$DRIVE of=musicbox$IMGVERSION.img
 
 echo "Copy Config back"
 mount $PART1 $MNT
-cp /tmp/config $mnt
+cp -r /tmp/config $mnt
 rm -r /tmp/config
 
 echo "wait 10 sec for mount"
