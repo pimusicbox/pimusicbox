@@ -1,6 +1,4 @@
-#!/bin/bash
-####!/bin/sh -e
-#
+#!/bin/sh -e
 #
 # rc.local
 #
@@ -14,7 +12,7 @@
 # By default this script does nothing.
 
 #set mixer to analog output by default
-amixer cset numid=3 1
+amixer cset numid=3 1 > /dev/null
 
 # set default soundcard in Alsa to the last card (analog or usb)
 STRING=`grep -e '[[:digit:]]' < /proc/asound/cards | tail -n 2`
@@ -32,12 +30,25 @@ ctl.!default {
 EOF
 
 #start mopidy in the background
-mopidy &
+su pi -c mopidy &
 
 #start shairport in the background
-/opt/shairport/shairport.pl -a MusicBox &
+su pi -c /opt/shairport/shairport.pl -a MusicBox &
 
-echo "Your ip-address: " 
-ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}'
+#redirect 6680 to 80
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 6680
+
+# Print the IP address
+_IP=$(hostname -I) || true
+if [ "$_IP" ]; Bthen
+  printf "My IP address is %s\n" "$_IP"
+fi
+
+#set volumes of (new) devices
+amixer set PCM 99% unmute > /dev/null
+amixer set Master 99% unmute > /dev/null
+amixer set Speaker 99% unmute > /dev/null
+amixer set Line 99% unmute > /dev/null
+amixer set Front 99% unmute > /dev/null
 
 exit 0

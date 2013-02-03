@@ -113,8 +113,7 @@ load-module module-always-sink
 load-module module-intended-roles
 
 ### Automatically suspend sinks/sources that become idle for too long
-## set to one hour
-load-module module-suspend-on-idle timeout=3600
+#load-module module-suspend-on-idle
 
 ### If autoexit on idle is enabled we want to make sure we only quit
 ### when no local session needs us anymore.
@@ -166,5 +165,5 @@ load-module module-switch-on-port-available
 #set-default-source input
 
 #load-module module-alsa-sink device=hw:0,0
-#load-module module-combine-sink
-#set-default-sink combined
+load-module module-combine-sink
+set-default-sink combined

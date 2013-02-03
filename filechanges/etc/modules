@@ -4,4 +4,4 @@
 # at boot time, one per line. Lines beginning with "#" are ignored.
 # Parameters can be specified after the module name.
 snd_bcm2835
-#rtl8192cu
+ipv6
