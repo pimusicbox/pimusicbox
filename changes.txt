@@ -1,3 +1,8 @@
+0.2
+Based on Raspbian for better performance
+Nicer Webinterface
+Turbo
+
 0.01.4
 Enabled Medium Turbo mode to speedup everything, usb sound works automagically, bugs fixed. Login screen isn't cleared anymore. Set sound volume on boot. Reset network config, clear logs, etc. Script to create image. 
 

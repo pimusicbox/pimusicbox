@@ -1,252 +1,266 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<style>
+    <head>
+        <style>
             img {
                 border: 1px solid black;
                 margin: 4px;
                 float: right;
             }
             body {
-            	font-family: Verdana, Geneva, sans-serif;
-            	font-size:14px;
-            	background: #eef;
-            	color: #448;
+                font-family: Verdana, Geneva, sans-serif;
+                font-size: 14px;
+                background: #eef;
+                color: #448;
             }
-            
-		</style>
-		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-		<title>Pi MusicBox</title>
-	</head>
-	<body>
-		<img src="img/mbandpi_sm.jpg" />
-		<h2>Pi MusicBox</h2>
-		<p>
-			Operate Spotify from your couch with this ready to eat Music Box software for the Raspberry Pi. 
-			<br/><br/>A lot of people have problems getting the Pi to work as a Spotify-player. This bootable image makes it a lot
-			easier. As a bonus, it includes AirTunes support.
-		</p>
 
-		<h3> Features</h3>
-		<ul>
-			<li>
-				Working Spotify server based on Mopidy, to use with a nice
-				browser-interface, or with an MPD-client
-				<br />
-			</li>
-			<li>
-				AirTunes streaming
-			</li>
-			<li>
-				No need for tinkering, no need to use the Linux
-				commandline
-				<br />
-			</li>
-			<li>
-				USB Audio support (Soundcard, speakers, headphones). The analog port
-				works very well, but with an external USB soundcard it's of better
-				quality. Also the analog port, for now has a small noise when playing a song in Spotify.
-				<br />
-			</li>
-			<li>
-				Wifi support (WPA, if the kernel supports your wifi-adapter)
-			</li>
-			<li>
-				It's also a great way to get started with tinkering. It can e.g. be modified to play local music-files, but it's not enabled at the moment.
-			</li>
-		</ul>
-		<h3> Requirements </h3>
-		<ul>
-			<li>
-				Working Raspberry Pi 
-			</li>
-			<li>
-				Speakers/amplifier
-			</li>
-			<li>
-				SD Card, 2GB minimum (tested on a 4GB model. It can probably run on a
-				1GB, but then you need to resize the partitions)
-			</li>
-			<li>
-				Computer with a modern browser; tablet or phone. The webinterface is tested with
-				recent versions of Firefox, Chrome and iOS (iPad/iPhone). It could also work with IE10
-				and other modern mobile browsers (Chrome Mobile, Firefox Mobile). You can also use an 
-				<a href="http://mpd.wikia.com/wiki/Clients">MPD client</a> to connect.
-			</li>
-			<li>
-				Spotify Premium account for streaming.			
-			</li>
-		</ul>
-		<h3> Alpha</h3>
-		<p>
-			Please regard this image as alpha-quality. It's quite stable, but
-			don't cry if things go wrong...
-		</p>
-		<h3> Instructions</h3>
-		<ul>
-			<li>
-				Download the <a href="musicbox0.01.3.zip" title="musicbox.zip">image
-				here</a>. It's around 300MB in (compressed) size; 2GB uncompressed.
-			</li>
-			<li>
-				Extract the zip-file. Put the resulting image on your SD Card by following <a href="http://elinux.org/RPi_Easy_SD_Card_Setup#Easy_way">these
-				instuctions</a>. The image is for a 2GB card, but you can put it on a
-				larger one. It could even fit on a 1GB card, but that needs some work.
-			</li>
-			<li>
-				If you're on Windows, download an editor which supports Unix editing.
-				E.g. <a href="http://www.flos-freeware.ch/notepad2.html">Notepad2</a>
-				or <a href="http://notepad-plus-plus.org/">Notepad++</a>
-				. Users of Os X and Linux can edit the file directly.
-				<br />
-			</li>
-			<li>
-				Open the contents of the 'config' folder of SD Card in your
-				Finder/Explorer.
-			</li>
-			<li>
-				Add your credentials of your Spotify Premium account to the file
-				<code>
-					settings.py
-				</code>, 
-				using the text editor you downloaded.
-			</li>
-			<li>
-				Optional (if you have a Wifi-adapter): edit
-				<code>
-					wpa.conf
-				</code>
-				for your Wifi
-				credentials if you want Wifi (WPA security only)
-			</li>
-			<li>
-				Put the card in the Pi
-				<br />
-			</li>
-			<li>
-				Connect cables (You don't have to connect a screen to the Pi if you
-				don't want to)
-				<br />
-			</li>
-			<li>
-				Turn on Pi
-			</li>
-			<li>
-				Wait for a while
-			</li>
-			<li>
-				Point your browser to the Pi. Depending on your network and computers,
-				you could try this address:
-				<code>
-					http://musicbox.local/
-				</code>
-			</li>
-			<li>
-				Most OS X/iOS devices probably will find it, but Windows machines
-				without iTunes installed, won't. If it doesn't work, you could try to
-				install Apple Bonjour (comes with iTunes) to make it work.
-			</li>
-			<li>
-				Otherwise try to find out the IP-address of your Pi and point the
-				browser to that address. The IP-address is printed on the screen when
-				MusicBox is started. 
-			</li>
-			<li>
-				The service is announced as Avahi/Bonjour/Zeroconf, so you should be
-				able to find the ip/service via Safari or e.g. <a href="https://addons.mozilla.org/nl/firefox/addon/dnssd/">this
-				extension for Firefox</a>
-				<br />
-			</li>
-			<li>
-				To use Wifi and USB-Audio you have to plugin the devices before you
-				start the Pi. Restart if you plug them in later.
-			</li>
-		</ul>
-		<a href="img/screenbig.png"><img src="img/screenbig_sm.png" /></a>
+        </style>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+        <title>Pi MusicBox</title>
+    </head>
+    <body>
+        <a href="img/screenshots/artist.png"><img src="img/screenshots/queue-small.png" /></a>
+        <h2>Pi MusicBox</h2>
+        <p>
+            Operate Spotify from your couch with this ready to eat Music Box software for the Raspberry Pi.
+            <br/>
+            <br/>
+            A lot of people have problems getting the Pi to work as a Spotify-player. This bootable image makes it a lot
+            easier. As a bonus, it includes AirTunes support.
+        </p>
 
-		<h3 style="color: red"> SECURITY WARNING</h3>
-		<p></p>
-		<p>
-			This is system not secure at all. Don't run it outside a firewall!! When I find the time, I will fix it.
-			<br />
-		</p>
-		<ul>
-			<li>
-				The Mopidy musicserver is not protected, and the Musicbox services are
-				run as root. Maybe this is better in the future, but not now. Sorry.
-				<br />
-			</li>
-			<li>
-				Also, the passwords of Spotify and wifi are stored in plain text on
-				the SD card. 
-			</li>
-			<li>
-				You can SSH to the server with the <strong>root</strong> login and
-				the password <strong>musicbox</strong>.
-			</li>
-		</ul>
+        <h3> Features</h3>
+        <ul>
+            <li>
+                Working Spotify server based on Mopidy, to use with a nice
+                browser-interface, or with an MPD-client
+                <br />
+            </li>
+            <li>
+                AirTunes streaming
+            </li>
+            <li>
+                No need for tinkering, no need to use the Linux
+                commandline
+                <br />
+            </li>
+            <li>
+                USB Audio support (Soundcard, speakers, headphones). The analog port
+                works, but the quality of the port is not great. It also has some noise between tracks (might be fixed in the future).
+                I would recommend an external USB soundcard for better sound quality.
+                <br />
+            </li>
+            <li>
+                Wifi support (WPA, if the kernel supports your wifi-adapter)
+            </li>
+            <li>
+                It's also a great way to get started with tinkering. It can e.g. be modified to play local music-files, but it's not enabled at the moment.
+            </li>
+        </ul>
+        <h3> Requirements </h3>
+        <ul>
+            <li>
+                Working Raspberry Pi 
+            </li>
+            <li>
+                Speakers/amplifier
+            </li>
+            <li>
+                SD Card, 2GB minimum (tested on a 4GB model. It can probably run on a
+                1GB, but then you need to resize the partitions)
+            </li>
+            <li>
+                Computer with a modern browser; tablet or phone. The webinterface is tested with
+                recent versions of Firefox, Chrome and iOS (iPad/iPhone). It could also work with IE10
+                and other modern mobile browsers (Chrome Mobile, Firefox Mobile). You can also use an
+                <a href="http://mpd.wikia.com/wiki/Clients">MPD client</a> to connect.
+            </li>
+            <li>
+                Spotify Premium account for streaming.
+            </li>
+        </ul>
+        <h3> Beta</h3>
+        <p>
+            Please regard this image as beta-quality. It's quite stable, but
+            don't cry if things go wrong...
+            <ul>
+                <li>
+                    v0.2: New, much nicer web-interface
+                </li>
+                <li>
+                    v0.2: Based on Raspbian (Moebius) for better performance and stability
+                </li>
+            </ul>
+        </p>
+        <img src="img/mbandpi_sm.jpg" />
 
-		<h3>Projects</h3>
-		<p>
-			Pi MusicBox is based on the following great projects (I just made it
-			easier to get it working):
-			<br />
-		</p>
-		<a href="img/screensmall.png"><img src="img/screensmall_sm.png" /></a>
-		<ul>
-			<li>
-				<a href="http://www.debian.org">Debian </a>
-				<br />
-			</li>
-			<li>
-				<a href="http://www.mopidy.com/">Mopidy</a> (+ my own <a href="https://github.com/woutervanwijk/Mopidy-Webclient">Mopidy
-				Webclient</a>)
-			</li>
-			<li>
-				<a href="https://github.com/albertz/shairport">Shairport</a>
-				<br />
-			</li>
-			<li>
-				All the projects that are used to create the these projects
-			</li>
-			<li>
-				All the projects that are used to create the projects that are used
-				to create these projects
-				<br />
-			</li>
-			<li>
-				All the projects that ... 
-			</li>
-			<li>
-				A lot of people giving solutions on forums...
-				<br />
-			</li>
-			<li>
-				And of course the work of the guys who brought you the <a href="http://www.raspberrypi.org">Raspberry
-				Pi </a>
-				<br />
-			</li>
-		</ul>
+        <h3> Instructions</h3>
+        <ul>
+            <li>
+                Download the <a href="musicbox0.2.zip">image
+                here</a>. It's around 700MB in (compressed) size; 2GB uncompressed.
+            </li>
+            <li>
+                Extract the zip-file. Put the resulting image on your SD Card by following <a href="http://elinux.org/RPi_Easy_SD_Card_Setup#Easy_way">these
+                instuctions</a>. The image is for a 2GB card, but you can put it on a
+                larger one. It could even fit on a 1GB card, but that needs some work.
+            </li>
+            <li>
+                If you're on Windows, download an editor which supports Unix editing.
+                E.g. <a href="http://www.flos-freeware.ch/notepad2.html">Notepad2</a>
+                or <a href="http://notepad-plus-plus.org/">Notepad++</a>
+                . Users of Os X and Linux can edit the file directly.
+                <br />
+            </li>
+            <li>
+                Open the contents of the 'config' folder of SD Card in your
+                Finder/Explorer.
+            </li>
+            <li>
+                Add your credentials of your Spotify Premium account to the file
+                <code>
+                    settings.py
+                </code>,
+                using the text editor you downloaded.
+            </li>
+            <li>
+                Optional (if you have a Wifi-adapter): edit
+                <code>
+                    wpa.conf
+                </code>
+                for your Wifi
+                credentials if you want Wifi (WPA security only)
+            </li>
+            <li>
+                Put the card in the Pi
+                <br />
+            </li>
+            <li>
+                Connect cables (You don't have to connect a screen to the Pi if you
+                don't want to)
+                <br />
+            </li>
+            <li>
+                Turn on Pi
+            </li>
+            <li>
+                Wait for a while
+            </li>
+            <li>
+                Point your browser to the Pi. Depending on your network and computers,
+                you could try this address:
+                <code>
+                    http://musicbox.local/
+                </code>
+            </li>
+            <li>
+                Most OS X/iOS devices probably will find it immediately. Windows machines
+                without iTunes installed, won't. If it doesn't work, you could try to
+                install Apple Bonjour (comes with iTunes) to make it work.
+            </li>
+            <li>
+                Otherwise try to find out the IP-address of your Pi and point the
+                browser to that address. The IP-address is printed on the screen when
+                MusicBox is started. Connect a monitor/tv to find out.
+            </li>
+            <li>
+                The service is announced as Avahi/Bonjour/Zeroconf, so you should be
+                able to find the ip/service via Safari or e.g. <a href="https://addons.mozilla.org/nl/firefox/addon/dnssd/">this
+                extension for Firefox</a>
+                <br />
+            </li>
+            <li>
+                To use Wifi and USB-Audio you have to plugin the devices before you
+                start the Pi. Restart if you plug them in later.
+            </li>
+        </ul>
 
-		<h3>Support
-		<br />
-		</h3>
-		<p>
-			Report problems at <a href="https://github.com/woutervanwijk/Pi-MusicBox">my repo at Github</a>. You could also try the
-			<code>
-				#mopidy
-			</code>
-			channel on <a href="http://webchat.freenode.net/">Freenode</a>,
-			the <a href="http://www.mopidy.com/">Mopidy project</a>, or the <a href="http://www.raspberrypi.org/phpBB3/">Raspberry
-			Pi forums</a>.
-			<br />
-		</p>
-		<p>
-			Have fun!<br/><br/>
-			I could use some help with the image. Feel free to contact me!
-			<br/><br/>
-			-Wouter van Wijk (wouter-van-wijk -at_-g-mail dot-kom but remove the -)
-			<br />
-		</p>
-	</body>
+        <h3 style="color: red"> SECURITY WARNING</h3>
+        <p></p>
+        <p>
+            This is system not secure at all. Don't run it outside a firewall!! When I find the time, I will fix it.
+            <br />
+        </p>
+        <ul>
+            <li>
+                The Mopidy musicserver is not protected, and the Musicbox services are
+                run as root. Maybe this is better in the future, but not now. Sorry.
+                <br />
+            </li>
+            <li>
+                Also, the passwords of Spotify and wifi are stored in plain text on
+                the SD card. 
+            </li>
+            <li>
+                You can SSH to the server with the <strong>root</strong> login and
+                the password <strong>musicbox</strong>.
+            </li>
+        </ul>
+        <a href="img/screenshots/queue.png"><img src="img/screenshots/search-small.png" /></a>
+
+        <h3>Projects</h3>
+        <p>
+            Pi MusicBox is based on the following great projects (I just made it
+            easier to get it working):
+            <br />
+        </p>
+        <ul>
+            <li>
+                <a href="http://www.debian.org">Debian </a>
+                <br />
+            </li>
+            <li>
+                <a href="http://www.mopidy.com/">Mopidy</a> (+ my own <a href="https://github.com/woutervanwijk/Mopidy-Webclient">Mopidy
+                Webclient</a>)
+            </li>
+            <li>
+                <a href="https://github.com/albertz/shairport">Shairport</a>
+                <br />
+            </li>
+            <li>
+                All the projects that are used to create the these projects
+            </li>
+            <li>
+                All the projects that are used to create the projects that are used
+                to create these projects
+                <br />
+            </li>
+            <li>
+                All the projects that ... 
+            </li>
+            <li>
+                A lot of people giving solutions on forums...
+                <br />
+            </li>
+            <li>
+                And of course the work of the guys 'n girls who brought you the <a href="http://www.raspberrypi.org">Raspberry
+                Pi </a>
+                <br />
+            </li>
+        </ul>
+
+        <h3>Support
+        <br />
+        </h3>
+        <p>
+            Report problems at <a href="https://github.com/woutervanwijk/Pi-MusicBox">my repo at Github</a>. You could also try the
+            <code>
+                #mopidy
+            </code>
+            channel on <a href="http://webchat.freenode.net/">Freenode</a>,
+            the <a href="http://www.mopidy.com/">Mopidy project</a>, or the <a href="http://www.raspberrypi.org/phpBB3/">Raspberry
+            Pi forums</a>.
+            <br />
+        </p>
+        <p>
+            Have fun!
+            <br/>
+            <br/>
+            I could use some help with the image. Feel free to contact me!
+            <br/>
+            <br/>
+            -Wouter van Wijk (wouter-van-wijk -at_-g-mail dot-kom but remove the -)
+            <br />
+        </p>
+    </body>
 </html>
