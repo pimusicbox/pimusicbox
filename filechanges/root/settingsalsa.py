@@ -161,7 +161,7 @@ LOCAL_TAG_CACHE_FILE = '$XDG_DATA_DIR/mopidy/tag_cache'
 #: Default::
 #:
 #:     MIXER = u'autoaudiomixer'
-MIXER = 'autoaudiomixer'
+MIXER = 'alsamixer'
 
 #: Audio mixer track to use.
 #:
@@ -230,7 +230,8 @@ MPD_SERVER_MAX_CONNECTIONS = 20
 #: Default::
 #:
 #:     OUTPUT = u'autoaudiosink'
-OUTPUT = 'autoaudiosink'
+OUTPUT = 'alsasink'
+#OUTPUT = u'audioconvert ! audioresample ! audio/x-raw-int, rate=48000 ! pulsesink'
 
 #: Path to the Spotify cache.
 #:
@@ -260,7 +261,7 @@ SPOTIFY_PASSWORD = ''
 #: Default::
 #:
 #:     SPOTIFY_BITRATE = 160
-SPOTIFY_BITRATE = 160
+SPOTIFY_BITRATE = 320
 
 #: Spotify proxy host.
 #:
