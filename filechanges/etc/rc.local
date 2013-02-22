@@ -26,42 +26,39 @@ ctl.!default {
 }
 EOF
 
-rm /root/mopidy/settings.py || true
+rm /root/mopidy/settings.py > /dev/null 2>&1 || true
 
 if [ "$CARDNUM" = "1" ]
 then
     ln -s /root/settingsalsa.py /root/mopidy/settings.py
 else
-    pulseaudio --system &
+    pulseaudio --system > /dev/null 2>&1 &
     ln -s /root/settingspulse.py /root/mopidy/settings.py
 fi
-
-
-#/etc/init.d/pulseaudio restart
 
 #start mopidy in the background
 mopidy &
 
 #start shairport in the background
-/opt/shairport/shairport.pl -a MusicBox &
+/opt/shairport/shairport.pl -a MusicBox > /dev/null 2>&1 &
 
 #redirect 6680 to 80
 iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 6680
+
+#set mixer to analog output by default
+amixer cset numid=3 1 > /dev/null 2>&1 || true
+
+#set volumes of (new) devices
+amixer set PCM 99% unmute > /dev/null 2>&1 || true
+amixer set Master 99% unmute > /dev/null 2>&1 || true
+amixer set Speaker 99% unmute > /dev/null 2>&1 || true
+amixer set Line 99% unmute > /dev/null 2>&1 || true
+amixer set Front 99% unmute > /dev/null 2>&1 || true
 
 # Print the IP address
 _IP=$(hostname -I) || true
 if [ "$_IP" ]; then
   printf "My IP address is %s\n" "$_IP"
 fi
-
-#set mixer to analog output by default
-amixer cset numid=3 1 > /dev/null || true
-
-#set volumes of (new) devices
-amixer set PCM 99% unmute > /dev/null || true
-amixer set Master 99% unmute > /dev/null || true
-amixer set Speaker 99% unmute > /dev/null || true
-amixer set Line 99% unmute > /dev/null || true
-amixer set Front 99% unmute > /dev/null || true
 
 exit 0
