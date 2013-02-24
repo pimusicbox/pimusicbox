@@ -1,0 +1,64 @@
+#!/bin/sh 
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+# set default soundcard in Alsa to the last card (analog or usb)
+STRING=`grep -e '[[:digit:]]' < /proc/asound/cards | tail -n 2`
+CARDNUM=`echo $STRING | cut -c 1`
+
+cat << EOF > /etc/asound.conf
+pcm.!default {
+  type hw
+  card $CARDNUM
+}
+ctl.!default {
+   type hw
+   card $CARDNUM
+}
+EOF
+
+#rm /root/mopidy/settings.py > /dev/null 2>&1 || true
+
+#if [ "$CARDNUM" = "1" ]
+#then
+#    ln -s /root/settingsalsa.py /root/mopidy/settings.py
+#else
+#    pulseaudio --system > /dev/null 2>&1 &
+#    ln -s /root/settingspulse.py /root/mopidy/settings.py
+#fi
+
+#start mopidy in the background
+mopidy &
+
+#start shairport in the background
+#/opt/shairport/shairport.pl -a MusicBox > /dev/null 2>&1 &
+
+#redirect 6680 to 80
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 6680
+
+#set mixer to analog output by default
+amixer cset numid=3 1 > /dev/null 2>&1 || true
+
+#set volumes of (new) devices
+amixer set PCM 99% unmute > /dev/null 2>&1 || true
+amixer set Master 99% unmute > /dev/null 2>&1 || true
+amixer set Speaker 99% unmute > /dev/null 2>&1 || true
+amixer set Line 99% unmute > /dev/null 2>&1 || true
+amixer set Front 99% unmute > /dev/null 2>&1 || true
+
+# Print the IP address
+_IP=$(hostname -I) || true
+if [ "$_IP" ]; then
+  printf "My IP address is %s\n" "$_IP"
+fi
+
+exit 0
