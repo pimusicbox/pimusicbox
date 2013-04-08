@@ -1,4 +1,4 @@
-#!/bin/sh 
+#!/bin/bash 
 #
 # rc.local
 #
@@ -9,51 +9,163 @@
 # In order to enable or disable this script just change the execution
 # bits.
 #
-# By default this script does nothing.
+
+#import ini parser
+. /root/read_ini.sh
+
+# ini vars to mopidy settings
+read_ini /boot/config/settings.ini MusicBox
+
+rm /root/.config/mopidy/settings.py
+
+#repair
+if [ "$INI__MusicBox__SPOTIFY_BITRATE" != "320" -a "$INI__MusicBox__SPOTIFY_BITRATE" != "160" -a "$INI__MusicBox__SPOTIFY_BITRATE" != "96" ]
+#if [ "$INI__MusicBox__SPOTIFY_BITRATE" = "" ]
+then
+     INI__MusicBox__SPOTIFY_BITRATE=320
+fi
+
+cat >/root/.config/mopidy/settings.py <<EOF
+SPOTIFY_USERNAME = u'$INI__MusicBox__SPOTIFY_USERNAME'
+SPOTIFY_PASSWORD = u'$INI__MusicBox__SPOTIFY_PASSWORD'
+SPOTIFY_BITRATE = $INI__MusicBox__SPOTIFY_BITRATE
+LASTFM_USERNAME = u'$INI__MusicBox__LASTFM_USERNAME'
+LASTFM_PASSWORD = u'$INI__MusicBox__LASTFM_PASSWORD'
+EOF
+
+cat >/etc/wpa.conf <<EOF
+network={
+        ssid="$INI__MusicBox__WIFI_NETWORK"
+        psk="$INI__MusicBox__WIFI_PASSWORD"
+}
+EOF
+
+#if output not defined, it will automatically detect usb, hdmi. Order: USB / HDMI / Analog  (to lowercase)
+#OUTPUT=$INI__MusicBox__OUTPUT
+OUTPUT=$(echo $INI__MusicBox__OUTPUT | tr "[:upper:]" "[:lower:]")
+#echo "Output set to $OUTPUT"
+
+#get alsa last card (usb if inserted, otherwise analog)
+STRING=`grep -e '[[:digit:]]' < /proc/asound/cards | tail -n 2`
+CARD=`echo $STRING | cut -c 1`
+
+#set output to usb if not defined
+if [ "$CARD" == "1" -a "$OUTPUT" == "" ]
+then
+    OUTPUT="usb"
+fi
+
+#detect hdmi
+HDMI=`tvservice -s | grep HDMI`
+
+#set output to hdmi if not defined
+if [ "$HDMI" != "" -a "$OUTPUT" == "" ]
+then
+    OUTPUT="hdmi"
+fi
+
+#set output if not hdmi/usb
+if [ "$OUTPUT" == "" ]
+then
+    OUTPUT="analog"
+fi
+
+echo "Output set to $OUTPUT"
+
+#exit
+
+#change lastcard to analog if set in settings
+if [ "$OUTPUT" == "analog" -o "$OUTPUT" == "hdmi" ]
+then
+    CARD=0
+fi
 
 # set default soundcard in Alsa to the last card (analog or usb)
-STRING=`grep -e '[[:digit:]]' < /proc/asound/cards | tail -n 2`
-CARDNUM=`echo $STRING | cut -c 1`
-
 cat << EOF > /etc/asound.conf
 pcm.!default {
   type hw
-  card $CARDNUM
+  card $CARD
 }
 ctl.!default {
    type hw
-   card $CARDNUM
+   card $CARD
 }
 EOF
 
 rm /root/mopidy/settings.py > /dev/null 2>&1 || true
 
-if [ "$CARDNUM" = "1" ]
+if [ "$OUTPUT" == "analog" ]
 then
-    ln -s /root/settingsalsa.py /root/mopidy/settings.py
-else
+    # for analog use pulse to avoid noises
     pulseaudio --system > /dev/null 2>&1 &
     ln -s /root/settingspulse.py /root/mopidy/settings.py
+else
+    # usb or hdmi, use alsa
+    ln -s /root/settingsalsa.py /root/mopidy/settings.py
+fi
+
+#reset mixer
+amixer cset numid=3 0 > /dev/null 2>&1 || true
+
+#set mixer to analog output
+if [ "$OUTPUT" == "analog" ]
+then
+    amixer cset numid=3 1 > /dev/null 2>&1 || true
+fi
+
+#set mixer to hdmi
+if [ "$OUTPUT" == "hdmi" ]
+then
+    amixer cset numid=3 2 > /dev/null 2>&1 || true
 fi
 
 #start mopidy in the background
 mopidy &
 
 #start shairport in the background
-/opt/shairport/shairport.pl -a MusicBox > /dev/null 2>&1 &
+if [ "$OUTPUT" == "usb" ]
+then
+    #start shairport for usb (alsa device 1)
+    /opt/shairport/shairport.pl -a MusicBox --ao_driver alsa --ao_devicename "hw:1,0" > /dev/null 2>&1 &
+else
+    #start shairport normally
+    /opt/shairport/shairport.pl -a MusicBox > /dev/null 2>&1 &
+fi
 
 #redirect 6680 to 80
 iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 6680
 
-#set mixer to analog output by default
-amixer cset numid=3 1 > /dev/null 2>&1 || true
-
 #set volumes of (new) devices
-amixer set PCM 99% unmute > /dev/null 2>&1 || true
-amixer set Master 99% unmute > /dev/null 2>&1 || true
-amixer set Speaker 99% unmute > /dev/null 2>&1 || true
-amixer set Line 99% unmute > /dev/null 2>&1 || true
-amixer set Front 99% unmute > /dev/null 2>&1 || true
+#amixer set PCM 90% unmute > /dev/null 2>&1 || true
+#amixer set Master 75% unmute > /dev/null 2>&1 || true
+#amixer set Speaker 75% unmute > /dev/null 2>&1 || true
+#amixer set Line 75% unmute > /dev/null 2>&1 || true
+#amixer set Digital 75% unmute > /dev/null 2>&1 || true
+#amixer set Aux 75% unmute > /dev/null 2>&1 || true
+#amixer set Front 75% unmute > /dev/null 2>&1 || true
+
+for CTL in \
+        Master \
+        PCM \
+        Line \
+        "PCM,1" \
+        Wave \
+        Music \
+        AC97 \
+        "Master Digital" \
+        DAC \
+        "DAC,0" \
+        "DAC,1" \
+        Headphone \
+        Speaker \
+        Playback \
+	Digital \
+	Aux \
+	Front \
+	Center
+do
+        amixer set "$CTL" 80% unmute > /dev/null 2>&1 || true
+done
 
 # Print the IP address
 _IP=$(hostname -I) || true

@@ -32,7 +32,7 @@
 ; cpu-limit = no
 
 high-priority = yes
-nice-level = 5
+nice-level = -5
 
 ; realtime-scheduling = yes
 ; realtime-priority = 5
@@ -51,7 +51,7 @@ exit-idle-time = -1
 ; log-time = no
 ; log-backtrace = 0
 
-resample-method = src-sinc-medium-quality
+; resample-method = speex-float-3
 ; enable-remixing = yes
 ; enable-lfe-remixing = no
 
@@ -73,7 +73,7 @@ resample-method = src-sinc-medium-quality
 ; rlimit-rtprio = 9
 ; rlimit-rttime = 1000000
 
-default-sample-format = s16le
+; default-sample-format = s16le
 default-sample-rate = 48000
 ; alternate-sample-rate = 48000
 default-sample-channels = 2

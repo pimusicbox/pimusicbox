@@ -1,3 +1,33 @@
+#
+# Sample configuration file for the Samba suite for Debian GNU/Linux.
+#
+#
+# This is the main Samba configuration file. You should read the
+# smb.conf(5) manual page in order to understand the options listed
+# here. Samba has a huge number of configurable options most of which 
+# are not shown in this example
+#
+# Some options that are often worth tuning have been included as
+# commented-out examples in this file.
+#  - When such options are commented with ";", the proposed setting
+#    differs from the default Samba behaviour
+#  - When commented with "#", the proposed setting is the default
+#    behaviour of Samba but the option is considered important
+#    enough to be mentioned here
+#
+# NOTE: Whenever you modify this file you should run the command
+# "testparm" to check that you have not made any basic syntactic 
+# errors. 
+# A well-established practice is to name the original file
+# "smb.conf.master" and create the "real" config file with
+# testparm -s smb.conf.master >smb.conf
+# This minimizes the size of the really used smb.conf file
+# which, according to the Samba Team, impacts performance
+# However, use this with caution if your smb.conf file contains nested
+# "include" statements. See Debian bug #483187 for a case
+# where using a master file is not a good idea.
+#
+
 #======================= Global Settings =======================
 
 [global]
@@ -8,13 +38,13 @@
    workgroup = WORKGROUP
 
 # server string is the equivalent of the NT Description field
-#   server string = "musicbox.local"
+   server string = musicbox.local
 
    netbios name = musicbox.local
 
 # Windows Internet Name Serving Support Section:
 # WINS Support - Tells the NMBD component of Samba to enable its WINS Server
-   wins support = no
+#   wins support = no
 
 # WINS Server - Tells the NMBD components of Samba to be a WINS Client
 # Note: Samba can be either a WINS Server, or a WINS Client, but NOT both
@@ -60,15 +90,3 @@
 # should go to /var/log/samba/log.{smbd,nmbd} instead. If you want to log
 # through syslog you should set the following parameter to something higher.
    syslog = 0
-
-security = share
-#guest account = nobody
-
-[Music]
-        path = /music
-        comment = Future directory for music files
-        writable = yes
-        browseable = yes
-        guest ok = yes
-	create mask = 0777
-	directory mask = 0777

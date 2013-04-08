@@ -1,3 +1,17 @@
+0.3b
+All configuration is done in one ini-file
+HDMI output enabled
+Autodetection of HDMI at start (next to autodetection of USB)
+Override output setting in ini-file
+LastFM scrobling enabled
+Webinterface updated (speedier)
+
+0.2.2
+Windows finds the musicbox.local address by itself now (samba).
+
+0.2.1
+Removed ugly sounds on analog port when changing tracks (pulseaudio). An USB-soundcard is still recommended.
+
 0.2
 Based on Raspbian for better performance
 Nicer Webinterface

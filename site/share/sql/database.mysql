@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS `ibs_log` (
+  `id` int(11) NOT NULL auto_increment,
+  `action` varchar(32) NOT NULL,
+  `label` varchar(64) default NULL,
+  `link` varchar(200) NOT NULL,
+  `ipaddress` int(11) NOT NULL,
+  `agent` varchar(128) NOT NULL,
+  `timestamp` int(11) NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `action` (`action`,`label`),
+  KEY `action_2` (`link`,`action`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;

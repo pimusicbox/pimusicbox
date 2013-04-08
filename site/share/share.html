@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>iBegin Share 2.6</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="share.css?3" />
+    <script src="share.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    iBeginShare.base_url = '';
+    /**
+     * This simulates acting like a PHP or other server-side script by grabbing
+     * the request parameters and using them to create an embedded share box on the
+     * window onload event.
+     *
+     * Accepts all the same GET parameters as the normal iBegin Share link functions
+     * do.
+     */
+    iBeginShare.addEvent(window, 'load', function() {
+        var query_string = window.location.href.split('?')[1];
+        var params = iBeginShare.parseQuery(query_string);
+        iBeginShare.show(document.getElementById('share_container'), params);
+    })
+    </script>
+</head>
+<body>
+    <noscript>You must be using a JavaScript-enabled browser to render this plug-in.</noscript>
+    <div id="share_container"></div>
+</body>
+</html>
