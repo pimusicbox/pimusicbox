@@ -49,7 +49,7 @@ OUTPUT=$(echo $INI__MusicBox__OUTPUT | tr "[:upper:]" "[:lower:]")
 STRING=`grep -e '[[:digit:]]' < /proc/asound/cards | tail -n 2`
 CARD=`echo $STRING | cut -c 1`
 
-#set output to usb if not defined
+#set output to usb if card detected and not overruled by $OUTPUT
 if [ "$CARD" == "1" -a "$OUTPUT" == "" ]
 then
     OUTPUT="usb"
@@ -70,7 +70,9 @@ then
     OUTPUT="analog"
 fi
 
+echo 
 echo "Output set to $OUTPUT"
+echo
 
 #exit
 
@@ -119,8 +121,19 @@ then
     amixer cset numid=3 2 > /dev/null 2>&1 || true
 fi
 
+# scan local music files if setting
+if [ "$INI__MusicBox__SCAN_LOCAL" == "true" ]
+then
+    echo
+    echo "Scanning local files. Please wait...."
+    echo
+    rm /root/.cache/mopidy/tag_cache
+    mopidy-scan > /root/.cache/mopidy/tag_cache
+fi
+
 #start mopidy in the background
-mopidy &
+cd /opt 
+python mopidy &
 
 #start shairport in the background
 if [ "$OUTPUT" == "usb" ]

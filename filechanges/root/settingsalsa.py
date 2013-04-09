@@ -76,7 +76,7 @@ DESKTOP_FILE = '/usr/share/applications/mopidy.desktop'
 #:     )
 FRONTENDS = (
     'mopidy.frontends.mpd.MpdFrontend',
-#    'mopidy.frontends.lastfm.LastfmFrontend',
+    'mopidy.frontends.lastfm.LastfmFrontend',
     'mopidy.frontends.http.HttpFrontend',
 )
 
@@ -130,7 +130,7 @@ LASTFM_PASSWORD = ''
 #: Default::
 #:
 #:    LOCAL_MUSIC_PATH = u'$XDG_MUSIC_DIR'
-LOCAL_MUSIC_PATH = '$XDG_MUSIC_DIR'
+LOCAL_MUSIC_PATH = '/music'
 
 #: Path to playlist folder with m3u files for local music.
 #:
@@ -139,7 +139,7 @@ LOCAL_MUSIC_PATH = '$XDG_MUSIC_DIR'
 #: Default::
 #:
 #:    LOCAL_PLAYLIST_PATH = u'$XDG_DATA_DIR/mopidy/playlists'
-LOCAL_PLAYLIST_PATH = '$XDG_DATA_DIR/mopidy/playlists'
+LOCAL_PLAYLIST_PATH = '/root/.cache/mopidy/playlists'
 
 #: Path to tag cache for local music.
 #:
@@ -148,7 +148,7 @@ LOCAL_PLAYLIST_PATH = '$XDG_DATA_DIR/mopidy/playlists'
 #: Default::
 #:
 #:    LOCAL_TAG_CACHE_FILE = u'$XDG_DATA_DIR/mopidy/tag_cache'
-LOCAL_TAG_CACHE_FILE = '$XDG_DATA_DIR/mopidy/tag_cache'
+LOCAL_TAG_CACHE_FILE = '/root/.cache/mopidy/tag_cache'
 
 #: Audio mixer to use.
 #:

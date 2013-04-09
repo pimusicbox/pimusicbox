@@ -9,7 +9,7 @@
 
 # delete files in /tmp during boot older than x days.
 # '0' means always, -1 or 'infinite' disables the feature
-TMPTIME=0
+#TMPTIME=0
 
 # spawn sulogin during boot, continue normal boot if not used in 30 seconds
 #SULOGIN=no
@@ -21,4 +21,4 @@ TMPTIME=0
 #VERBOSE=no
 
 # automatically repair filesystems with inconsistencies during boot
-FSCKFIX=yes
+#FSCKFIX=no
