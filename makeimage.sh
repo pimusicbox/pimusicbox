@@ -29,16 +29,16 @@ cp -r /data/pi/config $MNT
 rm -r $MNT/.Trashes
 rm -r $MNT/.fseventsd
 rm -r $MNT/.Spotlight-V100
-rm $MNT/._.Trashes
-rm $MNT/*.DS_Store
+rm -r $MNT/._.Trashes
+rm -r $MNT/*.DS_Store
 rm -r $MNT/config/.Trashes
 rm -r $MNT/config/.fseventsd
 rm -r $MNT/config/.Spotlight-V100
-rm $MNT/config/._.Trashes
-rm $MNT/config/*.DS_Store
+rm -r $MNT/config/._.Trashes
+rm -r $MNT/config/*.DS_Store
 
 echo "Zero FAT"
-#dd if=/dev/zero of=$MNT/zero bs=1M
+dd if=/dev/zero of=$MNT/zero bs=1M
 rm $MNT/zero
 
 mount $PART2 $MNT2
@@ -46,14 +46,19 @@ mount $PART2 $MNT2
 rm $MNT2/var/lib/dhcp/*.leases
 rm $MNT2/etc/udev/rules.d/*.rules
 #logs
-rm $MNT2/var/log/*
-rm $MNT2/var/log/apt/*
+rm -r $MNT2/var/log/*
+rm -r $MNT2/var/log/apt/*
 #remove spotify/audio settings
-rm -r $MNT2/root/.cache
+rm -r $MNT2/root/.cache/*
 rm -r $MNT2/root/.gstreamer-0.10
+
+#music
+rm -r $MNT2/music/*
+
 #security
 rm $MNT2/root/.bash_history
 #rm -r $MNT2/root/.ssh
+
 #old stuff
 rm -r $MNT2/boot.bk
 rm -r $MNT2/lib/modules.bk
@@ -79,7 +84,7 @@ mount $PART1 $MNT
 cp -r /tmp/config $MNT
 rm -r /tmp/config
 
-echo "wait 10 sec for mount"
+echo "wait 10 sec for umount"
 sleep 10
 umount $MNT
 rmdir $MNT

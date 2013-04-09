@@ -1,10 +1,11 @@
-0.3b
+0.3
 All configuration is done in one ini-file
-HDMI output enabled
+HDMI output supported
 Autodetection of HDMI at start (next to autodetection of USB)
 Override output setting in ini-file
 LastFM scrobling enabled
 Webinterface updated (speedier)
+Local music files supported, accessible via windows network (but not yet in webinterface)
 
 0.2.2
 Windows finds the musicbox.local address by itself now (samba).
