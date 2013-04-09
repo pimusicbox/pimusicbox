@@ -32,102 +32,29 @@
 
 </script>
 
-<script type="text/javascript">var switchTo5x=true;</script>
-<script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
-<script type="text/javascript">stLight.options({publisher: "f38aa90c-6454-453d-8968-757a3daea467", doNotHash: false, doNotCopy: false, hashAddressBar: false});</script>
     </head>
     <body>
-        <a href="img/screenshots/playlists.png"><img src="img/screenshots/queue-small.png" /></a>
-        <h2>Pi MusicBox</h2>
+        <h2>Pi MusicBox Beta</h2>
         <p>
-            Operate Spotify from your couch using a browser with this <em>ready to eat</em> software for the Raspberry Pi.
-            <br/>
-            <br/>
-            A lot of people have problems getting the Pi to work as a remote Spotify-player. This bootable image makes it a lot
-            easier. As a bonus, it includes AirTunes support.
+    	    This beta of MusicBox 0.3 contains the following improvements:
+    	    <ul>
+    	    <li>All configuration is done in one ini-file</li>
+    	    <li>Much smaller download (245MB)
+    	    <li>HDMI output enabled</li>
+    	    <li>Autodetection of HDMI at start (next to autodetection of USB)</li>
+    	    <li>Override output setting in ini-file</li>
+    	    <li>LastFM scrobling enabled</li>
+    	    <li>Webinterface updated (speedier)</li>
+    	    <li>Initial support for playback of local mp3 files and putting them there via Windows networking (see instructions)</li>
+    	    </ul>
         </p>
 
-        <h3> Features</h3>
-        <ul>
-            <li>
-                Working Spotify server based on Mopidy
-            </li>
-            <li>
-                Remote control it with a nice browser-interface (webserver included!), or with an MPD-client
-            </li>
-            <li>
-                AirTunes streaming
-            </li>
-            <li>
-                No need for tinkering, no need to use the Linux
-                commandline
-                <br />
-            </li>
-            <li>
-                USB Audio support (supporting all kinds of USB soundcards, speakers, headphones).
-            </li>
-            <li>
-                The analog port works, but the sound quality is not great. Flat so to say. This is a hardware problem (to get the Pi as cheap as it is, they had to use cheap hardware to produce sound).
-                An external USB soundcard is recommended for better sound quality.
-            </li>
-            <li>
-                Wifi support (WPA, if the Pi-kernel supports your wifi-adapter)
-            </li>
-            <li>
-                This image is also a great way to get started with tinkering for other ways of using the Pi as a Music playing device, because it solves a lot of problems.
-                (Mopidy can e.g. be modified to play local music-files, but it's not enabled at the moment.)
-            </li>
-        </ul>
-
-        <h3> Requirements </h3>
-        <ul>
-            <li>
-                Working Raspberry Pi 
-            </li>
-            <li>
-                Speakers/amplifier (analog or USB)
-            </li>
-            <li>
-                SD Card, 2GB minimum (tested on a 4GB model. It can probably run on a
-                1GB, but then you need to resize the partitions)
-            </li>
-            <li>
-                Computer with a modern browser; tablet or phone. The webinterface is tested with
-                recent versions of Firefox, Chrome and iOS (iPad/iPhone), modern versions of Android (Chrome Mobile, Firefox Mobile). 
-                Internet Explorer version 10 works with the webinterface, earlier versions don't. You can also use an 
-                <a href="http://mpd.wikia.com/wiki/Clients">MPD client</a> to connect.
-            </li>
-            <li>
-                Spotify Premium account for streaming.
-            </li>
-        </ul>
-        <h3> Beta</h3>
-        <p>
-            Please regard this image as beta-quality. It's quite stable, but
-            don't cry if things go wrong...
-            <ul>
-                <li>
-                    v0.2.2: Windows finds the musicbox.local address by itself now (samba).
-                </li>
-                <li>
-                    v0.2.1: Removed ugly sounds on analog port when changing tracks (pulseaudio). An USB-soundcard is still recommended.
-                </li>
-                <li>
-                    v0.2: New, much nicer web-interface (Jquery Mobile).
-                </li>
-                <li>
-                    v0.2: Based on Raspbian (Moebius) for better performance and stability
-                </li>
-            </ul>
-        </p>
-        <a href="img/screenshots/artist.png"><img src="img/screenshots/artist_sm.png" /></a>
         <h3> Instructions</h3>
         <ul>
             <li>
-                Download the image. It's around 800MB in (compressed) size; 2GB uncompressed.
+                Download the image. It's around 245MB in (compressed) size; 2GB uncompressed.
                 <ul  style="font-size: 120%">
-                    <li><a href="http://dl.mopidy.com/pimusicbox/musicbox0.2.2.zip">Fast mirror</a>
-                    <li><a href="musicbox0.2.2.zip">This site (slower)</a>
+                    <li><a href="musicbox0.3b1.zip">Beta 1</a>
                 </ul>
             </li>
             <li>
@@ -147,19 +74,21 @@
                 Finder/Explorer.
             </li>
             <li>
-                Using the editor, add your credentials of your Spotify Premium account to the file
+                Using the editor, add your credentials of your Spotify Premium account, Last FM, Wifi to the file
                 <code>
-                    settings.py
+                    settings.ini
                 </code>
                 .
             </li>
             <li>
-                Optional (if you have a Wifi-adapter): edit
-                <code>
-                    wpa.conf
-                </code>
-                for your Wifi
-                credentials if you want Wifi (WPA/WPA2 security)
+        	MusicBox will autodetect usb audiocards/speakers/boxes and hdmi. 
+        	It's possible to override this in the ini-file. For example if you want to use analog out while having hdmi connected.
+            <li>
+                There is also an option in the settings.ini to let MusicBox scan the contents of a special Music folder. 
+                This folder is accessible via Windows 
+                networking. If you put music files in there, and let MusicBox scan the files (only needed when the music files are updated!)
+                , Mopidy will find them.
+                The webclient doesn't support playing these files yet, but MPD-clients do.<br/>
             </li>
             <li>
                 Put the card in the Pi
@@ -208,7 +137,6 @@
 <span class='st_sharethis_large' displayText='ShareThis'></span>
 
 
-        <a href="img/screenshots/search.png"><img src="img/screenshots/search-small.png" /></a>
         <h3 style="color: red"> SECURITY WARNING</h3>
         <p></p>
         <p>
