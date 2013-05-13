@@ -36,45 +36,50 @@
     <body>
         <h2>Pi MusicBox Beta</h2>
         <p>
-    	    This beta of MusicBox 0.3 contains the following improvements:
+    	    MusicBox 0.3 contains the following improvements:
     	    <ul>
     	    <li>All configuration is done in one ini-file</li>
-    	    <li>Much smaller download (245MB)
+    	    <li>Much smaller download</li>
     	    <li>HDMI output enabled</li>
     	    <li>Autodetection of HDMI at start (next to autodetection of USB)</li>
     	    <li>Override output setting in ini-file</li>
-    	    <li>LastFM scrobling enabled</li>
+    	    <li>LastFM scrobbling enabled</li>
     	    <li>Webinterface updated (speedier)</li>
     	    <li>Initial support for playback of local mp3 files and putting them there via Windows networking (see instructions)</li>
+    	    <li>Initial support for playback of mp3 files on a Windows Network share (see instructions)</li>
+    	    <li>Settings editable with Windows Notepad</li>
+    	    <li>Works on 1GB SD-Card now</li>
     	    </ul>
         </p>
 
         <h3> Instructions</h3>
         <ul>
             <li>
-                Download the image. It's around 245MB in (compressed) size; 2GB uncompressed.
+                Download the Beta3 image. It's around 190MB in (compressed) size; 1GB uncompressed.
                 <ul  style="font-size: 120%">
-                    <li><a href="musicbox0.3b1.zip">Beta 1</a>
+                    <li><a href="http://dl.mopidy.com/pimusicbox/musicbox0.3b3.zip">Fast mirror</a>
+                    <li><a href="musicbox0.3b3.zip">This site</a></li>
                 </ul>
             </li>
             <li>
                 Extract the zip-file. Put the resulting image on your SD Card by following <a href="http://elinux.org/RPi_Easy_SD_Card_Setup#Easy_way">these
-                instuctions</a>. The image is for a 2GB card, but you can put it on a
-                larger one. It could even fit on a 1GB card, but that needs some work.
+                instuctions</a>. The image is for a 1GB card, but you can put it on a
+                larger one. 
             </li>
-            <li>
+<!--            <li>
                 If you're on Windows, download an editor which supports Unix editing (not the default Notepad!).
                 E.g. <a href="http://www.flos-freeware.ch/notepad2.html">Notepad2</a>
                 or <a href="http://notepad-plus-plus.org/">Notepad++</a>
                 . Users of OSX and Linux can edit the file directly.
                 <br />
             </li>
+            -->
             <li>
                 Open the contents of the 'config' folder of SD Card in your
                 Finder/Explorer.
             </li>
             <li>
-                Using the editor, add your credentials of your Spotify Premium account, Last FM, Wifi to the file
+                Add your credentials of your Spotify Premium account, Last FM, Wifi, etc to the file
                 <code>
                     settings.ini
                 </code>
@@ -84,11 +89,17 @@
         	MusicBox will autodetect usb audiocards/speakers/boxes and hdmi. 
         	It's possible to override this in the ini-file. For example if you want to use analog out while having hdmi connected.
             <li>
-                There is also an option in the settings.ini to let MusicBox scan the contents of a special Music folder. 
+                There is also an option to let MusicBox scan the contents of music files you upload to the device.
                 This folder is accessible via Windows 
                 networking. If you put music files in there, and let MusicBox scan the files (only needed when the music files are updated!)
-                , Mopidy will find them.
-                The webclient doesn't support playing these files yet, but MPD-clients do.<br/>
+                , Mopidy will find them. Scanning can take some time though!<br/>
+		One small problem: you have to resize the filesystem on the SD-Card to put more files there.
+                Login (ssh or local) and issue the command raspi-config. This program has an option to resize
+                it automatically. A future version of MusicBox will do this on first boot.
+                btw: the webclient doesn't support playing these files yet, but MPD-clients do. <br/>
+	    </li>
+	    <li>You can also mount a Windows Network Share. The files on this share will be scanned too.
+                The webclient doesn't support playing these files yet, but MPD-clients do. Scanning can take some time though!<br/>
             </li>
             <li>
                 Put the card in the Pi
@@ -109,7 +120,7 @@
                 Point your browser to the Pi. Depending on your network and computers,
                 it will be available at this address:
                 <code>
-                    http://musicbox.local/
+                    <a href="http://musicbox.local/">http://musicbox.local/</a>
                 </code>
             </li>
             <li>

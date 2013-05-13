@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash 
 #
 # rc.local
 #
@@ -10,6 +10,20 @@
 # bits.
 #
 
+#
+# resize the filesystem
+# is part of raspi-config Copyright (c) 2012 Alex Bradbury <asb@asbradbury.org>
+
+
+#if [ -f /boot/config/resizeonboot.txt ]
+#then
+#  rm /boot/config/resizeonboot.txt
+#  . /opt/resizefs.sh
+#  rm /boot/config/resizeonboot.txt
+#  reboot
+#  exit
+#fi
+
 #import ini parser
 . /opt/read_ini.sh
 
@@ -19,16 +33,7 @@ dos2unix -n /boot/config/settings.ini /tmp/settings.ini > /dev/null 2>&1 || true
 # ini vars to mopidy settings
 read_ini /tmp/settings.ini MusicBox
 
-rm /tmp/settings.ini > /dev/null 2>&1 || true
-
-if [ "$INI__MusicBox__RESIZE_ONCE" != "" ]
-then
-    #comment out RESIZE_ONCE
-    sed -i 's/RESIZE_ONCE/#RESIZE_ONCE/ig' /boot/config/settings.ini
-    sh /opt/resizefs.sh -y
-    reboot
-    exit
-fi
+rm /tmp/settings.ini
 
 #check bitrate
 if [ "$INI__MusicBox__SPOTIFY_BITRATE" != "320" -a "$INI__MusicBox__SPOTIFY_BITRATE" != "160" -a "$INI__MusicBox__SPOTIFY_BITRATE" != "96" ]
@@ -37,10 +42,9 @@ then
      INI__MusicBox__SPOTIFY_BITRATE=160
 fi
 
-#put settings in mopidy
-rm /root/.config/mopidy/settings.py > /dev/null 2>&1 || true
+rm /home/musicbox/.config/mopidy/settings.py
 
-cat >/root/.config/mopidy/settings.py <<EOF
+cat >/home/musicbox/.config/mopidy/settings.py <<EOF
 SPOTIFY_USERNAME = u'$INI__MusicBox__SPOTIFY_USERNAME'
 SPOTIFY_PASSWORD = u'$INI__MusicBox__SPOTIFY_PASSWORD'
 SPOTIFY_BITRATE = $INI__MusicBox__SPOTIFY_BITRATE
@@ -48,7 +52,6 @@ LASTFM_USERNAME = u'$INI__MusicBox__LASTFM_USERNAME'
 LASTFM_PASSWORD = u'$INI__MusicBox__LASTFM_PASSWORD'
 EOF
 
-#put wifi settings for wpa
 cat >/etc/wpa.conf <<EOF
 network={
         ssid="$INI__MusicBox__WIFI_NETWORK"
@@ -86,8 +89,10 @@ then
 fi
 
 echo 
-echo "Line out set to $OUTPUT"
+echo "Output set to $OUTPUT"
 echo
+
+#exit
 
 #change lastcard to analog if set in settings
 if [ "$OUTPUT" == "analog" -o "$OUTPUT" == "hdmi" ]
@@ -108,16 +113,17 @@ ctl.!default {
 EOF
 
 rm /opt/mopidy/settings.py > /dev/null 2>&1 || true
-rm /opt/mopidy/settings.pyc > /dev/null 2>&1 || true
+
+#start pulse
+su musicbox -c "pulseaudio > /dev/null 2>&1" &
 
 if [ "$OUTPUT" == "analog" ]
 then
     # for analog use pulse to avoid noises
-    pulseaudio --system > /dev/null 2>&1 &
-    ln -s /opt/settingspulse.py /opt/mopidy/settings.py
+    ln -s /root/settingspulse.py /opt/mopidy/settings.py
 else
     # usb or hdmi, use alsa
-    ln -s /opt/settingsalsa.py /opt/mopidy/settings.py
+    ln -s /root/settingsalsa.py /opt/mopidy/settings.py
 fi
 
 #reset mixer
@@ -134,6 +140,19 @@ if [ "$OUTPUT" == "hdmi" ]
 then
     amixer cset numid=3 2 > /dev/null 2>&1 || true
 fi
+
+#start shairport in the background
+if [ "$OUTPUT" == "usb" ]
+then
+    #start shairport for usb (alsa device 1)
+    su musicbox -c "/opt/shairport/shairport.pl -d -a MusicBox --ao_driver alsa --ao_devicename "hw:1,0" > /dev/null 2>&1" &
+else
+    #start shairport normally
+    su musicbox -c "/opt/shairport/shairport.pl -d -a MusicBox --ao_driver pulse --ao_devicename "hw:0,0" > /dev/null 2>&1" &
+fi
+
+#redirect 6680 to 80
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 6680
 
 for CTL in \
         Master \
@@ -154,78 +173,42 @@ for CTL in \
 	Front \
 	Center
 do
-        amixer set "$CTL" 45% unmute > /dev/null 2>&1 || true
+        amixer set "$CTL" 80% unmute > /dev/null 2>&1 || true
 done
+
+#set headphone less loud for protection
+amixer set "Headphone" 50% unmute > /dev/null 2>&1 || true
 
 #set PCM of Pi higher, because it's really quit otherwise (alsa bug?)
-amixer -c 0 -- sset PCM playback 65% > /dev/null 2>&1 || true
+amixer -c 0 -- sset PCM playback 92%  > /dev/null 2>&1 || true
 
-#check networking, sleep for a while
-MYIP=$(hostname -I)
-while [ "$MYIP" == "" -a "$INI__MusicBox__WAIT_FOR_NETWORK" != "false" ]
-do
-    echo "Waiting for network..."
-    echo
-    sleep 5
-    MYIP=$(hostname -I)
-done
-
-#start shairport in the background
-if [ "$OUTPUT" == "usb" ]
-then
-    #start shairport for usb (alsa device 1,0)
-    /opt/shairport/shairport.pl -d -a MusicBox --ao_driver alsa --ao_devicename "hw:1,0" > /dev/null 2>&1 &
-else
-    #start shairport normally
-#    /opt/shairport/shairport.pl -d -a MusicBox > /dev/null 2>&1 &
-    /opt/shairport/shairport.pl -d -a MusicBox > /dev/null 2>&1 &
-fi
-
-#redirect 6680 to 80
-iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 6680 > /dev/null 2>&1 || true
-
-#mount windows share
 if [ "$INI__MusicBox__NETWORK_ADDRESS" != "" ]
 then
     #mount samba share, readonly
-#    mount -t cifs -o ro,user=$INI__MusicBox__NETWORK_USER,password=$INI__MusicBox__NETWORK_PASSWORD $INI__MusicBox__NETWORK_ADDRESS /music/network/ > /dev/null 2>&1 || true
-#    echo "mount -t cifs -o ro,user=$INI__MusicBox__NETWORK_USER,password=$INI__MusicBox__NETWORK_PASSWORD $INI__MusicBox__NETWORK_ADDRESS /music/network/"
-    echo
-    echo "Mounting Windows Network drive..."
-    echo
     mount -t cifs -o ro,user=$INI__MusicBox__NETWORK_USER,password=$INI__MusicBox__NETWORK_PASSWORD $INI__MusicBox__NETWORK_ADDRESS /music/network/
 fi
 
-# scan local music files once (by setting the ini value)
-if [ "$INI__MusicBox__SCAN_ONCE" == "true" ]
-then
-    #comment out SCAN_ONCE
-    sed -i 's/SCAN_ONCE/#SCAN_ONCE/ig' /boot/config/settings.ini
-fi
-
 # scan local music files if setting is true
-if [ "$INI__MusicBox__SCAN_ALWAYS" == "true" -o "$INI__MusicBox__SCAN_ONCE" == "true" ]
+if [ "$INI__MusicBox__SCAN_LOCAL" == "true" ]
 then
     echo
-    echo "Scanning music-files, please wait.... The scanned files will be displayed. You can ignore warnings about non-music files."
+    echo "Scanning music files. Please wait...."
     echo
-    rm /root/.cache/mopidy/tag_cache > /dev/null 2>&1 || true
-    mkdir -p /root/.cache/mopidy
-    mopidy-scan -v /music/ > /root/.cache/mopidy/tag_cache
+    rm /home/musicbox/.cache/mopidy/tag_cache
+    su musicbox -c "mopidy-scan -q > /home/musicbox/.cache/mopidy/tag_cache"
 fi
 
 # Print the IP address
 _IP=$(hostname -I) || true
 if [ "$_IP" ]; then
-    echo
     printf "My IP address is %s\n" "$_IP"
     echo
-    echo "Now the output of Mopidy (the musicserver) appears. Nothing to worry about (it's shown for if something's wrong), you can login if you want (the output of Mopidy could continue)."
+    echo "After this the output of Mopidy musicserver appears. Nothing to worry about (it's shown for if something's wrong), you can login if you want."
     echo
 fi
 
 #start mopidy in the background
 cd /opt 
-python /opt/mopidy &
+su musicbox -c "python mopidy" &
 
 exit 0
