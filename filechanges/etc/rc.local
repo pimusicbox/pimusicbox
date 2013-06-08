@@ -10,6 +10,10 @@
 # bits.
 #
 
+#set user var
+MB_USER=musicbox
+MB_HOME=/home/musicbox
+
 #import ini parser
 . /opt/read_ini.sh
 
@@ -30,6 +34,28 @@ then
     exit
 fi
 
+
+#get name of device and trim
+HOSTNM=`cat /etc/hostname | tr -cd "[:alnum:]"`
+#get name in ini and trim
+ININM=$(echo $INI__MusicBox__NAME | tr -cd "[:alnum:]")
+
+if [ "$ININM" != "" -a "$HOSTNM" != "" -a "$ININM" != "$HOSTNM" ]
+then
+    #if devicename is not the same as ini, change and reboot<-->
+    echo "$ININM" > /etc/hostname
+    echo "127.0.0.1       localhost $ININM" > /etc/hosts
+    echo
+    echo "MusicBox name permanently set to $ININM. Rebooting..."
+    echo
+    reboot
+    exit
+fi
+
+echo
+echo "MusicBox name set to $ININM"
+echo
+
 #check bitrate
 if [ "$INI__MusicBox__SPOTIFY_BITRATE" != "320" -a "$INI__MusicBox__SPOTIFY_BITRATE" != "160" -a "$INI__MusicBox__SPOTIFY_BITRATE" != "96" ]
 #if [ "$INI__MusicBox__SPOTIFY_BITRATE" = "" ]
@@ -38,14 +64,31 @@ then
 fi
 
 #put settings in mopidy
-rm /root/.config/mopidy/settings.py > /dev/null 2>&1 || true
+rm $MB_HOME/.config/mopidy/mopidy.conf > /dev/null 2>&1 || true
 
-cat >/root/.config/mopidy/settings.py <<EOF
-SPOTIFY_USERNAME = u'$INI__MusicBox__SPOTIFY_USERNAME'
-SPOTIFY_PASSWORD = u'$INI__MusicBox__SPOTIFY_PASSWORD'
-SPOTIFY_BITRATE = $INI__MusicBox__SPOTIFY_BITRATE
-LASTFM_USERNAME = u'$INI__MusicBox__LASTFM_USERNAME'
-LASTFM_PASSWORD = u'$INI__MusicBox__LASTFM_PASSWORD'
+cat >$MB_HOME/.config/mopidy/mopidy.conf <<EOF
+[spotify]
+username = $INI__MusicBox__SPOTIFY_USERNAME
+password = $INI__MusicBox__SPOTIFY_PASSWORD
+bitrate = $INI__MusicBox__SPOTIFY_BITRATE
+[scrobbler]
+enabled = true
+username = $INI__MusicBox__LASTFM_USERNAME
+password = $INI__MusicBox__LASTFM_PASSWORD
+[mpd]
+hostname = 0.0.0.0
+[local]
+media_dir = /music
+tag_cache_file = $MB_HOME/.cache/mopidy/tag_cache
+[mpris]
+enabled = false
+[http]
+enabled = true
+hostname = 0.0.0.0
+port = 6680
+static_dir = /opt/defaultwebclient
+[audio]
+output = alsasink
 EOF
 
 #put wifi settings for wpa
@@ -107,18 +150,18 @@ ctl.!default {
 }
 EOF
 
-rm /opt/mopidy/settings.py > /dev/null 2>&1 || true
-rm /opt/mopidy/settings.pyc > /dev/null 2>&1 || true
+#rm /opt/mopidy/settings.py > /dev/null 2>&1 || true
+#rm /opt/mopidy/settings.pyc > /dev/null 2>&1 || true
 
-if [ "$OUTPUT" == "analog" ]
-then
+#if [ "$OUTPUT" == "analog" ]
+#then
     # for analog use pulse to avoid noises
-    pulseaudio --system > /dev/null 2>&1 &
-    ln -s /opt/settingspulse.py /opt/mopidy/settings.py
-else
+#    pulseaudio --system > /dev/null 2>&1 &
+#    ln -s /opt/settingspulse.py /opt/mopidy/settings.py
+#else
     # usb or hdmi, use alsa
-    ln -s /opt/settingsalsa.py /opt/mopidy/settings.py
-fi
+#    ln -s /opt/settingsalsa.py /opt/mopidy/settings.py
+#fi
 
 #reset mixer
 amixer cset numid=3 0 > /dev/null 2>&1 || true
@@ -154,11 +197,11 @@ for CTL in \
 	Front \
 	Center
 do
-        amixer set "$CTL" 45% unmute > /dev/null 2>&1 || true
+        amixer set "$CTL" 55% unmute > /dev/null 2>&1 || true
 done
 
-#set PCM of Pi higher, because it's really quit otherwise (alsa bug?)
-amixer -c 0 -- sset PCM playback 65% > /dev/null 2>&1 || true
+#set PCM of Pi higher, because it's really quit otherwise (hardware thing)
+amixer -c 0 -- sset PCM playback 75% > /dev/null 2>&1 || true
 
 #check networking, sleep for a while
 MYIP=$(hostname -I)
@@ -174,26 +217,26 @@ done
 if [ "$OUTPUT" == "usb" ]
 then
     #start shairport for usb (alsa device 1,0)
-    /opt/shairport/shairport.pl -d -a MusicBox --ao_driver alsa --ao_devicename "hw:1,0" > /dev/null 2>&1 &
+    su $MB_USER -c "/opt/shairport/shairport.pl -d -a $HOSTNM --ao_driver alsa --ao_devicename \"hw:1,0\" --play_prog=\"ncmpcpp stop \"" > /dev/null 2>&1 &
 else
     #start shairport normally
 #    /opt/shairport/shairport.pl -d -a MusicBox > /dev/null 2>&1 &
-    /opt/shairport/shairport.pl -d -a MusicBox > /dev/null 2>&1 &
+    su $MB_USER -c "/opt/shairport/shairport.pl -d -a $HOSTNM --play_prog=\"ncmpcpp stop \"" > /dev/null 2>&1 &
 fi
 
 #redirect 6680 to 80
 iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 6680 > /dev/null 2>&1 || true
 
 #mount windows share
-if [ "$INI__MusicBox__NETWORK_ADDRESS" != "" ]
+if [ "$INI__MusicBox__NETWORK_MOUNT_ADDRESS" != "" ]
 then
     #mount samba share, readonly
-#    mount -t cifs -o ro,user=$INI__MusicBox__NETWORK_USER,password=$INI__MusicBox__NETWORK_PASSWORD $INI__MusicBox__NETWORK_ADDRESS /music/network/ > /dev/null 2>&1 || true
-#    echo "mount -t cifs -o ro,user=$INI__MusicBox__NETWORK_USER,password=$INI__MusicBox__NETWORK_PASSWORD $INI__MusicBox__NETWORK_ADDRESS /music/network/"
+#    mount -t cifs -o ro,user=$INI__MusicBox__NETWORK_MOUNT_USER,password=$INI__MusicBox__NETWORK_MOUNT_PASSWORD $INI__MusicBox__NETWORK_MOUNT_ADDRESS /music/network/ > /dev/null 2>&1 || true
+#    echo "mount -t cifs -o ro,user=$INI__MusicBox__NETWORK_MOUNT_USER,password=$INI__MusicBox__NETWORK_MOUNT_PASSWORD $INI__MusicBox__NETWORK_MOUNT_ADDRESS /music/network/"
     echo
     echo "Mounting Windows Network drive..."
     echo
-    mount -t cifs -o ro,user=$INI__MusicBox__NETWORK_USER,password=$INI__MusicBox__NETWORK_PASSWORD $INI__MusicBox__NETWORK_ADDRESS /music/network/
+    mount -t cifs -o ro,user=$INI__MusicBox__NETWORK_MOUNT_USER,password=$INI__MusicBox__NETWORK_MOUNT_PASSWORD $INI__MusicBox__NETWORK_MOUNT_ADDRESS /music/network/
 fi
 
 # scan local music files once (by setting the ini value)
@@ -209,9 +252,9 @@ then
     echo
     echo "Scanning music-files, please wait.... The scanned files will be displayed. You can ignore warnings about non-music files."
     echo
-    rm /root/.cache/mopidy/tag_cache > /dev/null 2>&1 || true
-    mkdir -p /root/.cache/mopidy
-    mopidy-scan -v /music/ > /root/.cache/mopidy/tag_cache
+    rm $MB_HOME/.cache/mopidy/tag_cache > /dev/null 2>&1 || true
+    mkdir -p $MB_HOME/.cache/mopidy
+    mopidy-scan -v /music/ > $MB_HOME/.cache/mopidy/tag_cache
 fi
 
 # Print the IP address
@@ -224,8 +267,7 @@ if [ "$_IP" ]; then
     echo
 fi
 
-#start mopidy in the background
-cd /opt 
-python /opt/mopidy &
+#start mopidy in the background, with a higher priority than other programs (nice)
+nice -15 su $MB_USER -c mopidy &
 
 exit 0

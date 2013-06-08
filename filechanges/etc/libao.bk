@@ -1,3 +1,0 @@
-default_driver=alsa
-dev=default
-use_mmap=no
