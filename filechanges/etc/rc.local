@@ -38,22 +38,24 @@ fi
 #get name of device and trim
 HOSTNM=`cat /etc/hostname | tr -cd "[:alnum:]"`
 #get name in ini and trim
-ININM=$(echo $INI__MusicBox__NAME | tr -cd "[:alnum:]")
+CLEAN_NAME=$(echo $INI__MusicBox__NAME | tr -cd "[:alnum:]")
+#max 9 caracters (max netbios length = 15, + '.local')
+CLEAN_NAME=$(echo $CLEAN_NAME | cut -c 1-9)
 
-if [ "$ININM" != "" -a "$HOSTNM" != "" -a "$ININM" != "$HOSTNM" ]
+if [ "$CLEAN_NAME" != "" -a "$CLEAN_NAME" != "" -a "$CLEAN_NAME" != "$HOSTNM" -a "$INI__MusicBox__NAME" == "$CLEAN_NAME" ]
 then
     #if devicename is not the same as ini, change and reboot<-->
-    echo "$ININM" > /etc/hostname
-    echo "127.0.0.1       localhost $ININM" > /etc/hosts
+    echo "$CLEAN_NAME" > /etc/hostname
+    echo "127.0.0.1       localhost $CLEAN_NAME" > /etc/hosts
     echo
-    echo "MusicBox name permanently set to $ININM. Rebooting..."
+    echo "MusicBox name permanently set to $CLEAN_NAME. Rebooting..."
     echo
     reboot
     exit
 fi
 
 echo
-echo "MusicBox name set to $ININM"
+echo "MusicBox name set to $CLEAN_NAME"
 echo
 
 #check bitrate
@@ -89,6 +91,7 @@ port = 6680
 static_dir = /opt/defaultwebclient
 [audio]
 output = alsasink
+mixer = alsamixer
 EOF
 
 #put wifi settings for wpa
@@ -197,11 +200,11 @@ for CTL in \
 	Front \
 	Center
 do
-        amixer set "$CTL" 55% unmute > /dev/null 2>&1 || true
+        amixer set "$CTL" 75% unmute > /dev/null 2>&1 || true
 done
 
 #set PCM of Pi higher, because it's really quit otherwise (hardware thing)
-amixer -c 0 -- sset PCM playback 75% > /dev/null 2>&1 || true
+amixer -c 0 -- sset PCM playback 90% > /dev/null 2>&1 || true
 
 #check networking, sleep for a while
 MYIP=$(hostname -I)
@@ -237,6 +240,8 @@ then
     echo "Mounting Windows Network drive..."
     echo
     mount -t cifs -o ro,user=$INI__MusicBox__NETWORK_MOUNT_USER,password=$INI__MusicBox__NETWORK_MOUNT_PASSWORD $INI__MusicBox__NETWORK_MOUNT_ADDRESS /music/network/
+#fstype=cifs,file_mode=0777,dir_mode=0777,iocharset=utf8,sec=ntlm,rsize=2048,wsize=4096,cache=strict
+#rsize=4096,cache=none
 fi
 
 # scan local music files once (by setting the ini value)
@@ -267,7 +272,12 @@ if [ "$_IP" ]; then
     echo
 fi
 
+if [ "$INI__MusicBox__NAME" != "$CLEAN_NAME" ]
+then
+    echo "Your custom hostname $INI__MusicBox__NAME is not ok! It should be max. 9 alphanumerical caracters."
+fi
+
 #start mopidy in the background, with a higher priority than other programs (nice)
-nice -15 su $MB_USER -c mopidy &
+nice -5 su $MB_USER -c mopidy 2>&1 | tee /var/log/mopidy.log & 
 
 exit 0
