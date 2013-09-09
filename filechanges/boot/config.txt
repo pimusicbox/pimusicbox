@@ -1,3 +1,4 @@
+# uncomment if you get no picture on HDMI for a default "safe" mode
 #hdmi_safe=1
 
 # uncomment this if your display has a black border of unused pixels visible
@@ -37,14 +38,11 @@ sdtv_mode=2
 #low mem for gpu
 gpu_mem=16
 
-#overclock the arm a bit. 700 MHz is the default.
-arm_freq=800
-nsdram_freq=450
-core_freq=350
-force_turbo=0
+#you can overclock the arm a bit. 700 MHz is the default.
+#arm_freq=800
 
 # for more options see http://elinux.org/RPi_config.txt
-# overclock more by uncommenting these lines (comment out the arm_freq=800 etc lines above)
+# overclock more by uncommenting these lines (comment out the arm_freq=800 line above)
 #arm_freq=900
 #core_freq=250
 #sdram_freq=450

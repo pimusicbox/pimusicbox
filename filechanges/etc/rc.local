@@ -42,7 +42,12 @@ CLEAN_NAME=$(echo $INI__MusicBox__NAME | tr -cd "[:alnum:]")
 #max 9 caracters (max netbios length = 15, + '.local')
 CLEAN_NAME=$(echo $CLEAN_NAME | cut -c 1-9)
 
-if [ "$CLEAN_NAME" != "" -a "$CLEAN_NAME" != "" -a "$CLEAN_NAME" != "$HOSTNM" -a "$INI__MusicBox__NAME" == "$CLEAN_NAME" ]
+if [ "$CLEAN_NAME" == "" ]
+then
+    CLEAN_NAME = "MusicBox"
+fi
+
+if [ "$CLEAN_NAME" != "" -a "$CLEAN_NAME" != "$HOSTNM" -a "$INI__MusicBox__NAME" == "$CLEAN_NAME" ]
 then
     #if devicename is not the same as ini, change and reboot<-->
     echo "$CLEAN_NAME" > /etc/hostname
@@ -92,6 +97,15 @@ static_dir = /opt/defaultwebclient
 [audio]
 output = alsasink
 mixer = alsamixer
+[stream]
+enabled = true
+protocols =
+    http
+    https
+    mms
+    rtmp
+    rtmps
+    rtsp
 EOF
 
 #put wifi settings for wpa
@@ -277,7 +291,10 @@ then
     echo "Your custom hostname $INI__MusicBox__NAME is not ok! It should be max. 9 alphanumerical caracters."
 fi
 
-#start mopidy in the background, with a higher priority than other programs (nice)
-nice -5 su $MB_USER -c mopidy 2>&1 | tee /var/log/mopidy.log & 
+#start mopidy in the background, under the user musixbox
+#nice value of 5 (lower prio!) makes the music stutter less. Strange but true
+#log output to a file
+#nice -n5 su $MB_USER -c mopidy 2>&1 | tee /var/log/mopidy.log & 
+/opt/startmopidy.sh || true
 
 exit 0

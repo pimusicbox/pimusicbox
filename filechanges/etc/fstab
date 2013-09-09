@@ -1,0 +1,10 @@
+proc            /proc           proc    defaults          0       0
+/dev/mmcblk0p1  /boot           vfat    defaults          0       0
+/dev/mmcblk0p2  /               ext4    defaults,noatime,data=writeback  0       0
+#/dev/mmcblk0p3  none            swap    sw                0       0
+
+#set most used dirs to ram
+tmpfs          /tmp           tmpfs      defaults,noatime            0     0
+tmpfs          /var/tmp       tmpfs      defaults,noatime            0     0
+tmpfs          /var/log       tmpfs      defaults,noatime            0     0
+tmpfs          /var/mail      tmpfs      defaults,noatime            0     0
