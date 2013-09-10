@@ -70,16 +70,27 @@ then
      INI__MusicBox__SPOTIFY_BITRATE=160
 fi
 
+#check lastfm
+ENABLE_LASTFM='true'
+if [ "$INI__MusicBox__LASTFM_USERNAME" == "" -o "$INI__MusicBox__LASTFM_PASSWORD" == "" ]
+then
+     ENABLE_LASTFM='false'
+     echo 
+     echo "Disabled LastFM. Missing username and/or password..."
+     echo
+fi
+
 #put settings in mopidy
 rm $MB_HOME/.config/mopidy/mopidy.conf > /dev/null 2>&1 || true
 
+ 
 cat >$MB_HOME/.config/mopidy/mopidy.conf <<EOF
 [spotify]
 username = $INI__MusicBox__SPOTIFY_USERNAME
 password = $INI__MusicBox__SPOTIFY_PASSWORD
 bitrate = $INI__MusicBox__SPOTIFY_BITRATE
 [scrobbler]
-enabled = true
+enabled = $ENABLE_LASTFM
 username = $INI__MusicBox__LASTFM_USERNAME
 password = $INI__MusicBox__LASTFM_PASSWORD
 [mpd]
@@ -229,6 +240,9 @@ do
     sleep 5
     MYIP=$(hostname -I)
 done
+
+# set date/time
+ntpdate ntp.ubuntu.com
 
 #start shairport in the background
 if [ "$OUTPUT" == "usb" ]
