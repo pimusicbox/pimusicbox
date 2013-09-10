@@ -1,9 +1,21 @@
+0.4(beta)
+Multiroom Audio by renaming the device via the ini file
+Webradio streams supported
+Faster, cleaner web interface
+Big updates to Mopidy music server
+Mounting windows file share
+Completely clean system
+Better security trough a simple firewall
+Mopidy runs as a normal user now
+Automatic resizing of the SD-Card filesystem
+Optimizations to have less services running, less logging, less writes to SD-Card
+
 0.3
 All configuration is done in one ini-file
 HDMI output supported
 Autodetection of HDMI at start (next to autodetection of USB)
 Override output setting in ini-file
-LastFM scrobling enabled
+LastFM scrobbling enabled
 Webinterface updated (speedier)
 Local music files supported, accessible via windows network (but not yet in webinterface)
 
