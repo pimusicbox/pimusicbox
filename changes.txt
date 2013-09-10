@@ -9,6 +9,7 @@ Better security trough a simple firewall
 Mopidy runs as a normal user now
 Automatic resizing of the SD-Card filesystem
 Optimizations to have less services running, less logging, less writes to SD-Card
+Ini-file can be edited by Windows Notepad
 
 0.3
 All configuration is done in one ini-file

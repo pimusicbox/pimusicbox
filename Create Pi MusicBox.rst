@@ -29,7 +29,6 @@ Next, issue this command to update the distribution. This is good because newer 
 
 **Mopidy Music Server**
 
-
 Next, configure the installation of Mopidy, the music server that is the heart of MusicBox. 
 
 	wget -q -O - http://apt.mopidy.com/mopidy.gpg | sudo apt-key add -
@@ -38,7 +37,7 @@ Next, configure the installation of Mopidy, the music server that is the heart o
 
 Then install all packages we need with this command:
 
-	sudo apt-get update && sudo apt-get --yes --no-install-suggests --no-install-recommends install logrotate mopidy alsa-utils python-cherrypy3 python-ws4py wpasupplicant python-spotify gstreamer0.10-alsa ifplugd gstreamer0.10-fluendo-mp3 gstreamer0.10-tools samba dos2unix avahi-utils alsa-base python-pylast cifs-utils avahi-autoipd libnss-mdns ntpdate ca-certificates
+	sudo apt-get update && sudo apt-get --yes --no-install-suggests --no-install-recommends install logrotate mopidy alsa-utils python-cherrypy3 python-ws4py wpasupplicant python-spotify gstreamer0.10-alsa ifplugd gstreamer0.10-fluendo-mp3 gstreamer0.10-tools samba dos2unix avahi-utils alsa-base python-pylast cifs-utils avahi-autoipd libnss-mdns ntpdate ca-certificates ncmpcpp
 
 **Configuration and Files**
 
@@ -174,7 +173,7 @@ Add the next lines to the file /etc/default/rcS
 
 	RAMLOCK=yes
 
-This will run more stuf in RAM, instead of the SD-Card.
+This will run more stuff in RAM, instead of the SD-Card.
 
 **Less Turbo**
 
@@ -188,11 +187,19 @@ This will prevent the ethernet system from using burst to increase the network t
 
 Disable services that are not needed. NTP is disabled because the time is updated at boot.
 
-	update-rc.d dbus disable
-
 	update-rc.d ntp disable
 
-	update-rc.d utp disable
+**USB Sound**
+
+Edit the sound settings of USB Cards in /etc/modprobe.d/modprobe.conf :
+
+Find the line
+
+	options snd-usb-audio index=-2
+
+and add this:
+
+	options snd-usb-audio index=-2 nrpacks=1
 
 **Group Power**
 
