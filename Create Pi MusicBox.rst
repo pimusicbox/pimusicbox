@@ -3,7 +3,7 @@
 
 First, download or create an (minimal) installation of Raspbian, the most used Linux distribution for the Pi. I used the Raspbian Installer.
 
-*First configuration*
+**First configuration**
 
 Login as root. Or use 
 
@@ -21,13 +21,13 @@ Install the packages you need to continue:
 
 The last part of this command ‘mc’, will install midnight commander, an easy to use command line file manager for Linux. You don’t have to do that, but I like it.
 
-*Update*
+**Update**
 
 Next, issue this command to update the distribution. This is good because newer versions have fixes for audio and usb-issues:
 
 	apt-get dist-upgrade -y
 
-*Mopidy Music Server*
+**Mopidy Music Server**
 
 
 Next, configure the installation of Mopidy, the music server that is the heart of MusicBox. 
@@ -40,7 +40,7 @@ Then install all packages we need with this command:
 
 	sudo apt-get update && sudo apt-get --yes --no-install-suggests --no-install-recommends install logrotate mopidy alsa-utils python-cherrypy3 python-ws4py wpasupplicant python-spotify gstreamer0.10-alsa ifplugd gstreamer0.10-fluendo-mp3 gstreamer0.10-tools samba dos2unix avahi-utils alsa-base python-pylast cifs-utils avahi-autoipd libnss-mdns ntpdate ca-certificates
 
-*Configuration and Files*
+**Configuration and Files**
 
 Go to the /opt directory
 
@@ -90,7 +90,7 @@ Make the system work:
 
 	cp etc/firewall/* /etc/firewall
 
-*Install webclient*
+**Install webclient**
 
 To install the Mopidy webclient, do the following:
 
@@ -112,7 +112,7 @@ Next, create a symlink from the package to the /opt/defaultwebclient. This is do
 
 	ln -s /opt/webclient /opt/defaultwebclient
 
-*Add the MusicBox user*
+**Add the MusicBox user**
 
 Mopidy runs under the user musicbox. Add it.
 
@@ -134,7 +134,7 @@ Create a couple of directories inside the user dir:
 
 	chown -R musicbox:musicbox /home/musicbox
 
-*One last thing*
+**One last thing**
 
 And create the directory containing the music
 
@@ -153,7 +153,7 @@ That’s it. MusicBox should now start when you reboot!
 
 For the music to play without cracks, you have to optimize your system a bit. For MusicBox, these are the optimizations:
 
-*Fstab*
+**Fstab**
 
 Make sure that root is mounted with the flag noatime. Normally this would be configured that way already.
 You can also add these options, to put the most used directories in RAM, instead of using the SD-Card:
@@ -166,7 +166,7 @@ You can also add these options, to put the most used directories in RAM, instead
 	
 	tmpfs      	/var/mail  	tmpfs  	defaults,noatime        	0 	0
 
-*More fun with RAM*
+**More fun with RAM**
 
 Add the next lines to the file /etc/default/rcS 
 
@@ -176,7 +176,7 @@ Add the next lines to the file /etc/default/rcS
 
 This will run more stuf in RAM, instead of the SD-Card.
 
-*Less Turbo*
+**Less Turbo**
 
 Add the following option to /boot/cmdline.txt 
 
@@ -184,7 +184,7 @@ Add the following option to /boot/cmdline.txt
 
 This will prevent the ethernet system from using burst to increase the network throughput. This can interfere with the music data sent over usb.
 
-*Services*
+**Services**
 
 Disable services that are not needed. NTP is disabled because the time is updated at boot.
 
@@ -194,7 +194,7 @@ Disable services that are not needed. NTP is disabled because the time is update
 
 	update-rc.d utp disable
 
-*Group Power*
+**Group Power**
 
 Give the audio group more power by editting /etc/security/limits.conf
 
@@ -204,7 +204,7 @@ Give the audio group more power by editting /etc/security/limits.conf
 
 	@audio - nice -19
 
-*Log Less*
+**Log Less**
 
 Less logging, means less to do for the system. Edit /etc/syslog.conf and put this in it:
 
@@ -216,13 +216,13 @@ Less logging, means less to do for the system. Edit /etc/syslog.conf and put thi
 
 This will send the logs directly to loggers heaven (/dev/null)
 
-*More Memory*
+**More Memory**
 
 Add this line to /boot/config.txt to have less memory for the video (MusicBox doesn’t need that):
 
 	gpu_mem=16
 
-*Overclocking*
+**Overclocking**
 
 By over clocking your Pi, you will get better performance. This could lower the life expectency of your Pi though, use at your own risk! See:
 
