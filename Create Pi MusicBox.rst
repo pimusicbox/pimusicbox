@@ -1,4 +1,4 @@
-**How to create PI MusicBox**
+**How to create Pi MusicBox**
 -----------------------------
 
 First, download or create an (minimal) installation of Raspbian, the most used Linux distribution for the Pi. I used the Raspbian Installer.
