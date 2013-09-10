@@ -201,16 +201,6 @@ and add this:
 
 	options snd-usb-audio index=-2 nrpacks=1
 
-**Group Power**
-
-Give the audio group more power by editting /etc/security/limits.conf
-
-	@audio - rtprio 99
-
-	@audio - memlock unlimited
-
-	@audio - nice -19
-
 **Log Less**
 
 Less logging, means less to do for the system. Edit /etc/syslog.conf and put this in it:
