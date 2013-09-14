@@ -34,6 +34,21 @@ then
     exit
 fi
 
+# do the change password stuff
+if [ "$INI__MusicBox__MUSICBOX_PASSWORD" != "" ]
+then
+    #remove password
+    sed -i 's/MUSICBOX_PASSWORD = .*$/#MUSICBOX_PASSWORD = /ig' /boot/config/settings.ini
+    echo "musicbox:$INI__MusicBox__MUSICBOX_PASSWORD" | chpasswd    
+    echo "root:$INI__MusicBox__ROOT_PASSWORD" | chpasswd    
+fi
+
+if [ "$INI__MusicBox__ROOT_PASSWORD" != "" ]
+then
+    #remove password
+    #sed -i 's/ROOT_PASSWORD = .*$/#ROOT_PASSWORD = /ig' /boot/config/settings.bk
+    sed -i 's/ROOT_PASSWORD = .*$/#ROOT_PASSWORD = /ig' /boot/config/settings.ini
+fi
 
 #get name of device and trim
 HOSTNM=`cat /etc/hostname | tr -cd "[:alnum:]"`
@@ -60,7 +75,7 @@ then
 fi
 
 echo
-echo "MusicBox name set to $CLEAN_NAME"
+echo "MusicBox name is $CLEAN_NAME"
 echo
 
 #check bitrate
@@ -107,7 +122,7 @@ port = 6680
 static_dir = /opt/defaultwebclient
 [audio]
 output = alsasink
-mixer = alsamixer
+mixer = software
 [stream]
 enabled = true
 protocols =
@@ -178,19 +193,6 @@ ctl.!default {
 }
 EOF
 
-#rm /opt/mopidy/settings.py > /dev/null 2>&1 || true
-#rm /opt/mopidy/settings.pyc > /dev/null 2>&1 || true
-
-#if [ "$OUTPUT" == "analog" ]
-#then
-    # for analog use pulse to avoid noises
-#    pulseaudio --system > /dev/null 2>&1 &
-#    ln -s /opt/settingspulse.py /opt/mopidy/settings.py
-#else
-    # usb or hdmi, use alsa
-#    ln -s /opt/settingsalsa.py /opt/mopidy/settings.py
-#fi
-
 #reset mixer
 amixer cset numid=3 0 > /dev/null 2>&1 || true
 
@@ -225,7 +227,7 @@ for CTL in \
 	Front \
 	Center
 do
-        amixer set "$CTL" 75% unmute > /dev/null 2>&1 || true
+        amixer set "$CTL" 80% unmute > /dev/null 2>&1 || true
 done
 
 #set PCM of Pi higher, because it's really quit otherwise (hardware thing)
@@ -243,6 +245,12 @@ done
 
 # set date/time
 ntpdate ntp.ubuntu.com
+
+# start SSH if enabled
+if [ "$INI__MusicBox__ENABLE_SSH" == "true" ]
+then
+    /etc/init.d/ssh start
+fi
 
 #start shairport in the background
 if [ "$OUTPUT" == "usb" ]
@@ -262,14 +270,11 @@ iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 6680 > /de
 if [ "$INI__MusicBox__NETWORK_MOUNT_ADDRESS" != "" ]
 then
     #mount samba share, readonly
-#    mount -t cifs -o ro,user=$INI__MusicBox__NETWORK_MOUNT_USER,password=$INI__MusicBox__NETWORK_MOUNT_PASSWORD $INI__MusicBox__NETWORK_MOUNT_ADDRESS /music/network/ > /dev/null 2>&1 || true
-#    echo "mount -t cifs -o ro,user=$INI__MusicBox__NETWORK_MOUNT_USER,password=$INI__MusicBox__NETWORK_MOUNT_PASSWORD $INI__MusicBox__NETWORK_MOUNT_ADDRESS /music/network/"
     echo
     echo "Mounting Windows Network drive..."
     echo
-    mount -t cifs -o ro,user=$INI__MusicBox__NETWORK_MOUNT_USER,password=$INI__MusicBox__NETWORK_MOUNT_PASSWORD $INI__MusicBox__NETWORK_MOUNT_ADDRESS /music/network/
-#fstype=cifs,file_mode=0777,dir_mode=0777,iocharset=utf8,sec=ntlm,rsize=2048,wsize=4096,cache=strict
-#rsize=4096,cache=none
+    mount -t cifs -o ro,rsize=2048,wsize=4096,cache=strict,user=$INI__MusicBox__NETWORK_MOUNT_USER,password=$INI__MusicBox__NETWORK_MOUNT_PASSWORD $INI__MusicBox__NETWORK_MOUNT_A
+#add rsize=2048,wsize=4096,cache=strict because of usb (from raspyfi)
 fi
 
 # scan local music files once (by setting the ini value)
@@ -290,25 +295,22 @@ then
     mopidy-scan -v /music/ > $MB_HOME/.cache/mopidy/tag_cache
 fi
 
-# Print the IP address
-_IP=$(hostname -I) || true
-if [ "$_IP" ]; then
-    echo
-    printf "My IP address is %s\n" "$_IP"
-    echo
-    echo "Now the output of Mopidy (the musicserver) appears. Nothing to worry about (it's shown for if something's wrong), you can login if you want (the output of Mopidy could continue)."
-    echo
-fi
-
 if [ "$INI__MusicBox__NAME" != "$CLEAN_NAME" ]
 then
     echo "Your custom hostname $INI__MusicBox__NAME is not ok! It should be max. 9 alphanumerical caracters."
 fi
 
-#start mopidy in the background, under the user musixbox
-#nice value of 5 (lower prio!) makes the music stutter less. Strange but true
-#log output to a file
-#nice -n5 su $MB_USER -c mopidy 2>&1 | tee /var/log/mopidy.log & 
-/opt/startmopidy.sh || true
+# Print the IP address
+_IP=$(hostname -I) || true
+if [ "$_IP" ]; then
+    echo
+    echo "My IP address is $_IP"
+    echo
+    echo "Connect to MusicBox in your browser via http://$CLEAN_NAME.local or http://$_IP"
+    echo
+fi
+
+#start mopidy 
+/opt/startmopidy.sh > /dev/null 2>&1 || true
 
 exit 0

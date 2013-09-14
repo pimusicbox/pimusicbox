@@ -15,11 +15,17 @@ Issue this command. This will prevent the system from installing unnecessary pac
 
 	echo -e 'APT::Install-Recommends "0";\nAPT::Install-Suggests "0";\n' > /etc/apt/apt.conf 
 
+The file /etc/apt/sources.list should contain all Raspbian repositories, including non-free (for the wireless firmware). Make sure the file contains these lines (not only with the 'main', but also 'contrib', etc):
+	deb http://mirrordirector.raspbian.org/raspbian/ wheezy main contrib non-free rpi
+	deb-src http://mirrordirector.raspbian.org/raspbian/ wheezy main contrib non-free rpi
+
 Install the packages you need to continue:
 
 	apt-get update && apt-get install sudo wget unzip mc
 
 The last part of this command ‘mc’, will install midnight commander, an easy to use command line file manager for Linux. You don’t have to do that, but I like it.
+
+
 
 **Update**
 
@@ -35,9 +41,13 @@ Next, configure the installation of Mopidy, the music server that is the heart o
 
 	sudo wget -q -O /etc/apt/sources.list.d/mopidy.list http://apt.mopidy.com/mopidy.list
 
+
+
 Then install all packages we need with this command:
 
-	sudo apt-get update && sudo apt-get --yes --no-install-suggests --no-install-recommends install logrotate mopidy alsa-utils python-cherrypy3 python-ws4py wpasupplicant python-spotify gstreamer0.10-alsa ifplugd gstreamer0.10-fluendo-mp3 gstreamer0.10-tools samba dos2unix avahi-utils alsa-base python-pylast cifs-utils avahi-autoipd libnss-mdns ntpdate ca-certificates ncmpcpp
+	sudo apt-get update && sudo apt-get --yes --no-install-suggests --no-install-recommends install logrotate mopidy alsa-utils python-cherrypy3 python-ws4py wpasupplicant python-spotify gstreamer0.10-alsa ifplugd gstreamer0.10-fluendo-mp3 gstreamer0.10-tools samba dos2unix avahi-utils alsa-base python-pylast cifs-utils avahi-autoipd libnss-mdns ntpdate ca-certificates ncmpcpp rpi-update linux-wlan-ng alsa-firmware-loaders iw atmel-firmware firmware-atheros firmware-brcm80211 firmware-ipw2x00 firmware-iwlwifi firmware-libertas firmware-linux firmware-linux-nonfree firmware-ralink firmware-realtek zd1211-firmware linux-wlan-ng-firmware alsa-firmware-loaders
+
+Depending on your configuration, you could leave out certain packages, e.g. the firmware files if you don't use a wireless dongle. 
 
 **Configuration and Files**
 
@@ -119,7 +129,7 @@ Mopidy runs under the user musicbox. Add it.
 
 	passwd musicbox
 
-Add the user to the group audio
+Add the user to the group audio:
 
 	usermod -a -G audio musicbox
 
@@ -133,9 +143,9 @@ Create a couple of directories inside the user dir:
 
 	chown -R musicbox:musicbox /home/musicbox
 
-**One last thing**
+**Create Music directory for MP3/OGG/FLAC **
 
-And create the directory containing the music
+Create the directory containing the music and the one where the network share is mounted:
 
 	mkdir -p /music/local
 
@@ -145,25 +155,66 @@ And create the directory containing the music
 
 	chown -R musicbox:musicbox /music
 
+Disable the SSH service for more security if you want (it can be started with an option in the configuration-file):
+
+	update-rc.d ssh disable
+
 That’s it. MusicBox should now start when you reboot!
+
+**AirTunes**
+------------
+
+For AirPlay/AirTunes audio streaming, you have to compile and install Shairport. First issue this command to install the libraries needed to build it:
+
+	sudo apt-get update && sudo apt-get --yes --no-install-suggests --no-install-recommends install libcrypt-openssl-rsa-perl libio-socket-inet6-perl libwww-perl
+
+Then, issue these commands to build everything:
+
+	cd ~
+
+Build an updated version of Perl-Net
+
+	git clone https://github.com/njh/perl-net-sdp.git perl-net-sdp 
+
+	cd perl-net-sdp 
+
+	perl Build.PL 
+
+	sudo ./Build 
+
+	sudo ./Build test 
+
+	sudo ./Build install 
+
+Build Shairport:
+
+	cd .. 
+
+	git clone https://github.com/hendrikw82/shairport.git 
+
+	cd shairport 
+
+	make
+
+Next, move the new shairport directory to /opt
+
+	mv shairport /opt
+ 
+Finally, copy libao.conf from the Pi MusicBox files to /etc :
+
+	cp /opt/Pi-MusicBox-master/filechanges/etc/libao.conf /etc
+
+That's it!
 
 **Optimizations**
 -----------------
 
 For the music to play without cracks, you have to optimize your system a bit. For MusicBox, these are the optimizations:
 
-**Fstab**
+**Updated kernel**
 
-Make sure that root is mounted with the flag noatime. Normally this would be configured that way already.
-You can also add these options, to put the most used directories in RAM, instead of using the SD-Card:
-
-	tmpfs      	/tmp       	tmpfs  	defaults,noatime        	0 	0
-	
-	tmpfs      	/var/tmp   	tmpfs  	defaults,noatime        	0 	0
-	
-	tmpfs      	/var/log   	tmpfs  	defaults,noatime        	0 	0
-	
-	tmpfs      	/var/mail  	tmpfs  	defaults,noatime        	0 	0
+Update the kernel to make sure all optimizations of newer core-software:
+	rpi-update
 
 **More fun with RAM**
 
@@ -181,7 +232,7 @@ Add the following option to /boot/cmdline.txt
 
 	smsc95xx.turbo_mode=N
 
-This will prevent the ethernet system from using burst to increase the network throughput. This can interfere with the music data sent over usb.
+This will prevent the ethernet system from using burst to increase the network throughput. This can interfere with the music data sent over usb. 
 
 **Services**
 
@@ -240,6 +291,30 @@ Or you can overclock it more, by adding these lines:
 	sdram_freq=450
 
 	over_voltage=2
+
+**Fstab**
+
+Make sure that root is mounted with the flag noatime. Normally this would be configured that way already.
+You can also add these options, to put the most used directories in RAM, instead of using the SD-Card:
+
+	tmpfs      	/tmp       	tmpfs  	defaults,noatime        	0 	0
+	
+	tmpfs      	/var/tmp   	tmpfs  	defaults,noatime        	0 	0
+	
+	tmpfs      	/var/log   	tmpfs  	defaults,noatime        	0 	0
+	
+	tmpfs      	/var/mail  	tmpfs  	defaults,noatime        	0 	0
+
+**Cleanup**
+
+If you upgraded the kernel, and the system works, you could remove: 
+/boot.bk
+/modules.bk
+
+Issue these commands to clean up packages:
+apt-get autoremove
+apt-get clean
+apt-get autoclean
 
 
 That’s it for now. Thanks!
