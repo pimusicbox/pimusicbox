@@ -39,7 +39,7 @@ sdtv_mode=2
 gpu_mem=16
 
 #you can overclock the arm a bit. 700 MHz is the default.
-#arm_freq=800
+arm_freq=800
 
 # for more options see http://elinux.org/RPi_config.txt
 # overclock more by uncommenting these lines (comment out the arm_freq=800 line above)

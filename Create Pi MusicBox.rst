@@ -11,6 +11,8 @@ Login as root. Or use
 
 to gain full rights.
 
+Make sure there is enough space on the SD Card. Use the command raspi-config to resize the filesystem when needed.
+
 Issue this command. This will prevent the system from installing unnecessary packages. This command takes care that the apt-system doesn’t fill up the SD Card with stuff you don’t need. If you don’t care about a bit of wasted space, or you use your system for other purposes, skip it.
 
 	echo -e 'APT::Install-Recommends "0";\nAPT::Install-Suggests "0";\n' > /etc/apt/apt.conf 
@@ -123,7 +125,7 @@ Next, create a symlink from the package to the /opt/defaultwebclient. This is do
 
 **Add the MusicBox user**
 
-Mopidy runs under the user musicbox. Add it.
+Mopidy can run under the user musicbox. Add it.
 
 	useradd -m musicbox
 
@@ -142,6 +144,8 @@ Create a couple of directories inside the user dir:
 	mkdir -p /home/musicbox/.local/share/mopidy
 
 	chown -R musicbox:musicbox /home/musicbox
+
+In the latest MusicBox release, Mopidy still runs as root, because, when running it as another user, some glitches in the sound can be heard.
 
 **Create Music directory for MP3/OGG/FLAC **
 
@@ -216,6 +220,28 @@ For the music to play without cracks, you have to optimize your system a bit. Fo
 Update the kernel to make sure all optimizations of newer core-software:
 	rpi-update
 
+**USB Fix**
+
+It's tricky to get good sound out of the Pi. For USB Audio (sound cards, etc), it is essential to disable the so called FIQ_SPLIT. Why? It seems that audio at high nitrates interferes with the ethernet activity, which also runs over USB. Add these options to the cmdline.txt file on your SD Card.
+ 
+	dwc_otg.fiq_fix_enable=1 dwc_otg.fiq_split_enable=0 
+
+While you're at it, also add or edit the elevator option to 
+
+	elevator=deadline
+
+It will probably look something like this after that: 
+
+	dwc_otg.fiq_fix_enable=1 dwc_otg.fiq_split_enable=0 dwc_otg.lpm_enable=0 console=ttyAMA0,115200 kgdboc=ttyAMA0,115200 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline rootwait
+
+Don't just copy this, because your root could be different.
+
+You can also add this, if you still have problems with ethernet in connection to USB audio:
+
+	smsc95xx.turbo_mode=N 
+
+This will prevent the ethernet system from using burst to increase the network throughput. This can interfere with the music data sent over usb. 
+
 **More fun with RAM**
 
 Add the next lines to the file /etc/default/rcS 
@@ -225,20 +251,6 @@ Add the next lines to the file /etc/default/rcS
 	RAMLOCK=yes
 
 This will run more stuff in RAM, instead of the SD-Card.
-
-**Less Turbo**
-
-Add the following option to /boot/cmdline.txt 
-
-	smsc95xx.turbo_mode=N
-
-This will prevent the ethernet system from using burst to increase the network throughput. This can interfere with the music data sent over usb. 
-
-**Services**
-
-Disable services that are not needed. NTP is disabled because the time is updated at boot.
-
-	update-rc.d ntp disable
 
 **USB Sound**
 
@@ -251,6 +263,12 @@ Find the line
 and add this:
 
 	options snd-usb-audio index=-2 nrpacks=1
+
+**Services**
+
+Disable services that are not needed. NTP is disabled because the time is updated at boot.
+
+	update-rc.d ntp disable
 
 **Log Less**
 

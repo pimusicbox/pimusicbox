@@ -11,8 +11,8 @@
 #
 
 #set user var
-MB_USER=musicbox
-MB_HOME=/home/musicbox
+MB_USER=root
+MB_HOME=/root
 
 #import ini parser
 . /opt/read_ini.sh
@@ -37,14 +37,15 @@ fi
 # do the change password stuff
 if [ "$INI__MusicBox__MUSICBOX_PASSWORD" != "" ]
 then
-    #remove password
-    sed -i 's/MUSICBOX_PASSWORD = .*$/#MUSICBOX_PASSWORD = /ig' /boot/config/settings.ini
     echo "musicbox:$INI__MusicBox__MUSICBOX_PASSWORD" | chpasswd    
     echo "root:$INI__MusicBox__ROOT_PASSWORD" | chpasswd    
+    #remove password
+    sed -i 's/MUSICBOX_PASSWORD = .*$/#MUSICBOX_PASSWORD = /ig' /boot/config/settings.ini
 fi
 
 if [ "$INI__MusicBox__ROOT_PASSWORD" != "" ]
 then
+    echo "root:$INI__MusicBox__ROOT_PASSWORD" | chpasswd    
     #remove password
     #sed -i 's/ROOT_PASSWORD = .*$/#ROOT_PASSWORD = /ig' /boot/config/settings.bk
     sed -i 's/ROOT_PASSWORD = .*$/#ROOT_PASSWORD = /ig' /boot/config/settings.ini
@@ -64,6 +65,8 @@ fi
 
 if [ "$CLEAN_NAME" != "" -a "$CLEAN_NAME" != "$HOSTNM" -a "$INI__MusicBox__NAME" == "$CLEAN_NAME" ]
 then
+    # comment out the name
+    sed -i 's/MUSICBOX_NAME/#MUSICBOX_NAME/ig' /boot/config/settings.ini
     #if devicename is not the same as ini, change and reboot<-->
     echo "$CLEAN_NAME" > /etc/hostname
     echo "127.0.0.1       localhost $CLEAN_NAME" > /etc/hosts
@@ -227,11 +230,11 @@ for CTL in \
 	Front \
 	Center
 do
-        amixer set "$CTL" 80% unmute > /dev/null 2>&1 || true
+        amixer set "$CTL" 85% unmute > /dev/null 2>&1 || true 
 done
 
 #set PCM of Pi higher, because it's really quit otherwise (hardware thing)
-amixer -c 0 -- sset PCM playback 90% > /dev/null 2>&1 || true
+amixer -c 0 -- sset PCM playback 90% > /dev/null 2>&1 || true &
 
 #check networking, sleep for a while
 MYIP=$(hostname -I)
@@ -244,12 +247,12 @@ do
 done
 
 # set date/time
-ntpdate ntp.ubuntu.com
+ntpdate ntp.ubuntu.com > /dev/null 2>&1 || true
 
 # start SSH if enabled
 if [ "$INI__MusicBox__ENABLE_SSH" == "true" ]
 then
-    /etc/init.d/ssh start
+    /etc/init.d/ssh start > /dev/null 2>&1 || true
 fi
 
 #start shairport in the background

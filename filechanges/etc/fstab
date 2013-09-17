@@ -1,10 +1,16 @@
-proc            /proc           proc    defaults          0       0
-/dev/mmcblk0p1  /boot           vfat    defaults          0       0
-/dev/mmcblk0p2  /               ext4    defaults,noatime,data=writeback  0       0
-#/dev/mmcblk0p3  none            swap    sw                0       0
+# /etc/fstab: static file system information.
+#
+# Use 'blkid' to print the universally unique identifier for a
+# device; this may be used with UUID= as a more robust way to name devices
+# that works even if disks are added and removed. See fstab(5).
+#
+# <file system> <mount point>   <type>  <options>       <dump>  <pass>
+# / was on /dev/mmcblk0p2 during installation
+UUID=a4fa30bf-a8b5-4011-aea7-09439332c176 /               ext4    rw,noatime,errors=remount-ro 0       1
+# /boot was on /dev/mmcblk0p1 during installation
+UUID=84DE-173D  /boot        vfat    utf8            0       0
 
-#set most used dirs to ram
-tmpfs          /tmp           tmpfs      defaults,noatime            0     0
-tmpfs          /var/tmp       tmpfs      defaults,noatime            0     0
-tmpfs          /var/log       tmpfs      defaults,noatime            0     0
-tmpfs          /var/mail      tmpfs      defaults,noatime            0     0
+tmpfs      	/tmp       	tmpfs  	defaults,noatime        	0 	0
+tmpfs      	/var/tmp   	tmpfs  	defaults,noatime        	0 	0
+tmpfs      	/var/log   	tmpfs  	defaults,noatime        	0 	0
+tmpfs      	/var/mail  	tmpfs  	defaults,noatime        	0 	0
