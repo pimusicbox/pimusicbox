@@ -47,7 +47,7 @@ Next, configure the installation of Mopidy, the music server that is the heart o
 
 Then install all packages we need with this command:
 
-	sudo apt-get update && sudo apt-get --yes --no-install-suggests --no-install-recommends install logrotate mopidy alsa-utils python-cherrypy3 python-ws4py wpasupplicant python-spotify gstreamer0.10-alsa ifplugd gstreamer0.10-fluendo-mp3 gstreamer0.10-tools samba dos2unix avahi-utils alsa-base python-pylast cifs-utils avahi-autoipd libnss-mdns ntpdate ca-certificates ncmpcpp rpi-update linux-wlan-ng alsa-firmware-loaders iw atmel-firmware firmware-atheros firmware-brcm80211 firmware-ipw2x00 firmware-iwlwifi firmware-libertas firmware-linux firmware-linux-nonfree firmware-ralink firmware-realtek zd1211-firmware linux-wlan-ng-firmware alsa-firmware-loaders
+	sudo apt-get update && sudo apt-get --yes --no-install-suggests --no-install-recommends install logrotate mopidy alsa-utils python-cherrypy3 python-ws4py wpasupplicant python-spotify gstreamer0.10-alsa ifplugd gstreamer0.10-fluendo-mp3 gstreamer0.10-tools samba dos2unix avahi-utils alsa-base python-pylast cifs-utils avahi-autoipd libnss-mdns ntpdate ca-certificates ncmpcpp rpi-update linux-wlan-ng alsa-firmware-loaders iw atmel-firmware firmware-atheros firmware-brcm80211 firmware-ipw2x00 firmware-iwlwifi firmware-libertas firmware-linux firmware-linux-nonfree firmware-ralink firmware-realtek zd1211-firmware linux-wlan-ng-firmware alsa-firmware-loaders iptables
 
 Depending on your configuration, you could leave out certain packages, e.g. the firmware files if you don't use a wireless dongle. 
 
@@ -89,17 +89,27 @@ Make the system work:
 
 	cp etc/rc.local /etc
 
+	cp etc/modules /etc
+
+Network configuration:
+
 	cp etc/avahi/services/* /etc/avahi/services/
 
 	cp etc/samba/smb.conf /etc/samba
 
-	cp etc/modules /etc
-
 	cp etc/network/interfaces /etc/network
 
-	mkdir /etc/firewall
+ 	mkdir /etc/firewall
 
-	cp etc/firewall/* /etc/firewall
+ 	cp etc/firewall/* /etc/firewall
+
+        cp etc/network/if-up.d/* /etc/network/if-up.d/
+
+	chmod +x /etc/netwok/if-up.d/iptables
+
+	chown root:root /etc/firewall/musicbox_iptables.sh	
+
+	chmod 600 /etc/firewall/musicbox_iptables.sh
 
 **Install webclient**
 
@@ -170,7 +180,8 @@ That’s it. MusicBox should now start when you reboot!
 
 For AirPlay/AirTunes audio streaming, you have to compile and install Shairport. First issue this command to install the libraries needed to build it:
 
-	sudo apt-get update && sudo apt-get --yes --no-install-suggests --no-install-recommends install libcrypt-openssl-rsa-perl libio-socket-inet6-perl libwww-perl
+	apt-get update && apt-get --yes --no-install-suggests --no-install-recommends install build-essential libssl-dev libcrypt-openssl-rsa-perl libao-dev libio-socket-inet6-perl libwww-perl avahi-utils pkg-config git chkconfig libssl-dev libavahi-client-dev libasound2-dev pcregrep
+
 
 Then, issue these commands to build everything:
 
@@ -209,6 +220,23 @@ Finally, copy libao.conf from the Pi MusicBox files to /etc :
 	cp /opt/Pi-MusicBox-master/filechanges/etc/libao.conf /etc
 
 That's it!
+
+**Extensions**
+--------------
+
+You can install SoundCloud or Google Music support via extensions of Mopidy. Use this command to first install Pip, the python package manager:
+
+	easy_install pip
+
+Then, use pip to install the extensions:
+
+	pip install mopidy-soundcloud
+
+and/or
+
+	pip install gmusicapi
+
+	pip install mopidy-gmusic
 
 **Optimizations**
 -----------------
