@@ -1,0 +1,3 @@
+# Needed to register vender and model id with r8712u driver
+
+ACTION=="add", SUBSYSTEM=="usb", ATTR{product}=="RTL8191S WLAN Adapter ", RUN+="/usr/local/bin/add_RTL8191S"
