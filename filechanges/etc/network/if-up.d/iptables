@@ -1,0 +1,2 @@
+#!/bin/sh
+iptables-restore < /etc/firewall/musicbox_iptables

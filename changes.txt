@@ -1,0 +1,44 @@
+0.4(beta)
+Multiroom Audio by renaming the device via the ini file
+Webradio streams supported
+Faster, cleaner web interface
+Big updates to Mopidy music server
+Mounting windows file share
+Completely clean system
+Better security trough a simple firewall
+Mopidy runs as a normal user now
+Automatic resizing of the SD-Card filesystem
+Optimizations to have less services running, less logging, less writes to SD-Card, no unwanted noises
+Ini-file can be edited by Windows Notepad
+
+0.3
+All configuration is done in one ini-file
+HDMI output supported
+Autodetection of HDMI at start (next to autodetection of USB)
+Override output setting in ini-file
+LastFM scrobbling enabled
+Webinterface updated (speedier)
+Local music files supported, accessible via windows network (but not yet in webinterface)
+
+0.2.2
+Windows finds the musicbox.local address by itself now (samba).
+
+0.2.1
+Removed ugly sounds on analog port when changing tracks (pulseaudio). An USB-soundcard is still recommended.
+
+0.2
+Based on Raspbian for better performance
+Nicer Webinterface
+Turbo
+
+0.01.4
+Enabled Medium Turbo mode to speedup everything, usb sound works automagically, bugs fixed. Login screen isn't cleared anymore. Set sound volume on boot. Reset network config, clear logs, etc. Script to create image. 
+
+0.01.3
+New kernel, added raspberry packages.
+
+0.01.1
+Updates, fixed some small bugs, updated webclient
+
+0.01
+Initial release

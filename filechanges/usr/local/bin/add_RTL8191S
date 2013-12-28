@@ -1,0 +1,27 @@
+#!/bin/bash
+
+ID_INTERFACE_FILE=/sys/bus/usb/drivers/r8712u/new_id
+
+if [[ -z $ID_VENDOR_ID || -z $ID_MODEL_ID ]]
+then
+	echo "No vendor or model to register"
+	exit 1
+fi 
+
+if ! lsmod | grep -q r8712u
+then
+	echo "Loading r8712u driver"
+	modprobe r8712u
+fi
+
+# wait for driver to settle
+sleep 5
+
+until [[ -f $ID_INTERFACE_FILE ]]
+do
+	echo "Waiting for r8712u to come up"
+	sleep 1
+done
+
+echo "Registering $ID_VENDOR_ID:$ID_MODEL_ID with r8712u driver"
+echo $ID_VENDOR_ID $ID_MODEL_ID > $ID_INTERFACE_FILE

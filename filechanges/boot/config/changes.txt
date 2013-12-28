@@ -1,0 +1,77 @@
+Pi MusicBox Changelog
+
+0.4.2
+§small sound hiccups fixed 
+Shutdown/Reboot from interface
+Newer Kernel: 3.10.24+ (i2s included)
+Split startup script into multiple files for better management
+Initial work to support a settings page in html
+Initial i2s support by Simon de Bakker/HifiBerry
+
+0.4.1 (21 december 2013)
+Bugfix for SoundCloud in webinterface
+Bugfix for distorted sound on some webradiostations
+
+0.4 (15 december 2013)
+Bugfixes: setting passwords, webclient inputfields in Safari
+Info:
+Uses Mopidy 0.15, Linux 3.6.11+ (updated Moebius Linux), 
+Shairport 0.05, Mopidy Webclient 0.15 (JQuery Mobile 1.3 + flat client)
+
+0.4-beta
+Much nicer interface, thanks to Ulrich Lichtenegger
+Small bugfixes
+
+0.4-alpha2
+A lot of smaller and bigger bugfixes
+Support for Google Music All Access
+
+0.4-alpha
+Use multiple Pi's on the same network (Multiroom Audio)
+Webradio support
+SoundCloud support (beta!)
+Google Music support (alpha!)
+Windows workgroup name configuration
+
+Completely refreshed system
+Big updates to web interface (faster, cleaner, more stable, more options)
+Big updates to Mopidy music server
+Optimizations to have less services running, less logging, less writes to SD-Card, no unwanted noises
+
+Security
+Better security trough a simple firewall
+Mopidy runs as a normal user now
+SSH service disabled by default
+Automatically change passwords of musicbox and root users
+
+0.3
+All configuration is done in one ini-file
+HDMI output supported
+Autodetection of HDMI at start (next to autodetection of USB)
+Override output setting in ini-file
+LastFM scrobbling enabled
+Webinterface updated (speedier)
+Local music files supported, accessible via windows network (but not yet in webinterface)
+
+0.2.2
+Windows finds the musicbox.local address by itself now (samba).
+
+0.2.1
+Removed ugly sounds on analog port when changing tracks (pulseaudio). An USB-soundcard is still recommended.
+
+0.2
+Based on Raspbian for better performance
+Nicer Webinterface
+Turbo
+
+0.01.4
+Enabled Medium Turbo mode to speedup everything, usb sound works automagically, bugs fixed. Login screen isn't cleared anymore. Set sound volume on boot. Reset network config, clear logs, etc. Script to create image. 
+
+0.01.3
+New kernel, added raspberry packages.
+
+0.01.1
+Updates, fixed some small bugs, updated webclient
+
+0.01
+Initial release
