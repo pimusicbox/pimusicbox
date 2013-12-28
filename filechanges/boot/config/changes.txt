@@ -1,12 +1,14 @@
 Pi MusicBox Changelog
 
 0.4.2
-§small sound hiccups fixed 
+Best sounding Pi MusicBox ever! No hiccups, no unwanted noises, just music!
 Shutdown/Reboot from interface
 Newer Kernel: 3.10.24+ (i2s included)
 Split startup script into multiple files for better management
-Initial work to support a settings page in html
 Initial i2s support by Simon de Bakker/HifiBerry
+Set default volume in config file (Simon again)
+Log file viewable via webinterface ( http://musicbox.local/log ) 
+Initial work to support a settings page in the webinterface (not working yet)
 
 0.4.1 (21 december 2013)
 Bugfix for SoundCloud in webinterface
