@@ -1,6 +1,37 @@
 <advancedsettings>
- <gui>
-   <algorithmdirtyregions>3</algorithmdirtyregions>
-<!--   <nofliptimeout>1000</nofliptimeout> -->
- </gui>
+   <fanartheight>560</fanartheight>
+   <thumbsize>256</thumbsize>
+   <gui>
+       <algorithmdirtyregions>3</algorithmdirtyregions>
+       <nofliptimeout>0</nofliptimeout>
+   </gui>
+   <lookandfeel>
+       <enablerssfeeds>false</enablerssfeeds>
+	<guires>720</guires>
+   </lookandfeel>
+<samba>
+<clienttimeout>30</clienttimeout>
+</samba>
+   <bginfoloadermaxthreads>2</bginfoloadermaxthreads>
+<showexitbutton>false</showexitbutton>
+<destroywindowcontrols>false</destroywindowcontrols>
+<fanartres>540</fanartres>
+<imageres>256</imageres>
+<useddsfanart>false</useddsfanart>
+<video>
+<defaultplayer>omxplayer</defaultplayer>
+<defaultdvdplayer>omxplayer</defaultdvdplayer>
+<busydialogdelayms>750</busydialogdelayms>
+</video>
+<audio>
+<defaultplayer>omxplayer</defaultplayer>
+<streamsilence>false</streamsilence>
+</audio>
+<network>
+<cachemembuffersize>2621440</cachemembuffersize>
+<alwaysforcebuffer>0</alwaysforcebuffer>
+<limitcacherate>false</limitcacherate>
+<curlclienttimeout>30</curlclienttimeout>
+</network>
+
 </advancedsettings>

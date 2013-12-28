@@ -1,0 +1,55 @@
+# XBMC Media Center language file
+# Addon Name: XBMC Callbacks
+# Addon id: service.xbmc.callbacks
+# Addon version: 0.1
+# Addon Provider: pilluli
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: English (http://www.transifex.com/projects/p/xbmc-addons/language/en/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#32000"
+msgid "Scripts to execute when:"
+msgstr ""
+
+msgctxt "#32010"
+msgid "XBMC starts"
+msgstr ""
+
+msgctxt "#32011"
+msgid "XBMC quits"
+msgstr ""
+
+msgctxt "#32012"
+msgid "Player starts"
+msgstr ""
+
+msgctxt "#32013"
+msgid "Player stops"
+msgstr ""
+
+msgctxt "#32014"
+msgid "Player pauses"
+msgstr ""
+
+msgctxt "#32015"
+msgid "Player resumes"
+msgstr ""
+
+msgctxt "#32016"
+msgid "Screensaver starts"
+msgstr ""
+
+msgctxt "#32017"
+msgid "Screensaver stops"
+msgstr ""
+

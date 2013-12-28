@@ -1,0 +1,9 @@
+<settings>
+    <setting id="player_pauses" value="" />
+    <setting id="player_resumes" value="/opt/pausemopidy.sh" />
+    <setting id="player_starts" value="/opt/pausemopidy.sh" />
+    <setting id="player_stops" value="" />
+    <setting id="screensaver_starts" value="" />
+    <setting id="screensaver_stops" value="" />
+    <setting id="xbmc_starts" value="" />
+</settings>
