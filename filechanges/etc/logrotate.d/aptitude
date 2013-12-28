@@ -1,7 +1,0 @@
-/var/log/aptitude {
-  rotate 2
-  monthly
-  compress
-  missingok
-  notifempty
-}

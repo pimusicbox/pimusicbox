@@ -1,9 +1,0 @@
-<?xml version="1.0" standalone='no'?>
-<!DOCTYPE service-group SYSTEM "avahi-service.dtd">
-<service-group>
- <name replace-wildcards="yes">MusicBox on %h.local</name>
-  <service>
-   <type>_http._tcp</type>
-   <port>80</port>
-  </service>
-</service-group>
