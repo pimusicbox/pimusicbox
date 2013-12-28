@@ -53,10 +53,10 @@ po::powerokwait:/etc/init.d/powerfail stop
 #
 1:2345:respawn:/sbin/getty --noclear 38400 tty1
 2:23:respawn:/sbin/getty 38400 tty2
-3:23:respawn:/sbin/getty 38400 tty3
-4:23:respawn:/sbin/getty 38400 tty4
-5:23:respawn:/sbin/getty 38400 tty5
-6:23:respawn:/sbin/getty 38400 tty6
+#3:23:respawn:/sbin/getty 38400 tty3
+#4:23:respawn:/sbin/getty 38400 tty4
+#5:23:respawn:/sbin/getty 38400 tty5
+#6:23:respawn:/sbin/getty 38400 tty6
 
 # Example how to put a getty on a serial line (for a terminal)
 #
@@ -66,4 +66,3 @@ po::powerokwait:/etc/init.d/powerfail stop
 # Example how to put a getty on a modem line.
 #
 #T3:23:respawn:/sbin/mgetty -x0 -s 57600 ttyS3
-

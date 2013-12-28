@@ -10,6 +10,20 @@
 #
 #
 
+
+#function read_config_file()
+#{
+
+##convert windows ini to unix
+#dos2unix -n $1 /tmp/settings.ini > /dev/null 2>&1 || true
+
+## ini vars to mopidy settings
+#read_ini /tmp/settings.ini MusicBox
+
+#rm /tmp/settings.ini > /dev/null 2>&1 || true
+
+#}
+
 function read_ini()
 {
     # Be strict with the prefix, since it's going to be run through eval

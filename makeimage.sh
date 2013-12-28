@@ -4,28 +4,37 @@ if [ $(id -u) != "0" ]; then
     exit 1
 fi
 
-DRIVE='/dev/sdc'
+MB_DIRECTORY='/home/wouter/mb_data'
+DRIVE='/dev/sdb'
 PART1=$DRIVE'1'
 PART2=$DRIVE'2'
+
+umount $PART1
+umount $PART2
 
 echo "Version:"
 read IMGVERSION
 
+ZIPNAME='musicbox'$IMGVERSION'.zip'
+IMGNAME='musicbox'$IMGVERSION'.img'
+
+rm $MB_DIRECTORY'/'$ZIPNAME
+rm $MB_DIRECTORY'/'$IMGNAME
+rm /media/sf_Downloads/$ZIPNAME
+rm /media/sf_Downloads/$IMGNAME
+
 echo "Zero root (y/N)?"
 read ZEROROOT
 
-echo "Resize size(MB or no)?"
+echo "Resize size to 912 MB(y/N)?"
 read RESIZEFS
 
-if [ "$RESIZEFS" != "" ]
+if [ "$RESIZEFS" == "y" ]
 then
-    umount $PART1
-    umount $PART2
     echo "Check..."
     e2fsck -fy $PART2
-    echo "Resize to $RESIZEFS..."
-    TMP = "M"
-    resize2fs $PART2 $RESIZEFS$TMP
+    echo "Resize to 912MB..."
+    resize2fs $PART2 912M
     echo "Ready"
 
   # Get the starting offset of the root partition
@@ -41,7 +50,7 @@ n
 p
 2
 $PART_START
-+910M
++915M
 p
 w
 EOF
@@ -54,42 +63,41 @@ fi
 MNT='/mnt/tmp'$IMGVERSION
 MNT2='/mnt/tmp'$IMGVERSION'2'
 
-cd /data/pi
+cd $MB_DIRECTORY
 
 mkdir $MNT
 mkdir $MNT2
 mount $PART1 $MNT
 cp -r $MNT/config /tmp
 rm -r $MNT/config
-cp -r /data/pi/config $MNT
+cp -r config $MNT
 rm -r $MNT/config/.*
 
-#apple
-rm -r $MNT/.Trashes
-rm -r $MNT/.fseventsd
-rm -r $MNT/.Spotlight-V100
-rm -r $MNT/._.Trashes
-rm -r $MNT/*.DS_Store
-rm -r $MNT/config/.Trashes
-rm -r $MNT/config/.fseventsd
-rm -r $MNT/config/.Spotlight-V100
-rm -r $MNT/config/._.Trashes
-rm -r $MNT/config/*.DS_Store
+#(apple) hidden stuff
+rm -r $MNT/.*
+rm -r $MNT/config/.*
 
 echo "Zero FAT"
 dd if=/dev/zero of=$MNT/zero bs=1M
 rm $MNT/zero
 
 mount $PART2 $MNT2
-#remove network settings
+
+#remove network settings, etc
 rm $MNT2/var/lib/dhcp/*.leases
+touch $MNT2/var/lib/dhcp/dhcpd.leases
+rm $MNT2/var/lib/alsa/*
+rm $MNT2/var/lib/dbus/*
+rm $MNT2/var/lib/avahi-autoipd/*
 rm $MNT2/etc/udev/rules.d/*.rules
 #logs
 rm -r $MNT2/var/log/*
 rm -r $MNT2/var/log/apt/*
+
 #remove spotify/audio settings
-rm -r $MNT2/root/.cache/mopidy/*
-rm -r $MNT2/root/.gstreamer-0.10
+rm -r $MNT2/home/musicbox/.cache/gmusicapi/*
+rm -r $MNT2/home/musicbox/.cache/mopidy/*
+rm -r $MNT2/home/musicbox/.gstreamer-0.10/*
 rm -r $MNT2/tmp/*
 
 #put version in login prompt
@@ -98,9 +106,15 @@ echo -e 'MusicBox '$IMGVERSION"\n" > $MNT2/etc/issue
 #music
 rm -r $MNT2/music/local/*
 
-#security
-rm $MNT2/root/.bash_history
-#rm -r $MNT2/root/.ssh
+#bash history
+rm $MNT2/home/musicbox/.bash_history
+
+#config
+rm $MNT2/home/musicbox/.config/mopidy/*
+rm $MNT2/home/musicbox/.config/mc
+
+#root
+rm $MNT2/root/*
 
 #old stuff
 rm -r $MNT2/boot.bk
@@ -112,49 +126,41 @@ if [ "$ZEROROOT" = "Y" -o "$ZEROROOT" = "y" ]; then
     rm $MNT2/zero
 fi
 
-echo "wait 10 sec for mount"
-sleep 10
+echo "wait 30 sec for mount"
+sleep 30
+
+umount $MNT
+umount $MNT2
+
+echo "Ok?"
+read TST
 
 umount $MNT
 umount $MNT2
 rmdir $MNT2
 
-if [ "$RESIZEFS" == "" ]
-then
-#if [ "$RESIZEFS" != "Y" -a "$RESIZEFS" != "y" ]; then
-    echo "DD 950 * 1M"
-    dd bs=1M if=$DRIVE of=musicbox$IMGVERSION.img count=950
-else
-    echo "DD $RESIZEFS * 1M"
-    dd bs=1M if=$DRIVE of=musicbox$IMGVERSION.img count=$RESIZEFS
-fi
+echo "DD 980 * 1M"
+# dd if=/dev/zero bs=1M count=980 | pv -s 1G | dd of=/tmp/1G
+dd bs=1M if=$DRIVE count=980 | pv -s 980m | dd of=musicbox$IMGVERSION.img
 
 echo "Copy Config back"
 mount $PART1 $MNT
 cp -r /tmp/config $MNT
 rm -r /tmp/config
 
-echo "wait 10 sec for umount"
-sleep 10
+echo "wait 30 sec for umount"
+sleep 30
 umount $MNT
 rmdir $MNT
 
-#echo "cut image"
-#dd if=/dev/zero of=musicbox$IMGVERSION.img bs=1 count=0 seek=2G
-
 echo "zip image"
-zip -9 musicbox$IMGVERSION.zip musicbox$IMGVERSION.img
+zip -9 $ZIPNAME $IMGNAME MusicBox_Manual.pdf
 
 echo "copy zip"
-cp musicbox$IMGVERSION.zip /www/wouter/pimusicbox
+cp $ZIPNAME /media/sf_Downloads
+cp $IMGNAME /media/sf_Downloads
 
-#echo "Enter your Spotify Premium username: "
-#read spotify_username
-#echo "Enter your Spotify Premium password: "
-#stty -echo
-#read spotify_password ; echo
-#stty echo
-
-#sudo echo "SPOTIFY_USERNAME = '$spotify_username'" >> /root/.config/mopidy/settings.py
-#sudo echo "SPOTIFY_PASSWORD = '$spotify_password'" >> /root/.config/mopidy/settings.py
-
+umount $MNT
+umount $MNT2
+rmdir $MNT2
+rmdir $MNT

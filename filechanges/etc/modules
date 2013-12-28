@@ -4,4 +4,8 @@
 # at boot time, one per line. Lines beginning with "#" are ignored.
 # Parameters can be specified after the module name.
 snd_bcm2835
+snd_soc_bcm2708_i2s
+bcm2708_dmaengine
+snd_soc_pcm5102a
+snd_soc_hifiberry_dac
 ipv6
