@@ -1,8 +1,0 @@
-# Set this to 1 to enable startup
-ENABLED=1
-
-# The user to run XBMC as
-USER=root
-
-# Adjust niceness of XBMC (decrease for higher priority)
-NICE=5

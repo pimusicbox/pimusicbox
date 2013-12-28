@@ -1,9 +1,0 @@
-/var/log/ConsoleKit/history {
-       monthly
-       rotate 2
-       size 100k
-       delaycompress
-       compress
-       notifempty
-       missingok
-}
