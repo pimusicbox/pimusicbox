@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <style>
+            img {
+                border: 1px solid black;
+                margin: 4px;
+                float: right;
+                clear: both;
+            }
+            body {
+                font-family: Verdana, Geneva, sans-serif;
+                font-size: 14px;
+                background: #eef;
+                color: #448;
+            }
+
+        </style>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+        <title>Pi MusicBox</title>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-3143458-7']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+    </head>
+    <body>
+        <h2>Pi MusicBox Beta</h2>
+        <p>
+    	    MusicBox 0.3 contains the following improvements:
+    	    <ul>
+    	    <li>All configuration is done in one ini-file</li>
+    	    <li>Much smaller download</li>
+    	    <li>HDMI output enabled</li>
+    	    <li>Autodetection of HDMI at start (next to autodetection of USB)</li>
+    	    <li>Override output setting in ini-file</li>
+    	    <li>LastFM scrobbling enabled</li>
+    	    <li>Webinterface updated (speedier)</li>
+    	    <li>Initial support for playback of local mp3 files and putting them there via Windows networking (see instructions)</li>
+    	    <li>Initial support for playback of mp3 files on a Windows Network share (see instructions)</li>
+    	    <li>Settings editable with Windows Notepad</li>
+    	    <li>Works on 1GB SD-Card now</li>
+    	    </ul>
+        </p>
+
+        <h3> Instructions</h3>
+        <ul>
+            <li>
+                Download the Beta3 image. It's around 190MB in (compressed) size; 1GB uncompressed.
+                <ul  style="font-size: 120%">
+                    <li><a href="http://dl.mopidy.com/pimusicbox/musicbox0.3b3.zip">Fast mirror</a>
+                    <li><a href="musicbox0.3b3.zip">This site</a></li>
+                </ul>
+            </li>
+            <li>
+                Extract the zip-file. Put the resulting image on your SD Card by following <a href="http://elinux.org/RPi_Easy_SD_Card_Setup#Easy_way">these
+                instuctions</a>. The image is for a 1GB card, but you can put it on a
+                larger one. 
+            </li>
+<!--            <li>
+                If you're on Windows, download an editor which supports Unix editing (not the default Notepad!).
+                E.g. <a href="http://www.flos-freeware.ch/notepad2.html">Notepad2</a>
+                or <a href="http://notepad-plus-plus.org/">Notepad++</a>
+                . Users of OSX and Linux can edit the file directly.
+                <br />
+            </li>
+            -->
+            <li>
+                Open the contents of the 'config' folder of SD Card in your
+                Finder/Explorer.
+            </li>
+            <li>
+                Add your credentials of your Spotify Premium account, Last FM, Wifi, etc to the file
+                <code>
+                    settings.ini
+                </code>
+                .
+            </li>
+            <li>
+        	MusicBox will autodetect usb audiocards/speakers/boxes and hdmi. 
+        	It's possible to override this in the ini-file. For example if you want to use analog out while having hdmi connected.
+            <li>
+                There is also an option to let MusicBox scan the contents of music files you upload to the device.
+                This folder is accessible via Windows 
+                networking. If you put music files in there, and let MusicBox scan the files (only needed when the music files are updated!)
+                , Mopidy will find them. Scanning can take some time though!<br/>
+		One small problem: you have to resize the filesystem on the SD-Card to put more files there.
+                Login (ssh or local) and issue the command raspi-config. This program has an option to resize
+                it automatically. A future version of MusicBox will do this on first boot.
+                btw: the webclient doesn't support playing these files yet, but MPD-clients do. <br/>
+	    </li>
+	    <li>You can also mount a Windows Network Share. The files on this share will be scanned too.
+                The webclient doesn't support playing these files yet, but MPD-clients do. Scanning can take some time though!<br/>
+            </li>
+            <li>
+                Put the card in the Pi
+                <br />
+            </li>
+            <li>
+                Connect cables (You don't have to connect a monitor to the Pi if you
+                don't want to)
+                <br />
+            </li>
+            <li>
+                Turn on Pi
+            </li>
+            <li>
+                Wait for a while
+            </li>
+            <li>
+                Point your browser to the Pi. Depending on your network and computers,
+                it will be available at this address:
+                <code>
+                    <a href="http://musicbox.local/">http://musicbox.local/</a>
+                </code>
+            </li>
+            <li>
+                Most OS X/iOS and Windows devices probably will find it immediately. If it doesn't work, you could try to
+                install Apple Bonjour/iTunes in Windows to make it work. Linux should also work (if Avahi or Samba/Winbind is installed).
+            </li>
+            <li>
+                Using Android, you have to point your browser to the MusicBox using the IP-address of your Pi, e.g. <code>http://192.168.1.5/</code> .
+                 There is no way to change that for now, unless Android would support it,
+                The IP-address is printed on the screen when
+                MusicBox is started. Connect a monitor/tv to find out.
+            </li>
+            <li>
+                To use Wifi and USB-Audio you have to plugin the devices before you
+                start the Pi. Restart if you plug them in later.
+            </li>
+        </ul>
+        <span class='st_facebook_large' displayText='Facebook'></span>
+<span class='st_twitter_large' displayText='Tweet'></span>
+<span class='st_googleplus_large' displayText='Google +'></span>
+<span class='st_reddit_large' displayText='Reddit'></span>
+<span class='st_digg_large' displayText='Digg'></span>
+<span class='st_email_large' displayText='Email'></span>
+<span class='st_pinterest_large' displayText='Pinterest'></span>
+<span class='st_sharethis_large' displayText='ShareThis'></span>
+
+
+        <h3 style="color: red"> SECURITY WARNING</h3>
+        <p></p>
+        <p>
+            This is system not secure at all. Don't run it outside a firewall!! When I find the time, I will fix it.
+            <br />
+        </p>
+        <ul>
+            <li>
+                The Mopidy musicserver is not protected, and the Musicbox services are
+                run as root. Maybe this is better in the future, but not now. Sorry.
+                <br />
+            </li>
+            <li>
+                Also, the passwords of Spotify and wifi are stored in plain text on
+                the SD card. 
+            </li>
+            <li>
+                You can SSH to the server with the <strong>root</strong> login and
+                the password <strong>musicbox</strong>.
+            </li>
+        </ul>
+
+        <h3>Projects</h3>
+        <p>
+            Pi MusicBox is based on the following great projects:
+            <br />
+        </p>
+        <ul>
+            <li>
+                <a href="http://www.debian.org">Debian </a>
+                <br />
+            </li>
+            <li>
+                <a href="http://www.mopidy.com/">Mopidy</a> (+ my own <a href="https://github.com/woutervanwijk/Mopidy-Webclient">Mopidy
+                Webclient</a>)
+            </li>
+            <li>
+                <a href="https://github.com/albertz/shairport">Shairport</a>
+                <br />
+            </li>
+            <li>
+                All the projects that are used to create the these projects
+            </li>
+            <li>
+                All the projects that are used to create the projects that are used
+                to create these projects
+                <br />
+            </li>
+            <li>
+                All the projects that ... 
+            </li>
+            <li>
+                A lot of people giving solutions on forums...
+                <br />
+            </li>
+            <li>
+                And of course the work of the guys 'n girls who brought you the <a href="http://www.raspberrypi.org">Raspberry
+                Pi </a>
+                <br />
+            </li>
+        </ul>
+
+        <h3>Support
+        <br />
+        </h3>
+        <p>
+        <br/>
+<a 
+   target="_blank" 
+   href="https://twitter.com/#!/pimusicbox">
+Follow Pi MusicBox on Twitter!
+</a><br/>
+            You can discuss features and problems on the <a href="https://groups.google.com/forum/?fromgroups=#!forum/mopidy">Google Group of Mopidy</a>. Please report problems about MusicBox itself at <a href="https://github.com/woutervanwijk/Pi-MusicBox">my repo at Github</a>. You can also try the 
+            <code>
+                #mopidy
+            </code>
+            channel on <a href="http://webchat.freenode.net/">Freenode</a>,
+             or the <a href="http://www.raspberrypi.org/phpBB3/">Raspberry
+            Pi forums</a>.
+            <br />
+        </p>
+        <p>
+            Have fun!
+            <br/>
+            <br/>
+            -Wouter van Wijk (contact at woutervanwijk -@- g-mail -.- com, but remove all the -)
+            <br />
+        </p>
+        
+    </body>
+</html>

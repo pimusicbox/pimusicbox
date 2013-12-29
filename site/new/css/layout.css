@@ -1,0 +1,101 @@
+* {
+	padding:0;
+	margin:0;
+}
+a {
+	color:#1C1C1C;
+}
+body {
+	background-image:url(../images/bg.png);
+	font-family: 'Ubuntu', sans-serif;
+	color:#1C1C1C;
+	list-style-position:inside;
+}
+.wrapper {
+	width:800px;
+	padding:20px;
+	padding-top:50px;
+	border:2px solid #2C2C2C;
+	margin:auto;
+	background-color:rgba(255,255,255,0.3);
+}
+.footer {
+	width:800px;
+	padding:20px;
+	padding-top:10px;
+	padding-bottom:10px;
+	margin:auto;
+	margin-top:5px;
+	margin-bottom:45px;
+	border:2px solid #2C2C2C;
+	background-color:rgba(255,255,255,0.2);
+}
+img.logo {
+	display:block;
+	margin:auto;
+	margin-top:30px;
+	margin-bottom:-45px;
+}
+.social {
+	float:right;
+	width:128px;
+	height:128px;
+	margin-top:-65px;
+	margin-right:-50px;
+}
+.social img {
+	border:3px solid #1C1C1C;
+	-webkit-border-radius: 99px;
+	-moz-border-radius: 99px;
+	border-radius: 99px;
+	background-color:black;
+}
+ul {
+	width:100%;
+}
+.fadedline {
+	border: 0;
+    height: 1px;
+    background: #333;
+	margin:5px;
+	margin-top:20px;
+	margin-bottom:20px;
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,hsla(0,0%,0%,0)), color-stop(50%,hsla(0,0%,0%,.75)), color-stop(100%,hsla(0,0%,0%,0)));
+    background: -webkit-linear-gradient(left, hsla(0,0%,0%,0) 0%, hsla(0,0%,0%,.75) 50%, hsla(0,0%,0%,0) 100%);
+    background:    -moz-linear-gradient(left, hsla(0,0%,0%,0) 0%, hsla(0,0%,0%,.75) 50%, hsla(0,0%,0%,0) 100%);
+    background:     -ms-linear-gradient(left, hsla(0,0%,0%,0) 0%, hsla(0,0%,0%,.75) 50%, hsla(0,0%,0%,0) 100%);
+    background:      -o-linear-gradient(left, hsla(0,0%,0%,0) 0%, hsla(0,0%,0%,.75) 50%, hsla(0,0%,0%,0) 100%);
+    background:         linear-gradient(left, hsla(0,0%,0%,0) 0%, hsla(0,0%,0%,.75) 50%, hsla(0,0%,0%,0) 100%);
+}
+.gallery {
+	margin:auto;
+}
+.gallery img {
+	width:128px;
+	height:128px;
+	display:inline-block;
+	opacity:0.3;
+	filter:alpha(opacity=30); /* For IE8 and earlier */
+	border:1px solid #000;
+}
+.gallery img:hover {
+	opacity:1;
+	filter:alpha(opacity=100); /* For IE8 and earlier */
+}
+ol li {
+	margin-top:7px;
+	margin-bottom:7dpx;
+}
+.scrollUp{
+    width:60px;
+    height:60px;
+    opacity:0.3;
+    position:fixed;
+    bottom:50px;
+    right:100px;
+    text-indent:-9999px;
+    background: url('../images/top.png') no-repeat;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+}

@@ -83,9 +83,9 @@ fi
 #CARD=`echo $STRING | cut -c 1`
 CARD=`grep -e ' [[:digit:]]' < /proc/asound/cards |tail -n 1 |awk '{print $1}'`
 
-#set output to usb if card detected and not overruled by $OUTPUT
-#if [ "$CARD" == "1" -a "$OUTPUT" == "" ]
-if [ "$CARD" != "0" -a "$OUTPUT" == "" ]
+#i2s is always the last one, but must be set in config
+#so set output to usb if 3 cards detected and not overruled by $OUTPUT
+if [ "$CARD" == "2" -a "$OUTPUT" == "" ]
 then
     OUTPUT="usb"
     CARD=1
@@ -110,16 +110,17 @@ echo
 echo "Line out set to $OUTPUT"
 echo
 
-#change lastcard to analog if set in settings
+#change lastcard to 0 for hdmi or analog
 if [ "$OUTPUT" == "analog" -o "$OUTPUT" == "hdmi" ]
 then
     CARD=0
 fi
 
-# set default soundcard in Alsa to the last card (analog or usb)
-# reasmples to 44K because of problems with some usb-dacs on 48k (probably related to usb drawbacks of Pi)
+# set default soundcard in Alsa
+if [ "$OUTPUT" == "usb" -a "$INI__MusicBox__KEEP_SAMPLE_RATE" == "" ]
+then
+# resamples to 44K because of problems with some usb-dacs on 48k (probably related to usb drawbacks of Pi)
 cat << EOF > /etc/asound.conf
-
 pcm.!default {
     type plug
     slave.pcm {
@@ -139,13 +140,18 @@ ctl.!default {
     card $CARD
 }
 EOF
-
-#pcm.!default {
-#    type hw
-#    card $CARD
-#}
-
-alsactl restore
+else
+cat << EOF > /etc/asound.conf
+pcm.!default {
+    type hw
+    card $CARD
+}
+ctl.!default {
+    type hw
+    card $CARD
+}
+EOF
+fi
 
 #reset mixer
 amixer cset numid=3 0 > /dev/null 2>&1 || true
@@ -182,16 +188,13 @@ for CTL in \
 	Center
 do
 	#set initial hardware volume
-        amixer set -c1 "$CTL" 96% unmute > /dev/null 2>&1 || true 
+        amixer set -c $CARD "$CTL" 96% unmute > /dev/null 2>&1 || true 
 #	 amixer set -c $CARD "$CTL" ${VOLUME}% unmute > /dev/null 2>&1 || true 
 done
 
 #set PCM of Pi higher, because it's really quit otherwise (hardware thing)
 amixer -c 0 set PCM playback 98% > /dev/null 2>&1 || true &
 #amixer -c 0 set PCM playback ${VOLUME}% > /dev/null 2>&1 || true &
-
-#store settings
-alsactl store
 
 if [ "$INI__MusicBox__WORKGROUP" != "" ]
 then
