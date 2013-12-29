@@ -181,7 +181,7 @@ class Audio(pykka.ThreadingActor):
     def _setup_mixer(self):
         mixer_desc = self._config['audio']['mixer']
         track_desc = self._config['audio']['mixer_track']
-	volume_init = self._config['audio']['volume']
+        volume_init = self._config['audio']['volume']
 
         if mixer_desc is None:
             logger.info('Not setting up audio mixer')
@@ -189,8 +189,8 @@ class Audio(pykka.ThreadingActor):
 
         if mixer_desc == 'software':
             self._software_mixing = True
-	    if volume_init is not None:
-		self.set_volume(volume_init)
+            if volume_init is not None:
+                self.set_volume(volume_init)
             logger.info('Audio mixer is using software mixing')
             return
 

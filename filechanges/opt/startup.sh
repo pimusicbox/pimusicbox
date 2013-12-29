@@ -116,34 +116,42 @@ then
     CARD=0
 fi
 
-# set default soundcard in Alsa to the last card (analog or usb)
-# reasmples to 44K because of problems with some usb-dacs on 48k (probably related to usb drawbacks of Pi)
 cat << EOF > /etc/asound.conf
-
-pcm.!default {
-    type plug
-    slave.pcm {
-	type dmix
-	ipc_key 1024
-	slave {
-	    pcm "hw:$CARD"
-	    rate 44100
-	    period_time 0
-	    period_size 4096
-	    buffer_size 131072
-	}
-    }
-}
 ctl.!default {
     type hw
     card $CARD
 }
+
 EOF
 
-#pcm.!default {
-#    type hw
-#    card $CARD
-#}
+# set default soundcard in Alsa to the last card (analog or usb)
+# reasmples to 44K because of problems with some usb-dacs on 48k (probably related to usb drawbacks of Pi)
+if [ "$OUTPUT" == "usb" ] 
+then
+    cat << EOF >> /etc/asound.conf
+pcm.!default {
+    type plug
+    slave.pcm {
+        type dmix
+        ipc_key 1024
+        slave {
+            pcm "hw:$CARD"
+            rate 44100
+            period_time 0
+            period_size 4096
+            buffer_size 131072
+        }
+    }
+}
+EOF
+else
+    cat << EOF >> /etc/asound.conf
+pcm.!default {
+    type hw
+    card $CARD
+}
+EOF
+fi
 
 alsactl restore
 
