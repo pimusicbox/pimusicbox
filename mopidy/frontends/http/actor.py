@@ -50,7 +50,8 @@ class HttpFrontend(pykka.ThreadingActor, CoreListener):
             static_dir = os.path.join(os.path.dirname(__file__), 'data')
         logger.debug('HTTP server will serve "%s" at /', static_dir)
 
-        settings_dir = os.path.join(static_dir, 'settings')
+        settings_dir = os.path.join(static_dir, 'settings/static')
+        settings_static_dir = os.path.join(settings_dir, 'static')
 
         mopidy_dir = os.path.join(os.path.dirname(__file__), 'data')
         favicon = os.path.join(mopidy_dir, 'favicon.png')
@@ -70,11 +71,11 @@ class HttpFrontend(pykka.ThreadingActor, CoreListener):
                 'tools.staticdir.index': 'mopidy.html',
                 'tools.staticdir.dir': mopidy_dir,
             },
-            b'/settings': {
-                'tools.staticdir.on': True,
-                'tools.staticdir.index': 'index.html',
-                'tools.staticdir.dir': settings_dir,
-            },
+#            b'/settings/static': {
+#                'tools.staticdir.on': True,
+##                'tools.staticdir.index': 'index.html',
+#                'tools.staticdir.dir': settings_static_dir,
+#            },
             b'/mopidy/ws': {
                 'tools.websocket.on': True,
                 'tools.websocket.handler_cls': ws.WebSocketHandler,
@@ -111,15 +112,25 @@ class HttpFrontend(pykka.ThreadingActor, CoreListener):
 class RootResource(object):
     @cherrypy.expose
     @cherrypy.tools.allow(methods=['POST'])
-    def updateSettings(self, **params):
-        #set the username & password
-        logger.info('Settings received %s', params)
-	for key, value in params.iteritems():
-		logger.info("%s %s", key, value)
-		sysstring = "sed -i -e \"/^\[MusicBox\]/,/^\[.*\]/ s|^\(%s[ \t]*=[ \t]*\).*$|\1'%s'\r|\" /boot/config/settingst.ini" % (key, value)
-		logger.info(sysstring)
-		subprocess.Popen(sysstring, shell=True)
-	subprocess.Popen("/opt/restartmopidy.sh", shell=True)
+#    def updateSettings(self, **params):
+#        #set the username & password
+#        logger.info('Settings received %s', params)
+#	for key, value in params.iteritems():
+#		logger.info("%s %s", key, value)
+#		sysstring = "sed -i -e \"/^\[MusicBox\]/,/^\[.*\]/ s|^\(%s[ \t]*=[ \t]*\).*$|\1'%s'\r|\" /boot/config/settingst.ini" % (key, value)
+#		logger.info(sysstring)
+#		subprocess.Popen(sysstring, shell=True)
+#	subprocess.Popen("/opt/restartmopidy.sh", shell=True)
+
+#    @cherrypy.expose
+#    def settings(self, **params):
+#        logger.info('Settings')
+#	templatefile = open(os.path.join(settings_dir, 'index.html'), 'r')
+#	for line in templatefile:
+#            for src, target in replacements.iteritems():
+#	        line = line.replace(src, target)
+#	        page += line
+#	return page
 
     @cherrypy.expose
     @cherrypy.tools.allow(methods=['POST'])
