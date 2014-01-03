@@ -32,11 +32,11 @@ fi
 SPOTIFY_BITRATE=160
 if [ "$INI__MusicBox__SPOTIFY_BITRATE" == "320" ]
 then
-     INI__MusicBox__SPOTIFY_BITRATE=320
+     SPOTIFY_BITRATE=320
 fi
 if [ "$INI__MusicBox__SPOTIFY_BITRATE" == "96" ]
 then
-     INI__MusicBox__SPOTIFY_BITRATE=96
+     SPOTIFY_BITRATE=96
 fi
 
 #check lastfm
