@@ -32,11 +32,11 @@ fi
 SPOTIFY_BITRATE=160
 if [ "$INI__MusicBox__SPOTIFY_BITRATE" == "320" ]
 then
-     INI__MusicBox__SPOTIFY_BITRATE=320
+    SPOTIFY_BITRATE=320
 fi
 if [ "$INI__MusicBox__SPOTIFY_BITRATE" == "96" ]
 then
-     INI__MusicBox__SPOTIFY_BITRATE=96
+    SPOTIFY_BITRATE=96
 fi
 
 #check lastfm
@@ -75,6 +75,14 @@ then
      echo
 fi
 
+#set volume
+VOLUME=85
+
+if [ "$INI__MusicBox__VOLUME" != '' ]
+then
+    VOLUME=$INI__MusicBox__VOLUME
+fi
+
 #put settings in mopidy
 rm $MB_HOME/.config/mopidy/mopidy.conf > /dev/null 2>&1 || true
 
@@ -109,7 +117,7 @@ static_dir = /opt/defaultwebclient
 [audio]
 output = alsasink
 mixer = software
-volume = $INI__MusicBox__VOLUME
+volume = $VOLUME
 
 [stream]
 enabled = true

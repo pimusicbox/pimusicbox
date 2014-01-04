@@ -72,12 +72,6 @@ EOF
 #if output not defined, it will automatically detect usb, hdmi. Order: I2S / USB / HDMI / Analog  (to lowercase)
 OUTPUT=$(echo $INI__MusicBox__OUTPUT | tr "[:upper:]" "[:lower:]")
 
-VOLUME=90
-if [ $INI__MusicBox__VOLUME != "" ]
-then
-    VOLUME=$INI__MusicBox__VOLUME
-fi
-
 #get alsa last card (usb if inserted, otherwise analog)
 #STRING=`grep -e '[[:digit:]]' < /proc/asound/cards | tail -n 2`
 #CARD=`echo $STRING | cut -c 1`
