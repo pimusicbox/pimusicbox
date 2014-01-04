@@ -283,6 +283,15 @@ then
 #add rsize=2048,wsize=4096,cache=strict because of usb (from raspyfi)
 fi
 
+# start SSH if enabled
+if [ "$INI__MusicBox__ENABLE_SSH" == "true" ]
+then
+    $SSH_COMMAND
+    iptables -A INPUT -p tcp --dport 22 -j ACCEPT > /dev/null 2>&1 || true
+else
+    iptables -A INPUT -p tcp --dport 22 -j DENY > /dev/null 2>&1 || true
+fi
+
 # scan local music files once (by setting the ini value)
 if [ "$INI__MusicBox__SCAN_ONCE" == "true" ]
 then
@@ -321,15 +330,6 @@ if [ "$_IP" ]; then
     echo
     echo "Connect to MusicBox in your browser via http://$CLEAN_NAME.local or http://$_IP"
     echo
-fi
-
-# start SSH if enabled
-if [ "$INI__MusicBox__ENABLE_SSH" == "true" ]
-then
-    $SSH_COMMAND
-    iptables -A INPUT -p tcp --dport 22 -j ACCEPT > /dev/null 2>&1 || true
-else
-    iptables -A INPUT -p tcp --dport 22 -j DENY > /dev/null 2>&1 || true
 fi
 
 #start mopidy 
