@@ -8,6 +8,48 @@
 #set user var
 SSH_COMMAND='/etc/init.d/dropbear start > /dev/null 2>&1 || true'
 
+I2S_CARD=
+USB_CARD=
+INT_CARD=
+HDMI_CARD=
+
+function enumerate_alsa_cards()
+{
+    SYSFS_SOUND_PATH=/sys/class/sound
+
+    # iterate over all since gaps can occur if a device is hot(un)plugged 
+    for i in `seq 0 9`
+    do
+        card=$SYSFS_SOUND_PATH/card$i
+        if [[ -d $card ]]
+        then
+            num=`cat $card/number`
+            modalias=`cat $card/device/modalias`
+            dev=(${modalias//:/ })
+
+            case ${dev[0]} in
+                platform)
+                    if [[ ${dev[1]} == "bcm2835"* ]]; then
+                        INT_CARD=$num
+                        echo "found internal device: card$INT_CARD"
+                        if tvservice -s | grep -q HDMI; then
+                            echo "HDMI output connected"
+                            HDMI_CARD=$num
+                        fi
+                    elif [[ ${dev[1]} == "snd-hifiberry-dac" ]]; then
+                        I2S_CARD=$num
+                        echo "found i2s device: card$I2S_CARD"
+                    fi
+                    ;;
+                usb)
+                    USB_CARD=$num
+                    echo "found usb device: card$USB_CARD"
+                    ;;
+            esac
+        fi
+    done
+}
+
 #import script for reading ini and building Mopidy config
 . /opt/buildconfig.sh
 
@@ -69,46 +111,49 @@ network={
 }
 EOF
 
-#if output not defined, it will automatically detect usb, hdmi. Order: I2S / USB / HDMI / Analog  (to lowercase)
+# if output not defined, it will automatically detect USB / HDMI / Analog in given order
+# it is at this momement not possible to detect wheter a i2s device is connected hence
+# i2s is only selected if explicitly given as output in the config file
 OUTPUT=$(echo $INI__MusicBox__OUTPUT | tr "[:upper:]" "[:lower:]")
+CARD=
 
-#get alsa last card (usb if inserted, otherwise analog)
-#STRING=`grep -e '[[:digit:]]' < /proc/asound/cards | tail -n 2`
-#CARD=`echo $STRING | cut -c 1`
-CARD=`grep -e ' [[:digit:]]' < /proc/asound/cards |tail -n 1 |awk '{print $1}'`
+# get alsa cards
+enumerate_alsa_cards
 
-#i2s is always the last one, but must be set in config
-#so set output to usb if 3 cards detected and not overruled by $OUTPUT
-if [ "$CARD" == "2" -a "$OUTPUT" == "" ]
+case $OUTPUT in
+    analog)
+        CARD=$INT_CARD
+        ;;
+    hdmi)
+        CARD=$HDMI_CARD
+        ;;
+    usb)
+        CARD=$USB_CARD
+        ;;
+    i2s)
+        CARD=$I2S_CARD
+        ;;
+esac
+
+# if preferred output not found or given fall back to auto detection
+if [[ -z $CARD ]];
 then
-    OUTPUT="usb"
-    CARD=1
+    if [[ -n $USB_CARD ]]; then
+        CARD=$USB_CARD
+        OUTPUT="usb"
+    else
+        CARD=$INT_CARD
+        if  [[ -n $HDMI_CARD ]]; then
+            OUTPUT="hdmi"
+        else
+            OUTPUT="analog"
+        fi
+    fi
 fi
 
-#detect hdmi
-HDMI=`tvservice -s | grep HDMI`
-
-#set output to hdmi if not defined
-if [ "$HDMI" != "" -a "$OUTPUT" == "" ]
-then
-    OUTPUT="hdmi"
-fi
-
-#set output if not hdmi/usb
-if [ "$OUTPUT" == "" ]
-then
-    OUTPUT="analog"
-fi
-
-echo 
-echo "Line out set to $OUTPUT"
 echo
-
-#change lastcard to 0 for hdmi or analog
-if [ "$OUTPUT" == "analog" -o "$OUTPUT" == "hdmi" ]
-then
-    CARD=0
-fi
+echo "Line out set to $OUTPUT card $CARD"
+echo
 
 # set default soundcard in Alsa
 if [ "$OUTPUT" == "usb" -a "$INI__MusicBox__KEEP_SAMPLE_RATE" == "" ]
@@ -118,15 +163,15 @@ cat << EOF > /etc/asound.conf
 pcm.!default {
     type plug
     slave.pcm {
-	type dmix
-	ipc_key 1024
-	slave {
-	    pcm "hw:$CARD"
-	    rate 44100
-	    period_time 0
-	    period_size 4096
-	    buffer_size 131072
-	}
+        type dmix
+        ipc_key 1024
+        slave {
+            pcm "hw:$CARD"
+            rate 44100
+            period_time 0
+            period_size 4096
+            buffer_size 131072
+        }
     }
 }
 ctl.!default {
