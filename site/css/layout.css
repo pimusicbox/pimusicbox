@@ -9,6 +9,7 @@ body {
 	background-image:url(../images/bg.png);
 	font-family: 'Ubuntu', sans-serif;
 	color:#1C1C1C;
+    background-attachment:fixed;
 	list-style-position:inside;
 }
 .wrapper {
@@ -17,7 +18,7 @@ body {
 	padding-top:50px;
 	border:2px solid #2C2C2C;
 	margin:auto;
-	background-color:rgba(255,255,255,0.3);
+	background-color:rgba(255,255,255,0.4);
 }
 .footer {
 	width:800px;

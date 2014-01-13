@@ -1,4 +1,4 @@
-<!doctype html>
+<!doctype html>
 <html>
 	<head>
         <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
@@ -41,7 +41,7 @@
 	</head>
 <body>
 
-<img src="images/logo.png" width="340" class="logo" />
+<img src="images/logo-small.png" width="340" class="logo" />
 <div class="wrapper">
 	<div class="social">
 		<a href="https://www.facebook.com/raspberrypimusicbox" target="_blank"><img src="images/fb.png" /></a>
@@ -53,10 +53,13 @@
 	<h2> Features</h2>
 		<ul>
             <li>
-                Working Spotify server based on Mopidy
+                Standalone Spotify, Google Music, SoundCloud playerer based on Mopidy
             </li>
             <li>
                 Remote control it with a nice browser-interface, or with an MPD-client
+            </li>
+            <li>
+                Web Radio
             </li>
             <li>
                 AirTunes/AirPlay streaming
@@ -67,10 +70,19 @@
                 <br />
             </li>
             <li>
+                Last.FM scrobbling.
+            </li>
+            <li>
                 USB Audio support (supporting all kinds of USB soundcards, speakers, headphones).
             </li>
             <li>
                 Wifi support (WPA, if the Pi-kernel supports your wifi-adapter)
+            </li>
+            <li>
+                i2s support (<a href="http://www.hifiberry.com">HifiBerry</a>)
+            </li>
+            <li>
+                Play music files from the SD, USB, Network.
             </li>
        </ul>
 	   <div class="fadedline"></div>
@@ -111,8 +123,8 @@
 		<p>Download the image. It's around 223MB in (compressed) size; 950MB uncompressed:<br/><br/>
             
             <ul>
-               <li><a href="http://dl.mopidy.com/musicbox0.4.2.1.zip">Fast mirror</a> <a href="http://www.rackspace.com">(RackSpace)</a> </li>
-                <li><a href="musicbox0.4.2.1.zip">Directly from this site (slower)</a></li>
+               <li><a href="http://dl.mopidy.com/musicbox0.4.3.zip">Fast mirror</a> <a href="http://www.rackspace.com">(RackSpace)</a> </li>
+                <li><a href="musicbox0.4.3.zip">Directly from this site (slower)</a></li>
             </ul>
 <br/>
     This can take a while, so spread the word in the meantime:<br/><br/>
@@ -216,6 +228,17 @@
         </ol>
 		<div class="fadedline"></div>
 <h2>What's new?</h2>
+           <p>
+    	    <a href="http://dl.mopidy.com/musicbox0.4.3.zip">MusicBox 0.4.3</a> (8 january 2014, ZIP MD5: 314303d57ec4691556763e350aa3a87e ) contains the following improvements:
+</p>
+    	    <ul>
+    	    <li>USB disks mounted at boot and scanned for music</li>
+    	    <li>Better recognition of USB Dacs (Simon)</li>
+    	    <li>Better scrolling on iOS</li>
+    	    <li>Start SSH before filescan</li>
+    	    <li>Slightly smaller image file (did not fit on all cards)</li>
+            </ul>
+			<br /><br/>
        <p>
     	    <a href="http://dl.mopidy.com/musicbox0.4.2.1.zip">MusicBox 0.4.2.1</a> (31 december 2013, ZIP MD5: 1d641b0a1ac0ac9d406aab6b91530092 ) contains the following improvements:
         </p>
@@ -224,7 +247,6 @@
     	    <li>Again: No hamsters were harmed during the production</li>
             </ul>
 			<br /><br/>
-    <p>
         <p>
     	    <a href="http://dl.mopidy.com/musicbox0.4.2.zip">MusicBox 0.4.2</a> (30 december 2013, ZIP MD5: 628139ef3762b4ac947f1d054e94c1bc ) contains the following improvements:
         </p>
@@ -354,14 +376,14 @@ Bugfix for SoundCloud in webinterface</li>
 
      <p>Please refer to the <a href="MusicBox_Manual.pdf">Manual</a> before asking questions. </p>
 		<br />
-    You can discuss features and problems on the <a href="https://groups.google.com/forum/?fromgroups=#!forum/mopidy">Google Group of Mopidy</a>. Please report problems about MusicBox itself at <a href="https://github.com/woutervanwijk/Pi-MusicBox">my repo at Github</a>. You can also try the 
+    You can discuss features and problems on the <a href="https://groups.google.com/forum/?fromgroups=#!forum/mopidy">Google Group (maillist/forum) of Mopidy</a>. Please report problems about MusicBox itself at <a href="https://github.com/woutervanwijk/Pi-MusicBox">the repo at Github</a>. On <a href="http://www.facebook.com/raspberrypimusicbox">FaceBook</a> or <a href="https://twitter.com/pimusicbox">Twitter</a>, you can contact us. You can also try the 
             <code>
                 #mopidy
             </code>
             channel on <a href="http://webchat.freenode.net/">Freenode</a>,
              or the <a href="http://www.raspberrypi.org/phpBB3/">Raspberry
             Pi forums</a>.<br/><br/>
-		If you wish to contact us you can use the Facebook/Twitter links at the top of the page or if you want to directly get in contact with me (Wouter Van Wijk) via Email <a href="http://www.google.com/recaptcha/mailhide/d?k=01KM-SPgNdXGuHrrglOf0d7w==&amp;c=19R7Ah46rMwHlrR7DMBgHWl8AfjZassQ2SQQwunG29Q=" onclick="window.open('http://www.google.com/recaptcha/mailhide/d?k\07501KM-SPgNdXGuHrrglOf0d7w\75\75\46c\07519R7Ah46rMwHlrR7DMBgHWl8AfjZassQ2SQQwunG29Q\075', '', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=500,height=300'); return false;" title="Reveal this e-mail address">here.</a>
+		If you wish to contact us you can use the Facebook/Twitter links at the top of the page.
 		<br />
 		<div class="fadedline"></div>
     <h2>Thanks</h2>

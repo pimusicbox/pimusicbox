@@ -1,14 +1,29 @@
 Pi MusicBox Changelog
 
-0.4.2
+0.4.3 - 8 january 2014
+USB disks mounted at boot and scanned for music
+Better recognition of USB Dacs (Simon)
+Better scrolling on iOS
+Start SSH before filescan
+Slightly smaller image file (did not fit on all cards)
+
+0.4.2.1 - 31 december 2013
+Fix for bug in setting default volume
+Fix for bug in setting spotify bitrate
+
+0.4.2 - 30 december 2013
 Best sounding Pi MusicBox ever! No hiccups, no unwanted noises, just music!
 Shutdown/Reboot from interface
+Font-icons for shuffle/repeat in interface
+Disabled power management for wireless dongles
+Better hdmi support (hotplug, force open)
 Newer Kernel: 3.10.24+ (i2s included)
 Split startup script into multiple files for better management
 Initial i2s support by Simon de Bakker/HifiBerry
 Set default volume in config file (Simon again)
 Log file viewable via webinterface ( http://musicbox.local/log ) 
 Initial work to support a settings page in the webinterface (not working yet)
+No hamsters were harmed during the production
 
 0.4.1 (21 december 2013)
 Bugfix for SoundCloud in webinterface
