@@ -145,9 +145,8 @@ read TST
 umount $MNT
 umount $MNT2
 
-echo "DD 1960 * 1M"
-# dd if=/dev/zero bs=1M count=1960 | pv -s 1G | dd of=/tmp/1G
-dd bs=1M if=$DRIVE count=1960 | pv -s 1960m | dd of=mediabox$IMGVERSION.img
+echo "DD 1920 * 1M"
+dd bs=1M if=$DRIVE count=1920 | pv -s 1920m | dd of=mediabox$IMGVERSION.img
 
 echo "Copy Config back"
 mount $PART1 $MNT

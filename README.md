@@ -7,6 +7,8 @@ See <http://www.pimusicbox.com/>
 
 Connect Spotify, Google Music and SoundCloud to your audio set or speakers using the Raspberry Pi and control it from your couch! An easy to use SD-image for the Pi. AirPlay included!
 
+This is the code-repo. The files (modified or new) for the system are in filechanges. In the root you'll find a description on how to build it and the build scripts.
+
 Features
 --------
 
@@ -29,4 +31,3 @@ Requirements
 * SD-Card, 1GB minimum
 * Computer with a modern browser; tablet or phone. The webinterface is tested with recent versions of Firefox, Chrome and iOS (iPad/iPhone), modern versions of Android (Chrome Mobile, Firefox Mobile). Internet Explorer version 10 works, earlier versions don't. You can also use an MPD client to connect.
 * Spotify Premium, Google Music (All Access) or SoundCloud account for streaming.
-

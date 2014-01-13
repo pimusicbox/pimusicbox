@@ -139,9 +139,9 @@ umount $MNT
 umount $MNT2
 rmdir $MNT2
 
-echo "DD 980 * 1M"
-# dd if=/dev/zero bs=1M count=980 | pv -s 1G | dd of=/tmp/1G
-dd bs=1M if=$DRIVE count=980 | pv -s 980m | dd of=musicbox$IMGVERSION.img
+# a user reported an SD size of 988286976, which would be 942 blocks
+echo "DD 940 * 1M"
+dd bs=1M if=$DRIVE count=940 | pv -s 940m | dd of=musicbox$IMGVERSION.img
 
 echo "Copy Config back"
 mount $PART1 $MNT
