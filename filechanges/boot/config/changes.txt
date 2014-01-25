@@ -1,5 +1,11 @@
 Pi MusicBox Changelog
 
+0.5 alphaalpha
+Mopidy 0.18, with lots of enhancements
+Dirble, Grooveshark
+Browsing support for local media files, Dirble, etc
+Better webradio
+
 0.4.3 - 8 january 2014
 USB disks mounted at boot and scanned for music
 Better recognition of USB Dacs (Simon)

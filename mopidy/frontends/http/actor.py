@@ -3,19 +3,18 @@ from __future__ import unicode_literals
 import logging
 import json
 import os
-import subprocess
 
 import cherrypy
 import pykka
 from ws4py.messaging import TextMessage
 from ws4py.server.cherrypyserver import WebSocketPlugin, WebSocketTool
 
-from mopidy import models
+from mopidy import models, zeroconf
 from mopidy.core import CoreListener
 from . import ws
 
 
-logger = logging.getLogger('mopidy.frontends.http')
+logger = logging.getLogger(__name__)
 
 
 class HttpFrontend(pykka.ThreadingActor, CoreListener):
@@ -23,6 +22,12 @@ class HttpFrontend(pykka.ThreadingActor, CoreListener):
         super(HttpFrontend, self).__init__()
         self.config = config
         self.core = core
+
+        self.hostname = config['http']['hostname']
+        self.port = config['http']['port']
+        self.zeroconf_name = config['http']['zeroconf']
+        self.zeroconf_service = None
+
         self._setup_server()
         self._setup_websocket_plugin()
         app = self._create_app()
@@ -31,8 +36,8 @@ class HttpFrontend(pykka.ThreadingActor, CoreListener):
     def _setup_server(self):
         cherrypy.config.update({
             'engine.autoreload_on': False,
-            'server.socket_host': self.config['http']['hostname'],
-            'server.socket_port': self.config['http']['port'],
+            'server.socket_host': self.hostname,
+            'server.socket_port': self.port,
         })
 
     def _setup_websocket_plugin(self):
@@ -49,9 +54,6 @@ class HttpFrontend(pykka.ThreadingActor, CoreListener):
         else:
             static_dir = os.path.join(os.path.dirname(__file__), 'data')
         logger.debug('HTTP server will serve "%s" at /', static_dir)
-
-        settings_dir = os.path.join(static_dir, 'settings/static')
-        settings_static_dir = os.path.join(settings_dir, 'static')
 
         mopidy_dir = os.path.join(os.path.dirname(__file__), 'data')
         favicon = os.path.join(mopidy_dir, 'favicon.png')
@@ -71,11 +73,6 @@ class HttpFrontend(pykka.ThreadingActor, CoreListener):
                 'tools.staticdir.index': 'mopidy.html',
                 'tools.staticdir.dir': mopidy_dir,
             },
-#            b'/settings/static': {
-#                'tools.staticdir.on': True,
-##                'tools.staticdir.index': 'index.html',
-#                'tools.staticdir.dir': settings_static_dir,
-#            },
             b'/mopidy/ws': {
                 'tools.websocket.on': True,
                 'tools.websocket.handler_cls': ws.WebSocketHandler,
@@ -97,7 +94,21 @@ class HttpFrontend(pykka.ThreadingActor, CoreListener):
         cherrypy.engine.start()
         logger.info('HTTP server running at %s', cherrypy.server.base())
 
+        if self.zeroconf_name:
+            self.zeroconf_service = zeroconf.Zeroconf(
+                stype='_http._tcp', name=self.zeroconf_name,
+                host=self.hostname, port=self.port)
+
+            if self.zeroconf_service.publish():
+                logger.info('Registered HTTP with Zeroconf as "%s"',
+                            self.zeroconf_service.name)
+            else:
+                logger.info('Registering HTTP with Zeroconf failed.')
+
     def on_stop(self):
+        if self.zeroconf_service:
+            self.zeroconf_service.unpublish()
+
         logger.debug('Stopping HTTP server')
         cherrypy.engine.exit()
         logger.info('Stopped HTTP server')
@@ -107,7 +118,6 @@ class HttpFrontend(pykka.ThreadingActor, CoreListener):
         event['event'] = name
         message = json.dumps(event, cls=models.ModelJSONEncoder)
         cherrypy.engine.publish('websocket-broadcast', TextMessage(message))
-
 
 class RootResource(object):
     @cherrypy.expose
@@ -155,3 +165,4 @@ class RootResource(object):
 
 class MopidyResource(object):
     pass
+                                                                                                                                                                                                                              pass
