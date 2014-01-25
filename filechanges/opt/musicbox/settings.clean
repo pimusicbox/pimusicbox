@@ -84,24 +84,6 @@ enabled = false
 api_key = 
 countries = US, NL, DE, NO, SE
 
-# ---------------------
-# | Subsonic Settings |
-# ---------------------
-
-# Edit these lines for Subsonic support
-# Set the hostname = some.website.com (leave off http/https)
-[subsonic]
-# Enable the service or not (true or false)
-# Set to true to enable Subsonic
-enabled = false
-hostname = 
-# Set the port. e.g. port = 8888
-port = 
-username = 
-password = 
-# SSL yes or no
-ssl = 
-
 # --------------------
 # | Network Settings |
 # --------------------
@@ -197,7 +179,13 @@ mixer = software
 
 [stream]
 enabled = true
-protocols = http https mms rtmp rtmps rtsp
+protocols = 
+    http
+    https
+    mms
+    rtmp
+    rtmps
+    rtsp
 
 [mpris]
 enabled = false
@@ -213,4 +201,5 @@ hostname = 0.0.0.0
 
 [local]
 media_dir = /music
+tag_cache_file = /home/musicbox/.cache/mopidy/tag_cache
 

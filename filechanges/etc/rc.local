@@ -10,6 +10,6 @@
 # bits.
 #
 
-/opt/startup.sh
+/opt/musicbox/startup.sh
 
 exit 0

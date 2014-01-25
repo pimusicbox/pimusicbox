@@ -51,12 +51,12 @@ function enumerate_alsa_cards()
 }
 
 #import script for reading ini and building Mopidy config
-. /opt/buildconfig.sh
+. /opt/musicbox/buildconfig.sh
 
-if [ "$INI__MusicBox__RESIZE_ONCE" == "true" ]
+if [ "$INI__musicbox__resize_once" == "1" ]
 then
-    #set RESIZE_ONCE=false in ini file
-    sed -i -e "/^\[MusicBox\]/,/^\[.*\]/ s|^\(RESIZE_ONCE[ \t]*=[ \t]*\).*$|\1'false'\r|" $CONFIG_FILE
+    #set resize_once=false in ini file
+    sed -i -e "/^\[musicbox\]/,/^\[.*\]/ s|^\(RESIZE_ONCE[ \t]*=[ \t]*\).*$|\1false\r|" $CONFIG_FILE
     sh /opt/resizefs.sh -y
     reboot
     exit
@@ -65,7 +65,7 @@ fi
 #get name of device and trim
 HOSTNM=`cat /etc/hostname | tr -cd "[:alnum:]"`
 #get name in ini and trim
-CLEAN_NAME=$(echo $INI__MusicBox__NAME | tr -cd "[:alnum:]")
+CLEAN_NAME=$(echo $INI__network__name | tr -cd "[:alnum:]")
 #max 9 caracters (max netbios length = 15, + '.local')
 CLEAN_NAME=$(echo $CLEAN_NAME | cut -c 1-9)
 
@@ -88,33 +88,33 @@ echo "MusicBox name is $CLEAN_NAME"
 echo
 
 # do the change password stuff
-if [ "$INI__MusicBox__MUSICBOX_PASSWORD" != "" ]
+if [ "$INI__musicbox__musicbox_password" != "" ]
 then
-    echo "musicbox:$INI__MusicBox__MUSICBOX_PASSWORD" | chpasswd
-    echo "root:$INI__MusicBox__ROOT_PASSWORD" | chpasswd
+    echo "musicbox:$INI__musicbox__musicbox_password" | chpasswd
+#    echo "root:$INI__musicbox__ROOT_PASSWORD" | chpasswd
     #remove password
-    sed -i -e "/^\[MusicBox\]/,/^\[.*\]/ s|^\(MUSICBOX_PASSWORD[ \t]*=[ \t]*\).*$|\1''\r|" $CONFIG_FILE
+    sed -i -e "/^\[musicbox\]/,/^\[.*\]/ s|^\(musicbox_password[ \t]*=[ \t]*\).*$|\1''\r|" $CONFIG_FILE
 fi
 
-if [ "$INI__MusicBox__ROOT_PASSWORD" != "" ]
+if [ "$INI__musicbox__root_password" != "" ]
 then
-    echo "root:$INI__MusicBox__ROOT_PASSWORD" | chpasswd
+    echo "root:$INI__musicbox__root_password" | chpasswd
     #remove password
-    sed -i -e "/^\[MusicBox\]/,/^\[.*\]/ s|^\(ROOT_PASSWORD[ \t]*=[ \t]*\).*$|\1''\r|" $CONFIG_FILE
+    sed -i -e "/^\[musicbox\]/,/^\[.*\]/ s|^\(root_password[ \t]*=[ \t]*\).*$|\1''\r|" $CONFIG_FILE
 fi
 
 #put wifi settings for wpa
 cat >/etc/wpa.conf <<EOF
 network={
-    ssid="$INI__MusicBox__WIFI_NETWORK"
-    psk="$INI__MusicBox__WIFI_PASSWORD"
+    ssid="$INI__network__wifi_network"
+    psk="$INI__network__wifi_password"
 }
 EOF
 
 # if output not defined, it will automatically detect USB / HDMI / Analog in given order
 # it is at this momement not possible to detect wheter a i2s device is connected hence
 # i2s is only selected if explicitly given as output in the config file
-OUTPUT=$(echo $INI__MusicBox__OUTPUT | tr "[:upper:]" "[:lower:]")
+OUTPUT=$(echo $INI__musicbox__output | tr "[:upper:]" "[:lower:]")
 CARD=
 
 # get alsa cards
@@ -156,7 +156,7 @@ echo "Line out set to $OUTPUT card $CARD"
 echo
 
 # set default soundcard in Alsa
-if [ "$OUTPUT" == "usb" -a "$INI__MusicBox__KEEP_SAMPLE_RATE" == "" ]
+if [ "$OUTPUT" == "usb" -a "$INI__musicbox__keep_sample_rate" == "" ]
 then
 # resamples to 44K because of problems with some usb-dacs on 48k (probably related to usb drawbacks of Pi)
 cat << EOF > /etc/asound.conf
@@ -235,17 +235,17 @@ done
 amixer -c 0 set PCM playback 98% > /dev/null 2>&1 || true &
 #amixer -c 0 set PCM playback ${VOLUME}% > /dev/null 2>&1 || true &
 
-if [ "$INI__MusicBox__WORKGROUP" != "" ]
+if [ "$INI__network__workgroup" != "" ]
 then
     #change smb.conf workgroup value
-    sed -i "s/workgroup = .*$/workgroup = $INI__MusicBox__WORKGROUP/ig" /etc/samba/smb.conf
+    sed -i "s/workgroup = .*$/workgroup = $INI__network__workgroup/ig" /etc/samba/smb.conf
     #restart samba
     /etc/init.d/samba restart
 fi
 
 #check networking, sleep for a while
 MYIP=$(hostname -I)
-while [ "$MYIP" == "" -a "$INI__MusicBox__WAIT_FOR_NETWORK" != "false" ]
+while [ "$MYIP" == "" -a "$INI__network__wait_for_network" != "0" ]
 do
     echo "Waiting for network..."
     echo
@@ -273,52 +273,53 @@ fi
 iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 6680 > /dev/null 2>&1 || true
 
 #mount windows share
-if [ "$INI__MusicBox__NETWORK_MOUNT_ADDRESS" != "" ]
+if [ "$INI__network__network_mount_address" != "" ]
 then
     #mount samba share, readonly
     echo
     echo "Mounting Windows Network drive..."
     echo
-    mount -t cifs -o ro,rsize=2048,wsize=4096,cache=strict,user=$INI__MusicBox__NETWORK_MOUNT_USER,password=$INI__MusicBox__NETWORK_MOUNT_PASSWORD $INI__MusicBox__NETWORK_MOUNT_ADDRESS /music/network/
+    mount -t cifs -o ro,rsize=2048,wsize=4096,cache=strict,user=$INI__network__network_mount_user,password=$INI__network__network_mount_password $INI__network__network_mount_address /music/Network/
 #add rsize=2048,wsize=4096,cache=strict because of usb (from raspyfi)
 fi
 
 # start SSH if enabled
-if [ "$INI__MusicBox__ENABLE_SSH" == "true" ]
+if [ "$INI__network__enable_ssh" == "1" ]
 then
     $SSH_COMMAND
+    echo
     iptables -A INPUT -p tcp --dport 22 -j ACCEPT > /dev/null 2>&1 || true
 else
     iptables -A INPUT -p tcp --dport 22 -j DENY > /dev/null 2>&1 || true
 fi
 
 # scan local music files once (by setting the ini value)
-if [ "$INI__MusicBox__SCAN_ONCE" == "true" ]
+if [ "$INI__musicbox__scan_once" == "1" ]
 then
     #set SCAN_ONCE = false
-    sed -i -e "/^\[MusicBox\]/,/^\[.*\]/ s|^\(SCAN_ONCE[ \t]*=[ \t]*\).*$|\1'false'\r|" $CONFIG_FILE
+    sed -i -e "/^\[musicbox\]/,/^\[.*\]/ s|^\(scan_once[ \t]*=[ \t]*\).*$|\1false\r|" $CONFIG_FILE
 fi
 
 # scan local/networked music files if setting is true
-if [ "$INI__MusicBox__SCAN_ALWAYS" == "true" -o "$INI__MusicBox__SCAN_ONCE" == "true" ]
+if [ "$INI__musicbox__scan_always" == "1" -o "$INI__musicbox__scan_once" == "1" ]
 then
     echo
     echo "Scanning music-files, please wait.... The scanned files will be displayed. You can ignore warnings about non-music files."
     echo
-    touch /home/musicbox/.cache/mopidy/tag_cache
-    mopidy-scan
+#    touch /home/musicbox/.cache/mopidy/tag_cache
+    su musicbox -c "mopidy local scan"
 # new command
 #  mopidy local scan
-    chown musicbox:musicbox /home/musicbox/.cache/mopidy/tag_cache
+#    chown musicbox:musicbox /home/musicbox/.cache/mopidy/tag_cache
 
 # create one big local playlist
 #    find /music -type f -iname *.mp3 -o -iname *.ogg -o -iname *.flac > '/home/musicbox/.local/share/mopidy/local/playlists/Local Playlist.m3u'
 fi
 
-if [ "$INI__MusicBox__NAME" != "$CLEAN_NAME" -a "$INI__MusicBox__NAME" != "" ]
+if [ "$INI__network__name" != "$CLEAN_NAME" -a "$INI__network__name" != "" ]
 then
     echo
-    echo "The new name of your MusicBox, $INI__MusicBox__NAME, is not ok! It should be max. 9 alphanumerical caracters."
+    echo "The new name of your MusicBox, $INI__network__name, is not ok! It should be max. 9 alphanumerical caracters."
     echo
 fi
 
@@ -333,5 +334,5 @@ if [ "$_IP" ]; then
 fi
 
 #start mopidy 
-/opt/startmopidy.sh > /dev/null 2>&1 || true
-#/opt/startmopidy.sh
+#/opt/musicbox/startmopidy.sh > /dev/null 2>&1 || true
+/opt/musicbox/startmopidy.sh
