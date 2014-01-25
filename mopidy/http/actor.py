@@ -125,13 +125,12 @@ class RootResource(object):
 #    def updateSettings(self, **params):
 #        #set the username & password
 #        logger.info('Settings received %s', params)
-#	for key, value in params.iteritems():
+#        for key, value in params.iteritems():
 #		logger.info("%s %s", key, value)
 #		sysstring = "sed -i -e \"/^\[MusicBox\]/,/^\[.*\]/ s|^\(%s[ \t]*=[ \t]*\).*$|\1'%s'\r|\" /boot/config/settingst.ini" % (key, value)
 #		logger.info(sysstring)
 #		subprocess.Popen(sysstring, shell=True)
 #	subprocess.Popen("/opt/restartmopidy.sh", shell=True)
-
 #    @cherrypy.expose
 #    def settings(self, **params):
 #        logger.info('Settings')
@@ -146,23 +145,21 @@ class RootResource(object):
     @cherrypy.tools.allow(methods=['POST'])
     def haltSystem(self, **params):
         logger.info('Halt received')
-	os.system("shutdown -h now")
+        os.system("shutdown -h now")
 
     @cherrypy.expose
     @cherrypy.tools.allow(methods=['POST'])
     def rebootSystem(self, **params):
         logger.info('Reboot received')
-	os.system("shutdown -r now")
+        os.system("shutdown -r now")
 
     @cherrypy.expose
     def log(self, **params):
-#        logger.info('Show log')
-	page = '<html><body>'
-	with open('/var/log/mopidy.log', 'r') as f:
-	    page = '<pre>%s</pre>' % f.read()
-	page += '</body></html>'
-	return page
+        page = '<html><body>'
+        with open('/var/log/mopidy.log', 'r') as f:
+            page = '<pre>%s</pre>' % f.read()
+            page += '</body></html>'
+        return page
 
 class MopidyResource(object):
     pass
-                                                                                                                                                                                                                              pass
