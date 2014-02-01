@@ -1,0 +1,3 @@
+# Mopidy APT archive
+deb http://apt.mopidy.com/ stable main contrib non-free
+deb-src http://apt.mopidy.com/ stable main contrib non-free
