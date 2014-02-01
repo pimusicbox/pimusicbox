@@ -4,7 +4,7 @@
 # reeeeeeaaallly alpha.
 
 #Install the packages you need to continue:
-apt-get update && apt-get --yes --no-install-suggests --no-install-recommends install sudo wget unzip mc
+apt-get update && apt-get --yes install sudo wget unzip mc
 
 #Next, issue this command to update the distribution. 
 #This is good because newer versions have fixes for audio and usb-issues:
@@ -17,7 +17,10 @@ wget -q -O /etc/apt/sources.list.d/mopidy.list http://apt.mopidy.com/mopidy.list
 
 #Then install all packages we need with this command:
 
-sudo apt-get update && sudo apt-get --yes --no-install-suggests --no-install-recommends install logrotate mopidy alsa-utils python-cherrypy3 python-ws4py wpasupplicant python-spotify gstreamer0.10-alsa ifplugd gstreamer0.10-fluendo-mp3 gstreamer0.10-tools samba dos2unix avahi-utils alsa-base python-pylast cifs-utils avahi-autoipd libnss-mdns ntpdate ca-certificates ncmpcpp rpi-update linux-wlan-ng alsa-firmware-loaders iw atmel-firmware firmware-atheros firmware-brcm80211 firmware-ipw2x00 firmware-iwlwifi firmware-libertas firmware-linux firmware-linux-nonfree firmware-ralink firmware-realtek zd1211-firmware linux-wlan-ng-firmware alsa-firmware-loaders
+sudo apt-get update && sudo apt-get --yes install logrotate alsa-utils python-cherrypy3 python-ws4py wpasupplicant python-spotify gstreamer0.10-alsa ifplugd gstreamer0.10-fluendo-mp3 gstreamer0.10-tools samba dos2unix avahi-utils alsa-base python-pylast cifs-utils avahi-autoipd libnss-mdns ntpdate ca-certificates ncmpcpp rpi-update linux-wlan-ng alsa-firmware-loaders iw atmel-firmware firmware-atheros firmware-brcm80211 firmware-ipw2x00 firmware-iwlwifi firmware-libertas firmware-linux firmware-linux-nonfree firmware-ralink firmware-realtek zd1211-firmware linux-wlan-ng-firmware alsa-firmware-loaders dropbear python-pip usbmount libssl-dev
+
+#mopidy from pip
+yes | pip install mopidy mopidy-spotify mopidy-scrobbler mopidy-soundcloud mopidy-dirble mopidy-gmusic mopidy-subsonic
 
 #**Configuration and Files**
 cd /opt
@@ -39,29 +42,31 @@ cd Pi-MusicBox-master/filechanges
 #This sets up the boot and opt directories:
 mkdir /boot/config
 cp boot/config/settings.ini /boot/config/
-cp opt/* /opt
+cp -R opt/* /opt
 
 #Make the system work:
 
-cp etc/rc.local /etc
-cp etc/avahi/services/* /etc/avahi/services/
-cp etc/samba/smb.conf /etc/samba
-cp etc/modules /etc
-cp etc/network/interfaces /etc/network
-mkdir /etc/firewall
-cp etc/firewall/* /etc/firewall
+#cp etc/rc.local /etc
+#cp etc/avahi/services/* /etc/avahi/services/
+#cp etc/samba/smb.conf /etc/samba
+#cp etc/modules /etc
+#cp etc/network/interfaces /etc/network
+#mkdir /etc/firewall
+#cp etc/firewall/* /etc/firewall
+#cp etc/usbmount/* /etc/usbmount/
+#cp -R etc/udev/rules.d/* /etc/udev/rules.d
+cp -R etc/* /etc/
 
 #**Install webclient**
-
 cd /opt
 
 #Get the webclient from github:
-wget https://github.com/woutervanwijk/Mopidy-Webclient/archive/master.zip
+wget https://github.com/woutervanwijk/Mopidy-Webclient/archive/develop.zip
 #Unpack and copy:
-unzip master.zip
-rm master.zip
+unzip develop.zip
+rm develop.zip
 
-cd Mopidy-Webclient-master/
+cd Mopidy-Webclient-develop/
 cp -R webclient /opt
 
 #Next, create a symlink from the package to the /opt/defaultwebclient. This is done because you could install other webclients and just point the link to the newly installed client:
@@ -74,7 +79,7 @@ useradd -m musicbox
 passwd musicbox
 
 #Add the user to the group audio:
-usermod -a -G audio musicbox
+usermod -a -G audio,avahi musicbox
 #Create a couple of directories inside the user dir:
 mkdir -p /home/musicbox/.config/mopidy
 mkdir -p /home/musicbox/.cache/mopidy
@@ -83,8 +88,11 @@ chown -R musicbox:musicbox /home/musicbox
 
 #**Create Music directory for MP3/OGG/FLAC **
 #Create the directory containing the music and the one where the network share is mounted:
-mkdir -p /music/local
-mkdir -p /music/network
+mkdir -p /music/SD\ Card
+mkdir -p /music/Network
+mkdir -p /music/USB
+mkdir -p /music/USB2
+mkdir -p /music/USB3
 chmod -R 777 /music
 chown -R musicbox:musicbox /music
 
