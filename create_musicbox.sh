@@ -15,18 +15,17 @@ apt-get dist-upgrade -y
 wget -q -O - http://apt.mopidy.com/mopidy.gpg | sudo apt-key add -
 wget -q -O /etc/apt/sources.list.d/mopidy.list http://apt.mopidy.com/mopidy.list
 
-#Then install all packages we need with this command:
+#update time, to prevent update problems
+ntpdate -u ntp.ubuntu.com
 
-sudo apt-get update && sudo apt-get --yes install logrotate alsa-utils python-cherrypy3 python-ws4py wpasupplicant python-spotify gstreamer0.10-alsa ifplugd gstreamer0.10-fluendo-mp3 gstreamer0.10-tools samba dos2unix avahi-utils alsa-base python-pylast cifs-utils avahi-autoipd libnss-mdns ntpdate ca-certificates ncmpcpp rpi-update linux-wlan-ng alsa-firmware-loaders iw atmel-firmware firmware-atheros firmware-brcm80211 firmware-ipw2x00 firmware-iwlwifi firmware-libertas firmware-linux firmware-linux-nonfree firmware-ralink firmware-realtek zd1211-firmware linux-wlan-ng-firmware alsa-firmware-loaders dropbear python-pip usbmount libssl-dev
+#Then install all packages we need with this command:
+sudo apt-get update && sudo apt-get --yes install logrotate alsa-utils python-cherrypy3 python-ws4py wpasupplicant python-spotify gstreamer0.10-alsa ifplugd gstreamer0.10-fluendo-mp3 gstreamer0.10-tools samba dos2unix avahi-utils alsa-base python-pylast cifs-utils avahi-autoipd libnss-mdns ntpdate ca-certificates ncmpcpp rpi-update linux-wlan-ng alsa-firmware-loaders iw atmel-firmware firmware-atheros firmware-brcm80211 firmware-ipw2x00 firmware-iwlwifi firmware-libertas firmware-linux firmware-linux-nonfree firmware-ralink firmware-realtek zd1211-firmware linux-wlan-ng-firmware alsa-firmware-loaders dropbear python-pip usbmount
 
 #mopidy from pip
 yes | pip install mopidy mopidy-spotify mopidy-scrobbler mopidy-soundcloud mopidy-dirble mopidy-gmusic mopidy-subsonic
 
 #**Configuration and Files**
 cd /opt
-
-#update time, just to be sure
-ntpdate -u ntp.ubuntu.com
 
 #Get the files of the Pi MusicBox project
 wget https://github.com/woutervanwijk/Pi-MusicBox/archive/master.zip
@@ -40,22 +39,13 @@ cd Pi-MusicBox-master/filechanges
 
 #Now we are going to copy some files. Backup the old ones if you’re not sure!
 #This sets up the boot and opt directories:
+#manually copy cmdline.txt and config.txt if you want
 mkdir /boot/config
-cp boot/config/settings.ini /boot/config/
+cp -R boot/config /boot/config
 cp -R opt/* /opt
 
 #Make the system work:
-
-#cp etc/rc.local /etc
-#cp etc/avahi/services/* /etc/avahi/services/
-#cp etc/samba/smb.conf /etc/samba
-#cp etc/modules /etc
-#cp etc/network/interfaces /etc/network
-#mkdir /etc/firewall
-#cp etc/firewall/* /etc/firewall
-#cp etc/usbmount/* /etc/usbmount/
-#cp -R etc/udev/rules.d/* /etc/udev/rules.d
-cp -R etc/* /etc/
+cp -R etc/* /etc
 
 #**Install webclient**
 cd /opt
@@ -102,7 +92,7 @@ update-rc.d ssh disable
 #**AirTunes**
 #For AirPlay/AirTunes audio streaming, you have to compile and install Shairport. First issue this command to install the libraries needed to build it:
 
-sudo apt-get update && sudo apt-get --yes --no-install-suggests --no-install-recommends install libcrypt-openssl-rsa-perl libio-socket-inet6-perl libwww-perl
+sudo apt-get update && sudo apt-get --yes install libcrypt-openssl-rsa-perl libio-socket-inet6-perl libwww-perl libssl-dev libao-dev
 
 cd ~
 #Build an updated version of Perl-Net
@@ -123,7 +113,7 @@ make
 mv shairport /opt
 
 #Finally, copy libao.conf from the Pi MusicBox files to /etc :
-cp /opt/Pi-MusicBox-master/filechanges/etc/libao.conf /etc
+#cp /opt/Pi-MusicBox-master/filechanges/etc/libao.conf /etc
 
 #**Optimizations**
 #For the music to play without cracks, you have to optimize your system a bit. 
