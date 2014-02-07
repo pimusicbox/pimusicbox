@@ -307,7 +307,8 @@ then
     echo "Scanning music-files, please wait.... The scanned files will be displayed. You can ignore warnings about non-music files."
     echo
 #    touch /home/musicbox/.cache/mopidy/tag_cache
-    su musicbox -c "mopidy local scan"
+    /etc/init.d/mopidy force-reload
+#    su musicbox -c "mopidy local scan"
 # new command
 #  mopidy local scan
 #    chown musicbox:musicbox /home/musicbox/.cache/mopidy/tag_cache
@@ -335,4 +336,4 @@ fi
 
 #start mopidy 
 #/opt/musicbox/startmopidy.sh > /dev/null 2>&1 || true
-/opt/musicbox/startmopidy.sh
+#/opt/musicbox/startmopidy.sh

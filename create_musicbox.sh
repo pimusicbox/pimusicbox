@@ -19,7 +19,7 @@ wget -q -O /etc/apt/sources.list.d/mopidy.list http://apt.mopidy.com/mopidy.list
 ntpdate -u ntp.ubuntu.com
 
 #Then install all packages we need with this command:
-sudo apt-get update && sudo apt-get --yes install logrotate alsa-utils python-cherrypy3 python-ws4py wpasupplicant python-spotify gstreamer0.10-alsa ifplugd gstreamer0.10-fluendo-mp3 gstreamer0.10-tools samba dos2unix avahi-utils alsa-base python-pylast cifs-utils avahi-autoipd libnss-mdns ntpdate ca-certificates ncmpcpp rpi-update linux-wlan-ng alsa-firmware-loaders iw atmel-firmware firmware-atheros firmware-brcm80211 firmware-ipw2x00 firmware-iwlwifi firmware-libertas firmware-linux firmware-linux-nonfree firmware-ralink firmware-realtek zd1211-firmware linux-wlan-ng-firmware alsa-firmware-loaders dropbear python-pip usbmount
+sudo apt-get update && sudo apt-get --yes install logrotate alsa-utils python-cherrypy3 python-ws4py wpasupplicant python-spotify gstreamer0.10-alsa ifplugd gstreamer0.10-fluendo-mp3 gstreamer0.10-tools samba dos2unix avahi-utils alsa-base python-pylast cifs-utils avahi-autoipd libnss-mdns ntpdate ca-certificates ncmpcpp rpi-update linux-wlan-ng alsa-firmware-loaders iw atmel-firmware firmware-atheros firmware-brcm80211 firmware-ipw2x00 firmware-iwlwifi firmware-libertas firmware-linux firmware-linux-nonfree firmware-ralink firmware-realtek zd1211-firmware linux-wlan-ng-firmware alsa-firmware-loaders dropbear python-pip usbmount mopidy
 
 #mopidy from pip
 yes | pip install mopidy mopidy-spotify mopidy-scrobbler mopidy-soundcloud mopidy-dirble mopidy-gmusic mopidy-subsonic
@@ -83,16 +83,20 @@ mkdir -p /music/Network
 mkdir -p /music/USB
 mkdir -p /music/USB2
 mkdir -p /music/USB3
+mkdir -p /music/USB4
 chmod -R 777 /music
 chown -R musicbox:musicbox /music
 
 #Disable the SSH service for more security if you want (it can be started with an option in the configuration-file):
 update-rc.d ssh disable
 
+ln -s /boot/config/settings.ini /home/musicbox/.config/mopidy/mopidy.conf
+ln -s /boot/config/settings.ini /var/lib/mopidy/.config/mopidy/mopidy.conf
+
 #**AirTunes**
 #For AirPlay/AirTunes audio streaming, you have to compile and install Shairport. First issue this command to install the libraries needed to build it:
 
-sudo apt-get update && sudo apt-get --yes install libcrypt-openssl-rsa-perl libio-socket-inet6-perl libwww-perl libssl-dev libao-dev
+sudo apt-get --yes install libcrypt-openssl-rsa-perl libio-socket-inet6-perl libwww-perl libssl-dev libao-dev
 
 cd ~
 #Build an updated version of Perl-Net
@@ -113,7 +117,7 @@ make
 mv shairport /opt
 
 #Finally, copy libao.conf from the Pi MusicBox files to /etc :
-#cp /opt/Pi-MusicBox-master/filechanges/etc/libao.conf /etc
+cp /opt/Pi-MusicBox-master/filechanges/etc/libao.conf /etc
 
 #**Optimizations**
 #For the music to play without cracks, you have to optimize your system a bit. 

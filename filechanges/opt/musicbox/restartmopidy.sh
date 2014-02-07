@@ -1,4 +1,4 @@
 #!/bin/sh 
-killall -9 mopidy
+#killall -9 mopidy
 #buildconfig.sh
-/opt/musicbox/startmopidy.sh
+/etc/init.d/mopidy restart
