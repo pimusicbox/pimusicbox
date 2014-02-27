@@ -66,35 +66,30 @@
   js.src = "//connect.facebook.net/nl_NL/all.js#xfbml=1";
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));</script>
-        
-        <h2>Pi MusicBox Beta 1</h2>
+        <h2>Pi MusicBox</h2>
         <p>
-    	    MusicBox 0.4 (Beta) contains the following improvements:
+    	    MusicBox 0.5 alpha contains the following improvements:
         </p>
     	    <ul>
-    	    <li>New, much improved webinterface</li>
-    	    <li>Use multiple Pi's on the same network (Multiroom Audio)</li>
-<li>Webradio support</li>
-<li>SoundCloud support (beta!)</li>
-<li>Google Music support (alpha!)</li>
-<li>More stable</li>
-<li>Windows workgroup name configuration</li>
-<li>Other big updates to web client (faster, cleaner, more stable, more options)</li>
-<li>Big updates to Mopidy music server</li>
-<li>Optimizations to have less services running, less logging, less writes to SD-Card, less unwanted noises</li>
-<li>Better security trough a simple firewall</li>
-<li>Mopidy runs as a normal user</li>
-<li>SSH service disabled by default</li>
-<li>Automatically change passwords of musicbox and root users</li>
+    	    <li>Mopidy 0.18.x, with lots of enhancements</li>
+                <li>Mopidy runs as a service</li>
+                <li>Settings.ini and mopidy.conf merged to one file, so you can configure Mopidy specific settings yourself easily</li>
+                <li>Dirble, Grooveshark support</li>
+                <li>Browsing support for local media files, Dirble, etc</li>
+                <li>Better webradio (Mopidy can read m3u and asx files now!)</li>
+                <li>Newer kernel</li>
+                <li>Quick hack to easily edit default radiostations</li>
+                <li>Bugfixes</li>
+                <li>Better USB Sound, better i2s</li>
     	    </ul>
 
         <h3> Instructions</h3>
         <ul>
             <li>
-                Download the image. It's about 220MB in (compressed) size; 1GB uncompressed (MD5 checksum bab9d8bd2261e1fe2fb3688d52b62e87).<br/><br/>
+                Download the image. It's about 260MB in (compressed) size; 1GB uncompressed.<br/><br/>
                 <ul>
-                    <li><a href="http://dl.mopidy.com/musicbox0.4-beta.zip">musicbox0.4-beta.zip (Fast mirror)</a> </li>
-                    <li><a href="musicbox0.4-beta.zip">musicbox0.4-beta.zip (from this site)</a></li>
+                    <li><a href="http://dl.mopidy.com/musicbox0.5alpha.zip">musicbox0.5alpha.zip (Fast mirror)</a> </li>
+                    <li><a href="musicbox0.5alpha.zip">musicbox0.5alpha.zip (from this site)</a></li>
                 </ul><br/>
                  This can take a while, so spread the word in the meantime:<br/><br/>
   <span class='st_facebook_large' displayText='Facebook'></span>
@@ -107,7 +102,7 @@
         <span class='st_sharethis_large' displayText='ShareThis'></span>  <br/>     <br/>     
             </li>
             <li>
-                Extract the zip-file. Put the resulting image (MD5 381662700fdfa22001580ff0b0ac9f52) on your SD Card by following <a href="http://elinux.org/RPi_Easy_SD_Card_Setup#Easy_way">these
+                Extract the zip-file. Put the resulting image on your SD Card by following <a href="http://elinux.org/RPi_Easy_SD_Card_Setup#Easy_way">these
                 instuctions</a>. The image is for a 1GB card, but you can put it on a
                 larger one. 
             </li>
@@ -176,7 +171,7 @@
                 start the Pi. Restart if you plug them in later.
             </li>
         </ul>
-        <h3 style="color: #d44;">SECURITY WARNING</h3>
+        <h3>Security</h3>
         <p></p>
         <p>
             This is system not completely secure. Don't run it outside a firewall!

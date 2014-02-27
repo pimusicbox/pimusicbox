@@ -48,8 +48,8 @@ cat <<\EOF > /etc/init.d/resize2fs_once &&
 # Provides:          resize2fs_once
 # Required-Start:
 # Required-Stop:
-# Default-Start: 2 3 4 5 S
-# Default-Stop:
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
 # Short-Description: Resize the root filesystem to fill partition
 # Description:
 ### END INIT INFO

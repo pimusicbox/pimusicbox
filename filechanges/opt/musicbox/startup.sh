@@ -57,7 +57,7 @@ if [ "$INI__musicbox__resize_once" == "1" ]
 then
     #set resize_once=false in ini file
     sed -i -e "/^\[musicbox\]/,/^\[.*\]/ s|^\(RESIZE_ONCE[ \t]*=[ \t]*\).*$|\1false\r|" $CONFIG_FILE
-    sh /opt/resizefs.sh -y
+    sh /opt/musicbox/resizefs.sh -y
     reboot
     exit
 fi
