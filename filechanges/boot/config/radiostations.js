@@ -1,5 +1,7 @@
 /**
- * Default Radiostations
+ * Default Radiostations which appear in the webinterface. Edit if you like.
+ * Take care when editting. Only edit the stuff between ''
+ * And don't use the default Windows Notepad for this (use Notepad++ on Windows)
  */
 
 var radioStations = [];

@@ -1,10 +1,19 @@
 Pi MusicBox Changelog
 
-0.5 alphaalpha
-Mopidy 0.18, with lots of enhancements
-Dirble, Grooveshark
-Browsing support for local media files, Dirble, etc
-Better webradio
+0.5 alpha - March 1 2014
+Mopidy 0.18.x, with lots of enhancements
+Browsing support for local media files, Spotify, Dirble, etc
+Dirble, Subsonic, Internet Archive Sound, TuneIn Radio support
+First steps to support Podcasts, SomaFM, Rad.io/Radio.de/Radio.fr (does not work (fully) yet)
+Better webradio (Mopidy can read m3u and asx files now!)
+Quick hack to easily edit default radio stations in webinterface (use radiostations.js)
+Better USB Sound, better i2s
+Settings.ini and mopidy.conf merged to one file, so you can configure Mopidy specific settings yourself easily
+Mopidy runs as a service
+More reliable networking
+Logging on startup (not totally there yet)
+Newer kernel
+Bugfixes
 
 0.4.3 - 8 january 2014
 USB disks mounted at boot and scanned for music
