@@ -19,4 +19,6 @@
 # 5000-5005 tcp, 6000-6005 udp: shairport
 #DLNA 8200, 1900 TCP
 
+#5004 for streaming
+
 COMMIT
