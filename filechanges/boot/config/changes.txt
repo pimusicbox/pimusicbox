@@ -1,5 +1,18 @@
 Pi MusicBox Changelog
 
+0.5 alpha2 - March 5 2014
+Fix for networking problems (I hope!)
+Automatically play a stream at startup
+Google Music All Access works again
+Webclient: Easier to add radiostations from Dirble/TuneIn browsing to the favorites in the radio section
+Bugfixes (like samba/cifs mount, wifi, settings.ini)
+Disbled login for musicbox user. No need anymore
+Soma FM works
+Fixed partition size
+motd ascii art
+Resize bug fixed
+Check added for fat partition
+
 0.5 alpha - March 1 2014
 Mopidy 0.18.x, with lots of enhancements
 Browsing support for local media files, Spotify, Dirble, etc

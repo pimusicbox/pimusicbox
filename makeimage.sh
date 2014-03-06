@@ -9,6 +9,7 @@ DRIVE='/dev/sdb'
 PART1=$DRIVE'1'
 PART2=$DRIVE'2'
 ZEROROOT='y'
+COUNT=975
 
 umount $PART1
 umount $PART2
@@ -24,18 +25,22 @@ rm $MB_DIRECTORY'/'$IMGNAME
 rm /media/sf_Downloads/$ZIPNAME
 rm /media/sf_Downloads/$IMGNAME
 
+#check filesystem and repair
+fsck -p $PART1
+fsck -p $PART2
+
 #echo "Zero root (y/N)?"
 #read ZEROROOT
 
-#echo "Resize size to 888 MB(y/N)?"
+#echo "Resize size to 960 MB(y/N)?"
 #read RESIZEFS
 
 if [ "$RESIZEFS" == "y" ]
 then
     echo "Check..."
     e2fsck -fy $PART2
-    echo "Resize to 888MB..."
-    resize2fs $PART2 888M
+    echo "Resize to 960MB..."
+    resize2fs $PART2 960M
     echo "Ready"
 
   # Get the starting offset of the root partition
@@ -51,7 +56,7 @@ n
 p
 2
 $PART_START
-+915M
++960M
 p
 w
 EOF
@@ -84,6 +89,9 @@ rm $MNT/zero
 
 mount $PART2 $MNT2
 
+# copy root
+cp -r $MNT2/root /tmp
+
 #remove network settings, etc
 rm $MNT2/var/lib/dhcp/*.leases
 touch $MNT2/var/lib/dhcp/dhcpd.leases
@@ -98,9 +106,9 @@ rm -r $MNT2/var/log/apt/*
 
 
 #remove spotify/audio settings
-rm -r $MNT2/home/musicbox/.cache/gmusicapi/*
-rm -r $MNT2/home/musicbox/.cache/mopidy/*
-rm -r $MNT2/home/musicbox/.gstreamer-0.10/*
+rm -r $MNT2/var/lib/mopidy/.cache/gmusicapi/*
+rm -r $MNT2/var/lib/mopidy/.cache/mopidy/spotify/*
+rm -r $MNT2/var/lib/mopidy/.config/mopidy/spotify/*
 rm -r $MNT2/tmp/*
 
 #put version in login prompt
@@ -110,7 +118,8 @@ echo -e 'MusicBox '$IMGVERSION"\n" > $MNT2/etc/issue
 rm -r $MNT2/music/SD\ Card/*
 
 #bash history
-rm $MNT2/home/musicbox/.bash_history
+rm $MNT2/root/.bash_history
+rm $MNT2/root/.ssh/id_*
 
 #config
 rm -r $MNT2/home/musicbox/.config/mopidy/spotify
@@ -129,36 +138,42 @@ if [ "$ZEROROOT" = "Y" -o "$ZEROROOT" = "y" ]; then
     rm $MNT2/zero
 fi
 
-echo "wait 30 sec for mount"
-sleep 30
+echo "wait 15 sec for mount"
+sleep 15
 
 umount $MNT
 umount $MNT2
 
-echo "wait 30 sec for mount again"
-sleep 30
+echo "wait 15 sec for mount again"
+sleep 15
 
 #echo "Ok?"
 #read TST
 
 umount $MNT
 umount $MNT2
-rmdir $MNT2
 
-# a user reported an SD size of 988286976, which would be 942 blocks
-# but 960 to be save
-echo "DD 960 * 1M"
-dd bs=1M if=$DRIVE count=960 | pv -s 960m | dd of=musicbox$IMGVERSION.img
+# a user reported an SD size of 988286976, which would be 942 blocks of 1M
+# but $COUNT to be save
+echo "DD $COUNT * 1M"
+dd bs=1M if=$DRIVE count=$COUNT | pv -s "$COUNT"m | dd of=musicbox$IMGVERSION.img
 
 echo "Copy Config back"
 mount $PART1 $MNT
+mount $PART2 $MNT2
 cp -r /tmp/config $MNT
 rm -r /tmp/config
 
+cp -r /tmp/root $MNT2
+rm -r /tmp/root
+
 echo "wait 30 sec for umount"
 sleep 30
+
 umount $MNT
 rmdir $MNT
+umount $MNT2
+rmdir $MNT2
 
 echo "zip image"
 zip -9 $ZIPNAME $IMGNAME MusicBox_Manual.pdf

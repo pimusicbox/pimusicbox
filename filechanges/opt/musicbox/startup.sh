@@ -7,7 +7,6 @@
 
 #set user vars
 MB_USER=musicbox
-MB_HOME=/home/musicbox
 CONFIG_FILE=/boot/config/settings.ini
 NAME="MusicBox"
 
@@ -76,7 +75,7 @@ rm /tmp/settings.ini > /dev/null 2>&1 || true
 if [ "$INI__musicbox__resize_once" == "1" ]
 then
     #set resize_once=false in ini file
-    sed -i -e "/^\[musicbox\]/,/^\[.*\]/ s|^\(RESIZE_ONCE[ \t]*=[ \t]*\).*$|\1false\r|" $CONFIG_FILE
+    sed -i -e "/^\[musicbox\]/,/^\[.*\]/ s|^\(resize_once[ \t]*=[ \t]*\).*$|\1false\r|" $CONFIG_FILE
     log_progress_msg "Initalizing resize..." "$NAME"
     sh /opt/musicbox/resizefs.sh -y
     reboot
@@ -108,15 +107,6 @@ fi
 log_progress_msg "MusicBox name is $CLEAN_NAME" "$NAME"
 
 # do the change password stuff
-if [ "$INI__musicbox__musicbox_password" != "" ]
-then
-    log_progress_msg "Setting musicbox user Password" "$NAME"
-    echo "musicbox:$INI__musicbox__musicbox_password" | chpasswd
-#    echo "root:$INI__musicbox__ROOT_PASSWORD" | chpasswd
-    #remove password
-    sed -i -e "/^\[musicbox\]/,/^\[.*\]/ s|^\(musicbox_password[ \t]*=[ \t]*\).*$|\1\r|" $CONFIG_FILE
-fi
-
 if [ "$INI__musicbox__root_password" != "" ]
 then
     log_progress_msg "Setting root user Password" "$NAME"
@@ -132,6 +122,9 @@ network={
     psk="$INI__network__wifi_password"
 }
 EOF
+#ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+#update_config=1
+#EOF
 
 /etc/init.d/networking restart
 
@@ -306,11 +299,11 @@ done
 ntpdate ntp.ubuntu.com > /dev/null 2>&1 || true
 
 #mount windows share
-if [ "$INI__network__network_mount_address" != "" ]
+if [ "$INI__network__mount_address" != "" ]
 then
     #mount samba share, readonly
     log_progress_msg "Mounting Windows Network drive..." "$NAME"
-    mount -t cifs -o ro,rsize=2048,wsize=4096,cache=strict,user=$INI__network__network_mount_user,password=$INI__network__network_mount_password $INI__network__network_mount_address /music/Network/
+    mount -t cifs -o sec=ntlm,ro,rsize=2048,wsize=4096,cache=strict,user=$INI__network__mount_user,password=$INI__network__mount_password $INI__network__mount_address /music/Network/
 #add rsize=2048,wsize=4096,cache=strict because of usb (from raspyfi)
 fi
 
@@ -337,6 +330,15 @@ fi
 _IP=$(hostname -I) || true
 if [ "$_IP" ]; then
     log_progress_msg "My IP address is $_IP. Connect to MusicBox in your browser via http://$CLEAN_NAME.local or http://$_IP " "$NAME"
+fi
+
+if [ "$INI__musicbox__autoplay" -a "$INI__musicbox__autoplaywait" ]
+then
+    log_progress_msg "Waiting $INI__musicbox__autoplaywait seconds before autoplay." "$NAME"
+    sleep $INI__musicbox__autoplaywait
+    log_progress_msg "Playing $INI__musicbox__autoplay" "$NAME"
+    mpc add "$INI__musicbox__autoplay"
+    mpc play
 fi
 
 log_end_msg 0

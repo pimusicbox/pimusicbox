@@ -1,0 +1,261 @@
+<!doctype html>
+<html>
+	<head>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+        <title>Pi MusicBox - A Spotify, SoundCloud, Google Music player for the Raspberry Pi, with remote control</title>
+        <meta name="description" content="Connect Spotify, SoundCloud, Google Music to your audio set using the Raspberry Pi and control it from your couch! An easy to use SD-image for the Pi. AirPlay streaming included!">
+        <meta name="keywords" content="spotify, player, music, musicbox, raspberry pi,free, open source, connect, remote, multiroom, audio, control, soundcloud, google music, webradio, radio, stream, mpd, usb dac, audioset, audioplayer, mp3, ogg, flac, airtunes, airplay, last.fm, scrobbling, hifi, stereo, remote, mashup, wifi, headless, web interface, internet radio, headphones, usb speakers">
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<link rel="stylesheet" href="css/jquery.fancybox.css" type="text/css" media="screen" />
+		<script type="text/javascript" src="js/jquery.fancybox.pack.js"></script>
+		<link href="css/layout.css" rel="stylesheet" type="text/css" />
+		<link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
+        <script type="text/javascript">
+            var switchTo5x = true;
+        </script>
+        <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
+        <script type="text/javascript">
+            stLight.options({
+                publisher : "f38aa90c-6454-453d-8968-757a3daea467",
+                doNotHash : false,
+                doNotCopy : false,
+                hashAddressBar : false
+            });
+        </script>
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-3143458-7']);
+            _gaq.push(['_trackPageview']);
+
+            (function() {
+                var ga = document.createElement('script');
+                ga.type = 'text/javascript';
+                ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0];
+                s.parentNode.insertBefore(ga, s);
+            })();
+
+        </script>
+        <link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon"/>
+        <link rel="icon" href="favicon.ico" type="image/x-ico"/>
+	</head>
+<body>
+
+<img src="images/logo-small.png" width="340" class="logo" />
+<div class="wrapper">
+	<div class="social">
+		<a href="https://www.facebook.com/raspberrypimusicbox" target="_blank"><img src="images/fb.png" /></a>
+		<a href="https://twitter.com/pimusicbox" target="_blank"><img src="images/tw.png" /></a>
+	</div>
+    <h1>Frequently asked questions</h1>
+<div class="fadedline"></div>
+<span style="font-weight: bold;">Q</span> <span style="font-weight: bold;">:</span> <span style="font-weight: bold;">What were the
+login credentials
+again ?
+I forgot them...</span><br>
+<div style="text-align: left;"><span style="font-weight: bold;">A</span> <span style="font-weight: bold;">:</span> username
+root, password is Musicbox.
+<br>
+<div class="fadedline"></div>
+<span style="font-weight: bold;">Q</span> <span style="font-weight: bold;">:</span> <span style="font-weight: bold;">Is there a way to upgrade the
+music box image, or is the only solution to use the whole new image?
+</span><br>
+<span style="font-weight: bold;">A</span> <span style="font-weight: bold;">:</span> For now, there is
+no real upgrade path, and the only way to upgrade is to simply download
+the newest image.<br>
+You could save your .ini and copy/paste settings to the new image.
+<br>
+<div class="fadedline"></div>
+<span style="font-weight: bold;">Q</span> <span style="font-weight: bold;">:</span> <span style="font-weight: bold;">
+Can i use the free version of
+Spotify ? </span><span style="font-weight: bold;">A</span>
+<span style="font-weight: bold;">:</span> No,
+sorry. Spotify does not allow free users to stream to third
+party clients.
+<br>
+<div class="fadedline"></div>
+<span style="font-weight: bold;">Q</span> <span style="font-weight: bold;">:</span><span style="font-weight: bold;"> I upgraded
+my Musicbox with apt-get, now i'm having issues.
+Can you advise me on what to do ?
+</span><br>
+<span style="font-weight: bold;">A</span> <span style="font-weight: bold;">:</span> I would
+advise you not to upgrade your Raspbian unless it is absolutely
+necessary, as
+it tends to cause breakage.<br>
+<div class="fadedline"></div>
+<span style="font-weight: bold;">Q</span> <span style="font-weight: bold;">:</span> <span style="font-weight: bold;">Can i change
+the standard radio
+station list ?
+</span><br>
+<span style="font-weight: bold;">A :</span> Yes. <br>
+Currently the list is stored in
+/opt/defaultwebclient/js/functionsvars.js <br>
+(or opt\flatclient\js\functionsvars.js if accessing from a windows
+box),<br>
+which you can edit by hand with with any text editor.<br>
+In a future build, you'll be able to access the list from the webUI.<br>
+In the mean time, a simpler method is to use any of the popular Mopidy
+clients on your phone/pc/mac, <br>
+most of them have the option of storing
+playlists and radio stations locally.<br>
+See <a href="http://mpd.wikia.com/wiki/Clients">http://mpd.wikia.com/wiki/Clients</a>
+for a suggested client list.
+<br>
+<div class="fadedline"></div>
+<span style="font-weight: bold;">Q :</span> <span style="font-weight: bold;">I'm
+having some trouble with Google Play, like searching for music.</span>
+<span style="font-weight: bold;">Do
+you have any fixes ?</span><br>
+<span style="font-weight: bold;">A</span> <span style="font-weight: bold;">:</span> Not at
+this moment. <br>
+I am able to replicate the issue(s) but i haven't found <br>
+a solution to them yet.
+<br>
+<div class="fadedline"></div>
+<span style="font-weight: bold;">Q</span> <span style="font-weight: bold;">:</span> <span style="font-weight: bold;">Will you
+support container files
+for radio streams at some point ?
+</span><br>
+<span style="font-weight: bold;">A :</span> As soon
+as integration with the latest version of Mopidy is done,
+hopefully in the next build of Musicbox.
+<br>
+<div class="fadedline"></div>
+<span style="font-weight: bold;">Q</span> <span style="font-weight: bold;">:</span> <span style="font-weight: bold;">Can i use
+Spotify radio ?
+</span><br>
+<span style="font-weight: bold;">B :</span>
+unfortunately Spotify's current libSpotify SDK does not support that
+function, if they implement it i'll try and include it.
+<br>
+<div class="fadedline"></div>
+<span style="font-weight: bold;">Q :</span> <span style="font-weight: bold;">Can i
+use HiFiBerry ?
+</span><br>
+<span style="font-weight: bold;">A :</span> Yes, use
+the latest version of Musicbox. <br>
+Output through i2s.
+<br>
+<div class="fadedline"></div>
+<span style="font-weight: bold;">Q :</span> <span style="font-weight: bold;">Can i have
+several Musicboxes stream content to one another ? </span><br>
+<span style="font-weight: bold;">A :</span> Not yet,
+but i'm hoping to get it implemented one day.
+<br>
+<div class="fadedline"></div>
+<span style="font-weight: bold;">Q :</span> <span style="font-weight: bold;">How do i access shared files ?
+</span><br>
+<span style="font-weight: bold;">A :</span>
+Currently you'll have to search for them via the interface or
+through a Mopidy client.<br>
+The next Musicbox build will (hopefully) have a browse option.
+<br>
+<div class="fadedline"></div>
+<span style="font-weight: bold;">Q :</span> <span style="font-weight: bold;">Can i
+access the Pi via terminal/command line remotely ?
+</span><br>
+<span style="font-weight: bold;">A :</span> Yes,
+simply allow SSH in the Pi's .ini file.
+<br>
+<div class="fadedline"></div>
+<span style="font-weight: bold;">Q :</span> <span style="font-weight: bold;">Where can i
+find the hardcore
+technical info in Musicbox ?
+</span><br>
+<span style="font-weight: bold;">A :</span>
+<a href="https://github.com/woutervanwijk/Pi-Musicbox/">https://github.com/woutervanwijk/Pi-Musicbox/</a>
+<br>
+<div class="fadedline"></div>
+<span style="font-weight: bold;">Q :</span> <span style="font-weight: bold;">How do i make
+(insert wifi
+dongle name here) work with the Musicbox
+?</span><br>
+<span style="font-weight: bold;">A :</span> Musicbox
+is built off Raspbian, so any supported dongle will most
+likely work, but as with all things Linux/GNU, breakage can (and
+usually will)
+occur.<br>
+<br>
+<br>
+<span style="font-weight: bold;">Q :</span> <span style="font-weight: bold;">Can the
+Musicbox stream to my
+airplay device ?
+</span><br>
+<span style="font-weight: bold;">A :</span> Right
+now it can't. <br>
+I may implement this if i ever have enough
+time, as it is a complicated project to get it working.
+<br>
+<div class="fadedline"></div>
+<span style="font-weight: bold;">Q :</span> <span style="font-weight: bold;">Can i edit my Spotify playlists
+from the Musicbox ?</span><br>
+<span style="font-weight: bold;">A :</span> Once it
+is implemented in Mopidy, you'll be able to.
+<br>
+<div class="fadedline"></div>
+<span style="font-weight: bold;">Q :</span> <span style="font-weight: bold;">can i run the
+Musicbox output to
+several devices via a
+multi-channel USB audio device ?
+</span><br>
+<span style="font-weight: bold;"></span><span style="font-weight: bold;">A :</span> To do
+that you would have to run multiple instances of Mopidy and
+make them run in sync, it's not supported and it isn't on my to-do
+list, sorry.
+<br>
+<div class="fadedline"></div>
+<span style="font-weight: bold;">Q :</span> <span style="font-weight: bold;">Is there a
+support forum where i can ask in-depth questions ?
+</span><br>
+<span style="font-weight: bold;">A :</span> No,
+sorry, just Twitter and Facebook, as i don't &nbsp;have time for
+full-time support.<br>
+<div class="fadedline"></div>
+<span style="font-weight: bold;">Q :</span> <span style="font-weight: bold;">Can i stream Spotify to several
+different Musicboxes at once ?</span>
+<br>
+<span style="font-weight: bold;">A :</span> No, as
+this
+is a Spotify limitation.
+<br>
+But perhaps if i get around to implementing the streaming from Musicbox
+to Musicbox, it may become possible.
+<br>
+<div class="fadedline"></div>
+<span style="font-weight: bold;">Q :</span> <span style="font-weight: bold;">Can i get the
+Musicbox to
+auto-start playing a playlist or
+radiostation upon bootup ?
+</span><br>
+<span style="font-weight: bold;">A :</span> In a
+way, but it would require some scripting on your end for now.
+Check out : <a href="https://groups.google.com/forum/#%21topic/Mopidy/u1UVeL0542s">https://groups.google.com/forum/#!topic/Mopidy/u1UVeL0542s</a><br>
+<div class="fadedline"></div>
+<span style="font-weight: bold;">Q :</span> <span style="font-weight: bold;">Will you add
+WiMP support ?
+</span><br>
+<span style="font-weight: bold;">A :</span> WiMP
+support in MusicBox depends on WiMP support in Mopidy. The story of
+that can be read at <a href="https://github.com/mopidy/mopidy/issues/48">https://github.com/mopidy/mopidy/issues/48</a>.
+<span style="font-style: italic;"><br>
+</span>
+<div class="fadedline">&nbsp;</div>
+    <a href="index.html"><span style="font-weight: bold;">Back to the main page</span> &nbsp;<img style="border: 2px solid ; width: 16px; height: 16px;" alt="RPi icon" src="favicon.ico"></a> </div>
+</div>
+<div class="footer">
+	<a href="http://www.adam-wilson.me" target="_blank">Website created by Adam Wilson</a> - FAQ by Dan
+</div>
+
+<a href="#" class="scrollUp">Scroll to the Top</a>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$(".fancybox").fancybox();
+	});
+</script>
+<!-- Initilize fancybox !-->
+
+
+</body>
+</html>

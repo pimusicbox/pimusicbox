@@ -100,10 +100,11 @@ class HttpFrontend(pykka.ThreadingActor, CoreListener):
                 host=self.hostname, port=self.port)
 
             if self.zeroconf_service.publish():
-                logger.info('Registered HTTP with Zeroconf as "%s"',
-                            self.zeroconf_service.name)
+                logger.debug(
+                    'Registered HTTP with Zeroconf as "%s"',
+                    self.zeroconf_service.name)
             else:
-                logger.info('Registering HTTP with Zeroconf failed.')
+                logger.debug('Registering HTTP with Zeroconf failed.')
 
     def on_stop(self):
         if self.zeroconf_service:
@@ -118,6 +119,7 @@ class HttpFrontend(pykka.ThreadingActor, CoreListener):
         event['event'] = name
         message = json.dumps(event, cls=models.ModelJSONEncoder)
         cherrypy.engine.publish('websocket-broadcast', TextMessage(message))
+
 
 class RootResource(object):
     @cherrypy.expose
@@ -156,7 +158,7 @@ class RootResource(object):
     @cherrypy.expose
     def log(self, **params):
         page = '<html><body>'
-        with open('/var/log/mopidy.log', 'r') as f:
+        with open('/var/log/mopidy/mopidy.log', 'r') as f:
             page = '<pre>%s</pre>' % f.read()
             page += '</body></html>'
         return page

@@ -14,10 +14,12 @@
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
 DESC="Mopidy music server"
 NAME=mopidy
-DAEMON=/usr/bin/mopidy
-DAEMON_USER=musicbox
+DAEMON=/usr/local/bin/mopidy
+DAEMON_USER=mopidy
 DAEMON_GROUP=audio
-DAEMON_ARGS="--quiet --config $(printf "%s:" /etc/mopidy/extensions.d/*.conf /etc/mopidy/mopidy.conf)"
+CONFIG_FILES=$(printf ":%s" /etc/mopidy/extensions.d/*.conf /etc/mopidy/mopidy.conf)
+CONFIG_FILES=$(echo $CONFIG_FILES | awk '{ s=substr($0, 2); print s; }')
+DAEMON_ARGS="--quiet --config $CONFIG_FILES"
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 
@@ -60,14 +62,11 @@ do_stop()
     return "$RETVAL"
 }
 
-do_reload()
-{
-    su -s /bin/sh -c "$DAEMON $DAEMON_ARGS local scan" $DAEMON_USER && return 0
-    log_warning_msg "$NAME: reload failed with error code $?."
-    return 2
-}
+# Remove the action from $@ before it is used by the run action
+action=$1
+[ "$action" != "" ] && shift
 
-case "$1" in
+case "$action" in
     start)
         [ "$VERBOSE" != no ] && log_daemon_msg "Starting $DESC " "$NAME"
         do_start
@@ -92,11 +91,7 @@ case "$1" in
         do_stop
         case "$?" in
             0|1)
-                if [ "$1" = "force-reload" ]; then
-                    do_reload && do_start
-                else
-                    do_start
-                fi
+                do_start
                 case "$?" in
                     0) log_end_msg 0 ;;
                     1) log_end_msg 1 ;; # Old process is still running
@@ -109,8 +104,20 @@ case "$1" in
                 ;;
         esac
         ;;
+    run)
+        if [ "$1" = "" ]; then
+            echo "Usage: $SCRIPTNAME run [options-or-subcommands]"
+            echo "Examples:"
+            echo "  $SCRIPTNAME run --help"
+            echo "  $SCRIPTNAME run config"
+            echo "  $SCRIPTNAME run local scan"
+            exit 3
+        fi
+        CMD="$DAEMON $DAEMON_ARGS $@"
+        su -s /bin/sh -c "$CMD" -- $DAEMON_USER
+        ;;
     *)
-        echo "Usage: $SCRIPTNAME {start|stop|status|restart|force-reload}" >&2
+        echo "Usage: $SCRIPTNAME {start|stop|status|restart|force-reload|run}" >&2
         exit 3
         ;;
 esac
