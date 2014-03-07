@@ -1,10 +1,10 @@
 Pi MusicBox Changelog
 
-0.5 alpha2 - March 5 2014
+0.5 alpha2 - March 7 2014
 Fix for networking problems (I hope!)
 Automatically play a stream at startup
-Google Music All Access works again
 Webclient: Easier to add radiostations from Dirble/TuneIn browsing to the favorites in the radio section
+Webclient fixes
 Bugfixes (like samba/cifs mount, wifi, settings.ini)
 Disbled login for musicbox user. No need anymore
 Soma FM works

@@ -108,6 +108,7 @@ rm -r $MNT2/var/log/apt/*
 #remove spotify/audio settings
 rm -r $MNT2/var/lib/mopidy/.cache/gmusicapi/*
 rm -r $MNT2/var/lib/mopidy/.cache/mopidy/spotify/*
+rm -r $MNT2/var/lib/mopidy/.local/share/mopidy/local/*
 rm -r $MNT2/var/lib/mopidy/.config/mopidy/spotify/*
 rm -r $MNT2/tmp/*
 
