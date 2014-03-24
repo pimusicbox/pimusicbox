@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+ <head>
+   <meta charset="UTF-8">
+   <meta name="format-detection" content="telephone=no" />
+   <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+   <title></title>
+   <link rel="shortcut icon" href="favicon.ico">
+   <link rel="stylesheet" type="text/css" href="css/app.css">
+ </head>
+ <body>
+   <div class="container-fluid">
+     <div class="row">
+       <div class="columns col-sm-8 col-md-7">
+         <div class="row">
+           <div id="navigation_view" class="columns col-sm-6 col-md-4"></div>
+           <div id="root_view" class="columns col-sm-6 col-md-8"></div>
+         </div>
+       </div>
+       <div id="primary_router_view" class="columns col-sm-4 col-md-5"></div>
+     </div>
+   </div>
+   <script src="js/bundle.js"></script>
+   <script src="js/app.js"></script>
+   <script>
+     var config = {
+//       mopidyWebSocketUrl: 'ws://localhost:6680/mopidy/ws/',
+       lastfm: {
+         key: 'b6d34c3af91d62ab0ae00ab1b6fa8733',
+         secret: '2c631802c2285d5d5d1502462fe42a2b'
+       }
+     };
+     jukePi(config, function (err, app) {});
+   </script>
+ </body>
+</html>

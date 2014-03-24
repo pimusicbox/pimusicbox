@@ -184,9 +184,9 @@ pcm.!default {
         slave {
             pcm "hw:$CARD"
             rate 44100
-            period_time 0
-            period_size 4096
-            buffer_size 131072
+#            period_time 0
+#            period_size 4096
+#            buffer_size 131072
         }
     }
 }
@@ -251,6 +251,9 @@ done
 amixer -c 0 set PCM playback 98% > /dev/null 2>&1 || true &
 #amixer -c 0 set PCM playback ${VOLUME}% > /dev/null 2>&1 || true &
 
+#enable wifi
+ifup wlan0
+
 if [ "$INI__network__workgroup" != "" ]
 then
     #change smb.conf workgroup value
@@ -259,18 +262,18 @@ then
     /etc/init.d/samba restart
 fi
 
-#start shairport in the background
-if [ "$OUTPUT" == "usb" ]
-then
-    #start shairport for usb (alsa device 1,0)
-    su $MB_USER -c "/opt/shairport/shairport.pl -d -a $CLEAN_NAME --ao_driver alsa --ao_devicename \"hw:1,0\" --play_prog=\"ncmpcpp stop \"" > /dev/null 2>&1 &
-#    su $MB_USER -c "/opt/shairport/shairport.pl -d -a $CLEAN_NAME --ao_driver alsa --ao_devicename \"hw:1,0\"" > /dev/null 2>&1 &
-else
-    #start shairport normally
-#    /opt/shairport/shairport.pl -d -a MusicBox > /dev/null 2>&1 &
-    su $MB_USER -c "/opt/shairport/shairport.pl -d -a $CLEAN_NAME --play_prog=\"ncmpcpp stop \"" > /dev/null 2>&1 &
-#    su $MB_USER -c "/opt/shairport/shairport.pl -d -a $CLEAN_NAME" > /dev/null 2>&1 &
-fi
+##start shairport in the background
+#if [ "$OUTPUT" == "usb" ]
+#then
+#    #start shairport for usb (alsa device 1,0)
+#    su $MB_USER -c "/opt/shairport/shairport.pl -d -a $CLEAN_NAME --ao_driver alsa --ao_devicename \"hw:1,0\" --play_prog=\"ncmpcpp stop \"" > /dev/null 2>&1 &
+##    su $MB_USER -c "/opt/shairport/shairport.pl -d -a $CLEAN_NAME --ao_driver alsa --ao_devicename \"hw:1,0\"" > /dev/null 2>&1 &
+#else
+#    #start shairport normally
+##    /opt/shairport/shairport.pl -d -a MusicBox > /dev/null 2>&1 &
+#    su $MB_USER -c "/opt/shairport/shairport.pl -d -a $CLEAN_NAME --play_prog=\"ncmpcpp stop \"" > /dev/null 2>&1 &
+##    su $MB_USER -c "/opt/shairport/shairport.pl -d -a $CLEAN_NAME" > /dev/null 2>&1 &
+#fi
 
 #redirect 6680 to 80
 iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 6680 > /dev/null 2>&1 || true
@@ -318,7 +321,11 @@ fi
 if [ "$INI__musicbox__scan_always" == "1" -o "$INI__musicbox__scan_once" == "1" ]
 then
     log_progress_msg "Scanning music-files, please wait..." "$NAME"
-    /etc/init.d/mopidy force-reload
+#    /etc/init.d/mopidy force-reload
+    /etc/init.d/mopidy run local scan
+    #somehow mopidy is not killed ok. kill manually
+    killall -9 mopidy
+    /etc/init.d/mopidy restart
 fi
 
 if [ "$INI__network__name" != "$CLEAN_NAME" -a "$INI__network__name" != "" ]
