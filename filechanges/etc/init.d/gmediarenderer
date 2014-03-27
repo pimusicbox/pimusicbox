@@ -1,0 +1,30 @@
+### BEGIN INIT INFO
+# Provides: gmediarender
+# Required-Start: $remote_fs $syslog
+# Required-Stop: $remote_fs $syslog
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: Start GMediaRender at boot time
+# Description: Start GMediaRender at boot time.
+### END INIT INFO
+#! /bin/sh
+# /etc/init.d/gmediarender
+NAME=`cat /etc/hostname | tr -cd "[:alnum:]"`
+USER=pi
+HOME=/home/pi
+export USER HOME
+case "$1" in
+ start)
+ echo "Starting GMediaRender"
+ /usr/local/bin/gmediarender -f "$NAME (MusicBox)" --logfile=/dev/stdout
+ ;;
+stop)
+ echo "Stopping GMediaRender"
+ killall gmediarender
+ ;;
+*)
+ echo "Usage: /etc/init.d/gmediarender {start|stop}"
+ exit 1
+ ;;
+esac
+exit 0

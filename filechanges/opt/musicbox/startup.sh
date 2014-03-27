@@ -276,7 +276,7 @@ fi
 #fi
 
 #redirect 6680 to 80
-iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 6680 > /dev/null 2>&1 || true
+#iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 6680 > /dev/null 2>&1 || true
 
 # start SSH if enabled
 if [ "$INI__network__enable_ssh" == "1" ]
@@ -297,6 +297,8 @@ do
     sleep 5
     MYIP=$(hostname -I)
 done
+
+#zdaemon -p 'python /opt/musicbox/musicboxwebserver.py' start
 
 # set date/time
 ntpdate ntp.ubuntu.com > /dev/null 2>&1 || true
