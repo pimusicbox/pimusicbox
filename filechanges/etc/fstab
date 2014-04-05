@@ -1,8 +1,6 @@
-proc            /proc           proc    defaults          0       0
-/dev/mmcblk0p1  /boot           vfat    defaults          0       2
-/dev/mmcblk0p2  /               ext4    defaults,noatime,discard  0       1
-# a swapfile is not a swap partition, so no using swapon|off from here on, use  dphys-swapfile swap[on|off]  for that
-#/dev/mmcblk0p3  none            swap    sw                0       0
-
-#send logs to ram
-#tmpfs /var/log tmpfs defaults,noatime,mode=1777 0 0
+# /etc/fstab: static file system information.
+#
+#/dev/mmcblk0p3 /               ext4    noatime,discard,data=writeback,journal_async_commit,nouser_xattr,barrier=0,errors=remount-ro 0       1
+/dev/mmcblk0p3 /               ext4    noatime,nouser_xattr,errors=remount-ro 0       1
+/dev/mmcblk0p1  /boot        vfat    defaults,utf8,user,rw,umask=000            0       2
+Ramdisk   /run/shm        tmpfs   defaults,size=256M,noexec,nodev,nosuid        0       0

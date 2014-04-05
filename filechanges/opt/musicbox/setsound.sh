@@ -1,9 +1,17 @@
 #!/bin/bash
 #
-# MusicBox sound configuration
+# MusicBox Sound configuration script
 #
 
-#set user var
+CONFIG_FILE=/boot/config/settings.ini
+
+# Define LSB log_* functions.
+. /lib/lsb/init-functions
+
+log_use_fancy_output
+
+log_begin_msg "Setting sound configuration..."
+
 I2S_CARD=
 USB_CARD=
 INT_CARD=
@@ -27,29 +35,44 @@ function enumerate_alsa_cards()
                 platform)
                     if [[ ${dev[1]} == "bcm2835"* ]]; then
                         INT_CARD=$num
-                        echo "found internal device: card$INT_CARD"
+                        log_progress_msg "found internal device: card$INT_CARD" "$NAME"
                         if tvservice -s | grep -q HDMI; then
-                            echo "HDMI output connected"
+                            log_progress_msg "HDMI output connected" "$NAME"
                             HDMI_CARD=$num
                         fi
                     elif [[ ${dev[1]} == "snd-hifiberry-dac" ]]; then
                         I2S_CARD=$num
-                        echo "found i2s device: card$I2S_CARD"
+                        log_progress_msg "found i2s device: card$I2S_CARD" "$NAME"
                     fi
                     ;;
                 usb)
                     USB_CARD=$num
-                    echo "found usb device: card$USB_CARD"
+                    log_progress_msg "found usb device: card$USB_CARD" "$NAME"
                     ;;
             esac
         fi
     done
 }
 
+if [[ $INI_READ != true ]] 
+then
+    echo "read ini"
+    # import ini parser
+    . /opt/musicbox/read_ini.sh
+
+    # convert windows ini to unix
+    dos2unix -n $CONFIG_FILE /tmp/settings.ini > /dev/null 2>&1 || true
+
+    # ini vars to mopidy settings
+    read_ini /tmp/settings.ini
+
+    rm /tmp/settings.ini > /dev/null 2>&1 || true
+fi
+
 # if output not defined, it will automatically detect USB / HDMI / Analog in given order
 # it is at this momement not possible to detect wheter a i2s device is connected hence
 # i2s is only selected if explicitly given as output in the config file
-OUTPUT=$(echo $INI__MusicBox__OUTPUT | tr "[:upper:]" "[:lower:]")
+OUTPUT=$(echo $INI__musicbox__output | tr "[:upper:]" "[:lower:]")
 CARD=
 
 # get alsa cards
@@ -86,91 +109,15 @@ then
     fi
 fi
 
-echo
-echo "Line out set to $OUTPUT card $CARD"
-echo
+log_progress_msg "Line out set to $OUTPUT card $CARD" "$NAME"
 
-# set default soundcard in Alsa
-if [ "$OUTPUT" == "usb" -a "$INI__MusicBox__KEEP_SAMPLE_RATE" == "" ]
-then
+if [ "$OUTPUT" == "usb" -a "$INI__musicbox__downsample_usb" == "1" ]
 # resamples to 44K because of problems with some usb-dacs on 48k (probably related to usb drawbacks of Pi)
+# and extra buffer for usb
+#if [ "$OUTPUT" == "usb" ]
+then
 cat << EOF > /etc/asound.conf
-pcm.!default plug:both
-
-ctl.!default {
-  type hw
-  card 0
-}
-
-pcm.both {
-  type route;
-  slave.pcm {
-      type multi;
-      slaves.a.pcm "native";
-      slaves.b.pcm "hdmi";
-      slaves.a.channels 2;
-      slaves.b.channels 2;
-      bindings.0.slave a;
-      bindings.0.channel 0;
-      bindings.1.slave a;
-      bindings.1.channel 1;
-
-      bindings.2.slave b;
-      bindings.2.channel 0;
-      bindings.3.slave b;
-      bindings.3.channel 1;
-  }
-
-  ttable.0.0 1;
-  ttable.1.1 1;
-  ttable.0.2 1;
-  ttable.1.3 1;
-}
-
-ctl.both {
-  type hw;
-  card 0;
-}
-
-pcm.hdmi {
-   type dmix
-   ipc_key 1024
-   slave {
-       pcm "hw:0,1"
-       period_time 0
-       period_size 1024
-       buffer_size 16384
-#       buffer_time 0
-#       periods 128
-       rate 48000
-       channels 2
-    }
-    bindings {
-       0 0
-       1 1
-    }
-}
-
-pcm.native {
-   type dmix
-   ipc_key 1024
-   slave {
-       pcm "hw:0,0"
-       period_time 0
-       period_size 1024
-       buffer_size 65536
-#       buffer_time 0
-#       periods 128
-       rate 48000
-       channels 2
-    }
-    bindings {
-       0 0
-       1 1
-    }
-}
-
-pcm.usb {
+pcm.!default {
     type plug
     slave.pcm {
         type dmix
@@ -178,23 +125,27 @@ pcm.usb {
         slave {
             pcm "hw:$CARD"
             rate 44100
-            period_time 0
-            period_size 4096
-            buffer_size 131072
+#            period_time 0
+#            period_size 4096
+#            buffer_size 131072
         }
     }
 }
-
-ctl.hdmi {
-   type hw
-   card 0
+ctl.!default {
+    type hw
+    card $CARD
 }
-
-ctl.native {
-   type hw
-   card 0
+EOF
+else
+cat << EOF > /etc/asound.conf
+pcm.!default {
+    type hw
+    card $CARD
 }
-
+ctl.!default {
+    type hw
+    card $CARD
+}
 EOF
 fi
 
@@ -241,16 +192,6 @@ done
 amixer -c 0 set PCM playback 98% > /dev/null 2>&1 || true &
 #amixer -c 0 set PCM playback ${VOLUME}% > /dev/null 2>&1 || true &
 
-#start shairport in the background
-if [ "$OUTPUT" == "usb" ]
-then
-    #start shairport for usb (alsa device 1,0)
-    su $MB_USER -c "/opt/shairport/shairport.pl -d -a $CLEAN_NAME --ao_driver alsa --ao_devicename \"hw:1,0\" --play_prog=\"ncmpcpp stop \"" > /dev/null 2>&1 &
-#    su $MB_USER -c "/opt/shairport/shairport.pl -d -a $CLEAN_NAME --ao_driver alsa --ao_devicename \"hw:1,0\"" > /dev/null 2>&1 &
-else
-    #start shairport normally
-#    /opt/shairport/shairport.pl -d -a MusicBox > /dev/null 2>&1 &
-    su $MB_USER -c "/opt/shairport/shairport.pl -d -a $CLEAN_NAME --play_prog=\"ncmpcpp stop \"" > /dev/null 2>&1 &
-#    su $MB_USER -c "/opt/shairport/shairport.pl -d -a $CLEAN_NAME" > /dev/null 2>&1 &
-fi
-
+/etc/init.d/shairportinit restart
+/etc/init.d/mopidy restart
+/etc/init.d/gmediarenderer restart

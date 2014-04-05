@@ -1,5 +1,21 @@
 Pi MusicBox Changelog
 
+0.5 alpha3
+New Settings page for easily selecting most settings of MusicBox!!
+Based on kernel from Volumio. Works nicely!
+Mopidy is more reliable now (thanks to new kernel?)
+Webclient updated to (way) better support browsing
+Podcast working, including browsing podcasts from iTunes, gpodder
+UPNP/DLNA Streaming using gmediarender-resurrect
+Seperate webserver (lighttp) on startup
+Jukebox functionality included with aternative webclient JukePi. Great for the office!
+Also included alternative webclient Moped
+Larger image. Only fits on a 2G SD for now :(
+Google Music All Access working again
+TuneIn, Dirble, Podcasts enabled by default
+Firewall disabled for now
+Mopidy extensions Radio-de/somafm/internetarchive not working (yet)
+
 0.5 alpha2 - March 7 2014
 Fix for networking problems (I hope!)
 Automatically play a stream at startup

@@ -1,15 +1,15 @@
 <!doctype html>
 <html>
-	<head>
+    <head>
         <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
         <title>Pi MusicBox - A Spotify, SoundCloud, Google Music player for the Raspberry Pi, with remote control</title>
         <meta name="description" content="Connect Spotify, SoundCloud, Google Music to your audio set using the Raspberry Pi and control it from your couch! An easy to use SD-image for the Pi. AirPlay streaming included!">
         <meta name="keywords" content="spotify, player, music, musicbox, raspberry pi,free, open source, connect, remote, multiroom, audio, control, soundcloud, google music, webradio, radio, stream, mpd, usb dac, audioset, audioplayer, mp3, ogg, flac, airtunes, airplay, last.fm, scrobbling, hifi, stereo, remote, mashup, wifi, headless, web interface, internet radio, headphones, usb speakers">
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-		<link rel="stylesheet" href="css/jquery.fancybox.css" type="text/css" media="screen" />
-		<script type="text/javascript" src="js/jquery.fancybox.pack.js"></script>
-		<link href="css/layout.css" rel="stylesheet" type="text/css" />
-		<link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <link rel="stylesheet" href="css/jquery.fancybox.css" type="text/css" media="screen" />
+        <script type="text/javascript" src="js/jquery.fancybox.pack.js"></script>
+        <link href="css/layout.css" rel="stylesheet" type="text/css" />
+        <link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
         <script type="text/javascript">
             var switchTo5x = true;
         </script>
@@ -39,21 +39,53 @@
         </script>
         <link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon"/>
         <link rel="icon" href="favicon.ico" type="image/x-ico"/>
-	</head>
+    </head>
 <body>
 
 <img src="images/logo-small.png" width="340" class="logo" />
 <div class="wrapper">
-	<div class="social">
-		<a href="https://www.facebook.com/raspberrypimusicbox" target="_blank"><img src="images/fb.png" /></a>
-		<a href="https://twitter.com/pimusicbox" target="_blank"><img src="images/tw.png" /></a>
-	</div>
+    <div class="social">
+        <a href="https://www.facebook.com/raspberrypimusicbox" target="_blank"><img src="images/fb.png" /></a>
+        <a href="https://twitter.com/pimusicbox" target="_blank"><img src="images/tw.png" /></a>
+    </div>
     <h1>Pi MusicBox Prerelease</h1>
         <p>
-    	    MusicBox 0.5 alpha2 contains the following improvements:
+            MusicBox 0.5 alpha4 (4 april 2014) contains the following improvements:
         </p>
-    	    <ul>
-    	    <li>Fix for networking problems (I hope!)</li>
+            <ul>
+            <li>Much improved performance and stability of Mopidy</li>
+            <li>Small bugfixes</li>
+            <li>Everything from alpha3</li>
+        <br/>
+        <p>
+            MusicBox 0.5 alpha3 (1 april 2014) contains the following improvements:
+        </p>
+            <ul>
+            <li>New Settings page for easily selecting most settings of MusicBox!!</li>
+            <li>Based on kernel from Volumio. Works nicely!</li>
+            <li>Mopidy is more reliable now (thanks to new kernel?)</li>
+            <li>Webclient updated to (way) better support browsing</li>
+            <li>Podcast working, including browsing podcasts from iTunes, gpodder</li>
+            <li>UPNP/DLNA Streaming using gmediarender-resurrect</li>
+            <li>Seperate webserver (lighttp) on startup</li>
+            <li>Jukebox functionality included with aternative webclient JukePi. Great for the office!</li>
+            <li>Also included alternative webclient Moped</li>
+            <li>Larger image, not optimized for size. Fits only on a 2G+ SD (for now) :(</li>
+            <li>Google Music All Access working again</li>
+            <li>Youtube extension (0.1, not too user friendly ;)</li>
+            <li>TuneIn, Dirble, Podcasts enabled by default</li>
+                <br/>
+            <li>- Firewall disabled for now</li>
+            <li>- Mopidy extensions Radio-de/somafm/internetarchive not working (yet)</li>
+            <li>- Upnp/Airplay/Mopidy cannot play at the same time. Don't do that, it can crash the services and you need to reboot</li>
+            <li>- Automatic resize does not work yet</li>
+            </ul>
+            <br/>
+        <p>
+            MusicBox 0.5 alpha2 contains the following improvements:
+        </p>
+            <ul>
+            <li>Fix for networking problems (I hope!)</li>
             <li>Automatically play a stream at startup</li>
             <li>Webclient: Easier to add radiostations from Dirble/TuneIn browsing to the favorites in the radio section</li>
             <li>Bugfixes (like samba/cifs mount, wifi, settings.ini)</li>
@@ -62,13 +94,13 @@
             <li>motd ascii art</li>
             <li>Resize bug fixed</li>
             <li>Filecheck added for fat partition</li>
-    	    </ul>
+            </ul>
     <br/>
         <p>
-    	    Next to the improvements of MusicBox 0.5 alpha:
+            Next to the improvements of MusicBox 0.5 alpha:
         </p>
-    	    <ul>
-    	    <li>Mopidy 0.18.x, with lots of enhancements</li>
+            <ul>
+            <li>Mopidy 0.18.x, with lots of enhancements</li>
             <li>Browsing support for local media files, Spotify, Dirble, etc</li>
             <li>Dirble, Subsonic, Internet Archive Sound, TuneIn Radio support</li>
             <li>First steps to support Podcasts, SomaFM, Rad.io/Radio.de/Radio.fr (does not work (fully) yet)</li>
@@ -79,17 +111,17 @@
             <li>Mopidy runs as a service</li>
             <li>Logging on startup (not totally there yet)</li>
             <li>Newer kernel</li>
-            <li>Better networking</li>            
+            <li>Better networking</li>
             <li>Bugfixes</li>
-    	    </ul>
-		<div class="fadedline"></div>
+            </ul>
+        <div class="fadedline"></div>
         <h3> Instructions</h3>
         <ul>
             <li>
-                Download the image. It's about 254MB in (compressed) size; 1GB uncompressed.<br/><br/>
+                Download the image. It's about 485MB in (compressed) size; 1.7GB uncompressed.<br/><br/>
                 <ul>
-                    <li><a href="http://dl.mopidy.com/musicbox0.5alpha2.zip">musicbox0.5alpha.zip (Fast mirror, Rackspace)</a> </li><br/>
-                    <li><a href="musicbox0.5alpha2.zip">musicbox0.5alpha.zip (from this site, a tad slower)</a></li>
+                    <li><a href="http://dl.mopidy.com/musicbox0.5alpha4.zip">musicbox0.5alpha4.zip (Fast mirror, Rackspace)</a> </li><br/>
+                    <li><a href="musicbox0.5alpha4.zip">musicbox0.5alpha4.zip (from this site, a tad slower)</a></li>
                 </ul><br/>
                  This can take a while, so spread the word in the meantime, please spread the word!<br/><br/>
   <span class='st_facebook_large' displayText='Facebook'></span>
@@ -99,9 +131,9 @@
         <span class='st_digg_large' displayText='Digg'></span>
         <span class='st_email_large' displayText='Email'></span>
         <span class='st_pinterest_large' displayText='Pinterest'></span>
-        <span class='st_sharethis_large' displayText='ShareThis'></span>  <br/>     <br/>     
+        <span class='st_sharethis_large' displayText='ShareThis'></span>  <br/>     <br/>
             </li>
-		<div class="fadedline"></div>            
+        <div class="fadedline"></div>
         <h4>Configuration</h4>
         <ol>
             <li>
@@ -120,10 +152,10 @@
                 It's possible to override this in the ini-file. For example if you want to use analog out while having hdmi connected.
             </li>
         </ol>
-		<br />
+        <br />
 
     <p>Detailed instructions can be found in the <a href="MusicBox_Manual.pdf">Manual</a></p><br/>
-				<div class="fadedline"></div>
+                <div class="fadedline"></div>
         <h4>Start me up!</h4>
         <ol>
             <li>
@@ -144,7 +176,7 @@
                               Wait for a while... So in the meantime, follow us!<br/><br/>
                 <a href="https://twitter.com/pimusicbox" class="twitter-follow-button" data-show-count="false" data-size="large" data-dnt="true">Follow @pimusicbox on Twitter</a><br/><br/>
             <iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;width=250&amp;layout=standard&amp;action=recommend&amp;show_faces=true&amp;share=true&amp;height=80" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:250px; height:80px;" allowTransparency="true"></iframe>
-            
+
 <script>
                 ! function(d, s, id) {
                     var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
@@ -156,12 +188,12 @@
                     }
                 }(document, 'script', 'twitter-wjs');
             </script>
-                
+
             </li>
         </ol>
-		<br />
-		
-				<div class="fadedline"></div>
+        <br />
+
+                <div class="fadedline"></div>
         <h4>Accessing the music</h4>
         <ol>
             <li>
@@ -185,21 +217,21 @@
                 MusicBox is started. Connect a monitor/tv to find out. Or use a network/bonjour scanning utility.
             </li>
         </ol>
-		<div class="fadedline"></div>
+        <div class="fadedline"></div>
     <h2>Support &amp; Contact</h2>
 
      <p>Please refer to the <a href="faq.html">Frequently Asked Questions</a> and the <a href="MusicBox_Manual.pdf">Manual</a> before asking questions. </p>
-		<br />
-    You can discuss features and problems on the <a href="https://groups.google.com/forum/?fromgroups=#!forum/mopidy">Google Group (maillist/forum) of Mopidy</a>. Please report problems about MusicBox itself at <a href="https://github.com/woutervanwijk/Pi-MusicBox">the repo at Github</a>. On <a href="http://www.facebook.com/raspberrypimusicbox">FaceBook</a> or <a href="https://twitter.com/pimusicbox">Twitter</a>, you can contact us. You can also try the 
+        <br />
+    You can discuss features and problems on the <a href="https://groups.google.com/forum/?fromgroups=#!forum/mopidy">Google Group (maillist/forum) of Mopidy</a>. Please report problems about MusicBox itself at <a href="https://github.com/woutervanwijk/Pi-MusicBox">the repo at Github</a>. On <a href="http://www.facebook.com/raspberrypimusicbox">FaceBook</a> or <a href="https://twitter.com/pimusicbox">Twitter</a>, you can contact us. You can also try the
             <code>
                 #mopidy
             </code>
             channel on <a href="http://webchat.freenode.net/">Freenode</a>,
              or the <a href="http://www.raspberrypi.org/phpBB3/">Raspberry
             Pi forums</a>.<br/><br/>
-		If you wish to contact us you can use the Facebook/Twitter links at the top of the page.
-		<br />
-		<div class="fadedline"></div>
+        If you wish to contact us you can use the Facebook/Twitter links at the top of the page.
+        <br />
+        <div class="fadedline"></div>
     <h2>Thanks</h2>
         <p>
             Pi MusicBox is based on the following great projects:
@@ -226,7 +258,7 @@
                 <br />
             </li>
             <li>
-                All the projects that ... 
+                All the projects that ...
             </li>
             <li>
                 A lot of people giving solutions on forums...
@@ -241,15 +273,15 @@
 
 </div>
 <div class="footer">
-	<a href="http://www.adam-wilson.me" target="_blank">Website created by Adam Wilson</a>
+    <a href="http://www.adam-wilson.me" target="_blank">Website created by Adam Wilson</a>
 </div>
 
 <a href="#" class="scrollUp">Scroll to the Top</a>
 
 <script type="text/javascript">
-	$(document).ready(function() {
-		$(".fancybox").fancybox();
-	});
+    $(document).ready(function() {
+        $(".fancybox").fancybox();
+    });
 </script>
 <!-- Initilize fancybox !-->
 

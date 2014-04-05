@@ -69,10 +69,11 @@ class runServer(object):
         for item in validItems:
             print(item)
             for subitem in validItems[item]:
-                print('['+subitem)
+                print('-'+subitem)
                 itemName = item + '__' + subitem
                 try:
                     templateVars[itemName] = config[item][subitem]
+                    print templateVars[itemName]
                 except:
                     pass
         print templateVars
@@ -100,5 +101,5 @@ class runServer(object):
         return page
     log._cp_config = {'tools.staticdir.on': False}
 
-cherrypy.config.update({'server.socket_host': '0.0.0.0', 'server.socket_port': 80 })
+cherrypy.config.update({'server.socket_host': '0.0.0.0', 'server.socket_port': 8080 })
 cherrypy.quickstart(runServer())

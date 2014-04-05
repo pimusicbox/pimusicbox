@@ -15,7 +15,7 @@ then
   fi
 fi
 
-  echo 
+  echo
   echo "Resizing the filesystem. This can take a while, please wait..."
   echo
   # Get the starting offset of the root partition

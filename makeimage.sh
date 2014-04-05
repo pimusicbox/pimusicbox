@@ -9,7 +9,7 @@ DRIVE='/dev/sdb'
 PART1=$DRIVE'1'
 PART2=$DRIVE'2'
 ZEROROOT='y'
-COUNT=975
+COUNT=1750
 
 umount $PART1
 umount $PART2
@@ -109,7 +109,8 @@ rm -r $MNT2/var/log/apt/*
 rm -r $MNT2/var/lib/mopidy/.cache/gmusicapi/*
 rm -r $MNT2/var/lib/mopidy/.cache/mopidy/spotify/*
 rm -r $MNT2/var/lib/mopidy/.local/share/mopidy/local/*
-rm -r $MNT2/var/lib/mopidy/.config/mopidy/spotify/*
+rm -r $MNT2/var/lib/mopidy/spotify/*
+rm -r $MNT2/var/cache/mopidy/*
 rm -r $MNT2/tmp/*
 
 #put version in login prompt
