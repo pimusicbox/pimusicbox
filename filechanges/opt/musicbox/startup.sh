@@ -198,6 +198,6 @@ then
 fi
 
 # for some reason gmediarenderer won't start. Do it here
-/etc/init.d/gmediarenderer start
+#/etc/init.d/gmediarenderer start
 
 log_end_msg 0
