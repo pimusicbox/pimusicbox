@@ -1,7 +1,6 @@
 Pi MusicBox is created by Wouter van Wijk. It is based on the following great projects: 
 
 -Raspbian (based on Debian (based on Linux)) raspbian.org
--Volumio (optimized Raspbian kernel for music playing)
 -Mopidy music server (+ my own Mopidy Webclient): mopidy.com (main authors: Stein Magnus Jodal and Thomas Adamcik)
 -Mopidy Soundcloud: https://github.com/mopidy/mopidy-soundcloud
 -Mopidy Gmusic: https://github.com/hechtus/mopidy-gmusic

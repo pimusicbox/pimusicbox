@@ -1,0 +1,8 @@
+/var/log/mopidy/*.log {
+        weekly
+        missingok
+        rotate 1
+        compress
+        delaycompress
+        notifempty
+}

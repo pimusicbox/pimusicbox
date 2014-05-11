@@ -14,7 +14,7 @@ NAME=`cat /etc/hostname | tr -cd "[:alnum:]"`
 
 case "$1" in
   start)
-    /usr/local/bin/shairport -d -a "$NAME (MusicBox)"
+    /usr/local/bin/shairport -d -a "$NAME (MusicBox)" -w -B "mpc stop" --pidfile /var/run/shairport.pid
     ;;
   stop)
     killall shairport

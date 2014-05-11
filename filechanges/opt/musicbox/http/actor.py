@@ -23,6 +23,7 @@ config_file = '/boot/config/settings.ini'
 spec_file = '/opt/musicbox/settingsspec.ini'
 template_file = '/opt/webclient/settings/index.html'
 log_file = '/var/log/mopidy/mopidy.log'
+password_mask = '******'
 
 class HttpFrontend(pykka.ThreadingActor, CoreListener):
     def __init__(self, config, core):
@@ -137,7 +138,7 @@ class RootResource(object):
             config = ConfigObj(config_file, configspec=spec_file, file_error=True)
         except (ConfigObjError, IOError), e:
             error = 'Could not load ini file!'
-        print (params)
+#        print (params)
         validItems = ConfigObj(spec_file)
         templateVars = { 
             "error": error
@@ -146,13 +147,18 @@ class RootResource(object):
         for item in validItems:
             for subitem in validItems[item]:
                 itemName = item + '__' + subitem
-                print itemName
+#                print itemName
                 if itemName in params.keys():
+                    #don't edit config value if password mask
+                    if subitem[-8:] == 'password':
+                      if params[itemName] == password_mask:
+                          continue
                     config[item][subitem] = params[itemName]
-                    print params[itemName]
+#                    print params[itemName]
         config.write()
+        logger.info('Rebooting system')
         os.system("shutdown -r now")
-#        os.system("su root -c /opt/musicbox/startup.sh")
+#        os.system("/opt/musicbox/startup.sh")
         return "<html><body><h1>Settings Saved!</h1><script>toast('Applying changes (might need a rebbot)...', 10000);setTimeout(function(){window.location('/');}, 10000);</script><a href='/'>Back</a></body></html>"
 
     @cherrypy.expose
@@ -166,7 +172,7 @@ class RootResource(object):
             config = ConfigObj(config_file, configspec=spec_file, file_error=True)
         except (ConfigObjError, IOError), e:
             error = 'Could not load ini file!'
-        print (error)
+#        print (error)
         #read values of valid items (in the spec-file)
         validItems = ConfigObj(spec_file)
         templateVars = { 
@@ -174,25 +180,31 @@ class RootResource(object):
         }
         #iterate over the valid items to get them into the template
         for item in validItems:
-            print(item)
+#            print(item)
             for subitem in validItems[item]:
-                print('['+subitem)
+#                print('['+subitem)
                 itemName = item + '__' + subitem
                 try:
-                    templateVars[itemName] = config[item][subitem]
+                    configValue = config[item][subitem]
+                    #compare last 8 caracters of subitemname
+                    if subitem[-8:] == 'password':
+                        configValue = password_mask
+                    templateVars[itemName] = configValue
                 except:
                     pass
-        print templateVars
+#        print templateVars
         return template.render ( templateVars )
 
     @cherrypy.expose
     @cherrypy.tools.allow(methods=['POST'])
     def haltSystem(self, **params):
+        logger.info('Halting system')
         os.system("shutdown -h now")
 
     @cherrypy.expose
     @cherrypy.tools.allow(methods=['POST'])
     def rebootSystem(self, **params):
+        logger.info('Rebooting system')
         os.system("shutdown -r now")
 
     @cherrypy.expose

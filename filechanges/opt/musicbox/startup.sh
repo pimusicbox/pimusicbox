@@ -78,11 +78,16 @@ then
     sed -i -e "/^\[musicbox\]/,/^\[.*\]/ s|^\(root_password[ \t]*=[ \t]*\).*$|\1\r|" $CONFIG_FILE
 fi
 
-#put wifi settings for wpa
+#put wifi settings for wpa roaming
 cat >/etc/wpa.conf <<EOF
+update_config=1
 network={
     ssid="$INI__network__wifi_network"
     psk="$INI__network__wifi_password"
+}
+
+network={
+        key_mgmt=NONE
 }
 EOF
 #ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
@@ -119,6 +124,8 @@ fi
 
 #redirect 6680 to 80
 #iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 6680 > /dev/null 2>&1 || true
+
+#/etc/init.d/dropbear start
 
 # start SSH if enabled
 if [ "$INI__network__enable_ssh" == "1" ]
@@ -189,5 +196,8 @@ then
     mpc add "$INI__musicbox__autoplay"
     mpc play
 fi
+
+# for some reason gmediarenderer won't start. Do it here
+/etc/init.d/gmediarenderer start
 
 log_end_msg 0

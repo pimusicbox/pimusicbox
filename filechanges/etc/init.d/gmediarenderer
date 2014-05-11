@@ -1,18 +1,19 @@
-#!/bin/sh
-
+#!/bin/bash
+#
+# This starts and stops gmediarender-ressurect
+#
 ### BEGIN INIT INFO
-# Provides: gmediarender
-# Required-Start: $remote_fs $network
-# Required-Stop: $remote_fs $network
-# Default-Start: 2 3 4 5
-# Default-Stop: 0 1 6
-# Short-Description: Start GMediaRender at boot time
-# Description: Start GMediaRender at boot time.
+# Provides:          gmediarender
+# Required-Start:    $network
+# Required-Stop:
+# Short-Description: gmediarender - UPNP renderer
+# Description:       UPNP renderer!
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
 ### END INIT INFO
 
-# User and group the daemon will be running as. On the Raspberry Pi, let's use
-# the default user.
-DAEMON_USER="pi:audio"
+# Source function library.
+. /lib/lsb/init-functions
 
 # Device name as it will be advertised to and shown in the UPnP controller UI.
 # Some string that helps you recognize the player, e.g. "Livingroom Player"
@@ -24,57 +25,56 @@ UPNP_DEVICE_NAME="$NAME (MusicBox)"
 # internal to gmrender. So make sure to leave the ALSA volume always to 100%).
 INITIAL_VOLUME_DB=-2
 
-# If you explicitly choose a specific ALSA device here (find them with 'aplay -L'), then
-# gmediarenderer will use that ALSA device to play audio.
-# Otherwise, whatever default is configured for gstreamer for the '$DAEMON_USER' is
-# used.
-#ALSA_DEVICE="sysdefault"
-#ALSA_DEVICE="iec958"
-
-# Path to the gmediarender binary.
-BINARY_PATH=/usr/local/bin/gmediarender
-
-if [ -n "$ALSA_DEVICE" ] ; then
-	GS_SINK_PARAM="--gstout-audiosink=alsasink"
-	GS_DEVICE_PARAM="--gstout-audiodevice=$ALSA_DEVICE"
-fi
-
 # A simple stable UUID, based on this systems' first ethernet devices MAC address,
 # only using tools readily available to generate.
 UPNP_UUID=`ip link show | awk '/ether/ {print "salt:)-" $2}' | head -1 | md5sum | awk '{print $1}'`
 
-USER=root
-HOME=/root
-export USER HOME
+DAEMON="/usr/local/bin/gmediarender"
+PIDFILE=/var/run/gmediarender.pid
+DAEMON_ARGS="-P $PIDFILE -d -f $UPNP_DEVICE_NAME --gstout-audiosink=alsasink -u $UPNP_UUID --gstout-initial-volume-db=$INITIAL_VOLUME_DB"
+
+USER="mopidy:audio"
+
+[ -x $binary ] || exit 0
+
+RETVAL=0
 
 start() {
-		echo "Starting GMediaRender"
-		start-stop-daemon -x $BINARY_PATH -c "$DAEMON_USER" -S -- -f "$UPNP_DEVICE_NAME" -d -u "$UPNP_UUID" $GS_SINK_PARAM $GS_DEVICE_PARAM --gstout-initial-volume-db=$INITIAL_VOLUME_DB
+    echo -n "Starting gmediarender: "
+    start-stop-daemon --start --quiet --pidfile "$PIDFILE" \
+                      --exec "$DAEMON" --oknodo -- $DAEMON_ARGS
+    log_end_msg $?
 }
 
 stop() {
-		echo "Stopping GMediaRender"
-		start-stop-daemon -x $BINARY_PATH -K
+    echo -n "Shutting down gmediarender: "
+    start-stop-daemon --stop --quiet --pidfile "$PIDFILE" \
+                --retry 1 --oknodo
+    log_end_msg $?
+}
+
+restart() {
+    stop
+    sleep 1
+    start
 }
 
 case "$1" in
-	start)
+    start)
         start
-		;;
-
-	stop)
+    ;;
+    stop)
         stop
-		;;
-
-	restart)
-        stop
-        start
-		;;
-
-	*)
-		echo "Usage: /etc/init.d/gmediarender {start|stop|restart}"
-		exit 1
-		;;
+    ;;
+    status)
+        status gmediarender
+    ;;
+    restart)
+        restart
+    ;;
+    *)
+        echo "Usage: $0 {start|stop|status|restart}"
+    ;;
 esac
 
 exit 0

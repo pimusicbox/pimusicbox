@@ -1,5 +1,25 @@
 Pi MusicBox Changelog
 
+0.5 beta1
++Best release evah! Way less stuttering of sound!
++DLNA/UPNP streaming works out of the box (gmediarender-resurect)
++Fixed settings page, webclient, search bugs
++Added Internet Archive and Soma FM support
++Wifi will autoconnect to an open network if found
++Reverted back to old MusicBox system, new kernel (with better USB support). And thanks to that:
++Smaller package
++Monitoring of crashed daemons Shairport, Mopidy, Gmediarender
++Detection of crashed Pi (watchdog)
++Latest kernel (with a lot of fixes for USB)
++Whoosh backend for local files (should be faster)
++Updated Podcast
+-Gmusic does not work reliable (yet)
+-Upnp/Airplay/Mopidy cannot play at the same time. Don't do that, it can crash the services and this could need a reboot!
+
+0.5 alpha4
+Better mopidy performance
+Bugfixes
+
 0.5 alpha3
 New Settings page for easily selecting most settings of MusicBox!!
 Based on kernel from Volumio. Works nicely!
@@ -13,8 +33,10 @@ Also included alternative webclient Moped
 Larger image. Only fits on a 2G SD for now :(
 Google Music All Access working again
 TuneIn, Dirble, Podcasts enabled by default
-Firewall disabled for now
-Mopidy extensions Radio-de/somafm/internetarchive not working (yet)
+-Firewall disabled for now
+-Mopidy extensions Radio-de/somafm/internetarchive not working (yet)
+
+-Upnp/Airplay/Mopidy cannot play at the same time. Don't do that, it can crash the services and you need to reboot!
 
 0.5 alpha2 - March 7 2014
 Fix for networking problems (I hope!)

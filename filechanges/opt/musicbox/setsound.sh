@@ -192,6 +192,6 @@ done
 amixer -c 0 set PCM playback 98% > /dev/null 2>&1 || true &
 #amixer -c 0 set PCM playback ${VOLUME}% > /dev/null 2>&1 || true &
 
-/etc/init.d/shairportinit restart
-/etc/init.d/mopidy restart
-/etc/init.d/gmediarenderer restart
+#/etc/init.d/shairport restart
+#/etc/init.d/mopidy restart
+#/etc/init.d/gmediarenderer restart

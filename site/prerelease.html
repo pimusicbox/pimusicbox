@@ -50,67 +50,52 @@
     </div>
     <h1>Pi MusicBox Prerelease</h1>
         <p>
-            MusicBox 0.5 alpha4 (4 april 2014) contains the following improvements:
+            MusicBox 0.5 beta1 (10 may 2014) contains the following improvements:
+        </p>
+            <ul>
+            <li>Best release evah! Way less stuttering of sound!</li>
+            <li>DLNA/UPNP streaming works out of the box (using gmediarender-resurect)</li>
+            <li>Fixed settings page, webclient, search bugs</li>
+            <li>Added Internet Archive and Soma FM support</li>
+            <li>Better Wifi. Will autoconnect to an open network if found</li>
+            <li>Reverted back to old MusicBox system, new kernel (with better USB support). And thanks to that:</li>
+            <li>Smaller package, fits on a 1GB SD Card again</li>
+            <li>Monitoring of crashed daemons Shairport, Mopidy, Gmediarender</li>
+            <li>Detection of crashed Pi (watchdog)</li>
+            <li>Latest kernel (with a lot of fixes for USB)</li>
+            <li>Whoosh backend for local files (should be faster)</li>
+            <li>Updated Podcast</li>
+            <li>- Gmusic does not work reliable (yet)</li>
+            <li>- Upnp/Airplay/Mopidy cannot play at the same time. Don't do that, it can crash the services and this could need a reboot!</li>
+             </ul>
+        <br/>
+        <p>
+            Earlier versions of MusicBox 0.5 contained the following improvements:
         </p>
             <ul>
             <li>Much improved performance and stability of Mopidy</li>
-            <li>Small bugfixes</li>
-            <li>Everything from alpha3</li>
-        <br/>
-        <p>
-            MusicBox 0.5 alpha3 (1 april 2014) contains the following improvements:
-        </p>
-            <ul>
             <li>New Settings page for easily selecting most settings of MusicBox!!</li>
-            <li>Based on kernel from Volumio. Works nicely!</li>
-            <li>Mopidy is more reliable now (thanks to new kernel?)</li>
             <li>Webclient updated to (way) better support browsing</li>
             <li>Podcast working, including browsing podcasts from iTunes, gpodder</li>
             <li>UPNP/DLNA Streaming using gmediarender-resurrect</li>
-            <li>Seperate webserver (lighttp) on startup</li>
+            <li>Seperate webserver (lighttpd) on startup</li>
             <li>Jukebox functionality included with aternative webclient JukePi. Great for the office!</li>
             <li>Also included alternative webclient Moped</li>
-            <li>Larger image, not optimized for size. Fits only on a 2G+ SD (for now) :(</li>
-            <li>Google Music All Access working again</li>
-            <li>Youtube extension (0.1, not too user friendly ;)</li>
             <li>TuneIn, Dirble, Podcasts enabled by default</li>
-                <br/>
             <li>- Firewall disabled for now</li>
-            <li>- Mopidy extensions Radio-de/somafm/internetarchive not working (yet)</li>
-            <li>- Upnp/Airplay/Mopidy cannot play at the same time. Don't do that, it can crash the services and you need to reboot</li>
-            <li>- Automatic resize does not work yet</li>
-            </ul>
-            <br/>
-        <p>
-            MusicBox 0.5 alpha2 contains the following improvements:
-        </p>
-            <ul>
-            <li>Fix for networking problems (I hope!)</li>
             <li>Automatically play a stream at startup</li>
             <li>Webclient: Easier to add radiostations from Dirble/TuneIn browsing to the favorites in the radio section</li>
-            <li>Bugfixes (like samba/cifs mount, wifi, settings.ini)</li>
-            <li>Disbled musicbox user. No need anymore for that</li>
-            <li>Fixed partition size</li>
             <li>motd ascii art</li>
-            <li>Resize bug fixed</li>
             <li>Filecheck added for fat partition</li>
-            </ul>
-    <br/>
-        <p>
-            Next to the improvements of MusicBox 0.5 alpha:
-        </p>
-            <ul>
             <li>Mopidy 0.18.x, with lots of enhancements</li>
             <li>Browsing support for local media files, Spotify, Dirble, etc</li>
             <li>Dirble, Subsonic, Internet Archive Sound, TuneIn Radio support</li>
-            <li>First steps to support Podcasts, SomaFM, Rad.io/Radio.de/Radio.fr (does not work (fully) yet)</li>
             <li>Better webradio (Mopidy can read m3u and asx files now!)</li>
             <li>Quick hack to easily edit default radio stations in webinterface (use radiostations.js)</li>
             <li>Better USB Sound, better i2s</li>
             <li>Settings.ini and mopidy.conf merged to one file, so you can configure Mopidy specific settings yourself easily</li>
             <li>Mopidy runs as a service</li>
             <li>Logging on startup (not totally there yet)</li>
-            <li>Newer kernel</li>
             <li>Better networking</li>
             <li>Bugfixes</li>
             </ul>
@@ -118,10 +103,10 @@
         <h3> Instructions</h3>
         <ul>
             <li>
-                Download the image. It's about 485MB in (compressed) size; 1.7GB uncompressed.<br/><br/>
+                Download the image. It's about 217MB in (compressed) size; 1GB uncompressed.<br/><br/>
                 <ul>
-                    <li><a href="http://dl.mopidy.com/musicbox0.5alpha4.zip">musicbox0.5alpha4.zip (Fast mirror, Rackspace)</a> </li><br/>
-                    <li><a href="musicbox0.5alpha4.zip">musicbox0.5alpha4.zip (from this site, a tad slower)</a></li>
+                    <li><a href="http://dl.mopidy.com/musicbox0.5beta1.zip">musicbox0.5beta1.zip (Fast mirror, Rackspace)</a> </li><br/>
+                    <li><a href="musicbox0.5beta1.zip">musicbox0.5abeta1.zip (from this site, a tad slower)</a></li>
                 </ul><br/>
                  This can take a while, so spread the word in the meantime, please spread the word!<br/><br/>
   <span class='st_facebook_large' displayText='Facebook'></span>
@@ -137,11 +122,14 @@
         <h4>Configuration</h4>
         <ol>
             <li>
+                You can edit all settings in the new settings page from the webclient. To access it, you need a network connection. To enable Wifi, you can either first connect the Pi using a cable and use the settings page, or fill in the wifi-settings in the ini file on the SD Card. For that:
+            </li>
+            <li>
                 Open the contents of the 'config' folder of SD-Card in your
                 Finder/Explorer.
             </li>
             <li>
-                Add your credentials of your Spotify Premium account, Google, SoundCloud, LastFM, Wifi, etc to the file
+                Add your Wifi network and password to the file (and other things you would like to edit)
                 <code>
                     settings.ini
                 </code>
@@ -149,12 +137,12 @@
             </li>
             <li>
                 MusicBox will autodetect usb audiocards/speakers/boxes and hdmi.
-                It's possible to override this in the ini-file. For example if you want to use analog out while having hdmi connected.
+                It's possible to override this in the settings. For example if you want to use analog out while having hdmi connected.
             </li>
         </ol>
         <br />
 
-    <p>Detailed instructions can be found in the <a href="MusicBox_Manual.pdf">Manual</a></p><br/>
+    <p>Detailed instructions can be found in the <a href="MusicBox_Manual.pdf">Manual</a>. But it's written for MusicBox 0.4...</p><br/>
                 <div class="fadedline"></div>
         <h4>Start me up!</h4>
         <ol>
