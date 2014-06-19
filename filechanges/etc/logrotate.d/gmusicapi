@@ -1,4 +1,4 @@
-/var/log/mopidy/*.log {
+/home/mopidy/.cache/gmusicapi/log/*.log {
         daily
         missingok
         rotate 2

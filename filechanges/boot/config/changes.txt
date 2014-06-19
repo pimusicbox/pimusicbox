@@ -1,5 +1,16 @@
 Pi MusicBox Changelog
 
+0.5 beta2
++Google Music works again!
++Fixed bugs in webinterface
++Networking bug fixed
++Icons for media sources in webinterface
++Search fixed
++Added codecs for internetradio (gstreamer-plugins bad and ugly)
++Hifiberry Digi supported
++More wifi-usb sticks supported, I hope
+-Bigger package (because of gstreamer plugins)
+
 0.5 beta1
 +Best release evah! Way less stuttering of sound!
 +DLNA/UPNP streaming works out of the box (gmediarender-resurect)

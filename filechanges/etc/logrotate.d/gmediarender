@@ -1,8 +1,7 @@
-/var/log/mopidy/*.log {
-        daily
+/var/log/gmediarender.log {
+        weekly
         missingok
-        rotate 2
-        maxsize 1M
+        rotate 1
         compress
         delaycompress
         notifempty

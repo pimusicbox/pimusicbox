@@ -1,0 +1,3 @@
+# Start the daemon by default, let the user disable it.
+# Use "no" (without quotes) to make /etc/init.d/wicd *NOT* start the WICD daemon.
+START_DAEMON=yes

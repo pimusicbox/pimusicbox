@@ -1,0 +1,17 @@
+# Defaults for triggerhappy initscript
+# sourced by /etc/init.d/triggerhappy
+# installed at /etc/default/triggerhappy by the maintainer scripts
+
+#
+# This is a POSIX shell fragment
+#
+
+# Additional options that are passed to the Daemon.
+DAEMON_OPTS=""
+
+# The Triggerhappy daemon (thd) drops its root privileges after
+# startup and becomes "nobody". If you want it to retain its root
+# status (e.g. to run commands only accessible to the system user),
+# uncomment the following line or specifiy the user option yourself:
+#
+# DAEMON_OPTS="--user root"

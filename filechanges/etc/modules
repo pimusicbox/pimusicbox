@@ -10,3 +10,5 @@ snd_soc_pcm5102a
 snd_soc_hifiberry_dac
 ipv6
 bcm2708_wdog
+snd_soc_hifiberry_digi
+#8192cu

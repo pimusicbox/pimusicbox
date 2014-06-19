@@ -16,8 +16,8 @@
 ##
 ## Start Monit in the background (run as a daemon):
 #
-  set daemon 60            # check services at 1-minute intervals
-   with start delay 240    # optional: delay the first check by 4-minutes (by 
+  set daemon 120            # check services at 2-minute intervals
+   with start delay 300    # optional: delay the first check by 5 minutes (by 
 #                           # default Monit check immediately after Monit start)
 #
 #
@@ -255,8 +255,9 @@ check process gmediarender with pidfile /var/run/gmediarender.pid
       start program = "/etc/init.d/gmediarenderer start"
       stop  program = "/etc/init.d/gmediarenderer stop"
       restart program = "/etc/init.d/gmediarenderer restart"
+      if failed port 49494 for 2 cycles then restart
 check process mopidy with pidfile /var/run/mopidy.pid
       start program = "/etc/init.d/mopidy start"
       stop  program = "/etc/init.d/mopidy stop"
       restart program = "/etc/init.d/mopidy restart"
-      if failed port 6680 protocol http for 3 cycles then restart
+      if failed port 6680 protocol http for 5 cycles then restart

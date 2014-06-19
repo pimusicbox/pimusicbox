@@ -1,0 +1,7 @@
+# This is a configuration file for /etc/init.d/dbus; it allows you to
+# perform common modifications to the behavior of the dbus daemon
+# startup without editing the init script (and thus getting prompted
+# by dpkg on upgrades).  We all love dpkg prompts.
+
+# Parameters to pass to dbus.
+PARAMS=""

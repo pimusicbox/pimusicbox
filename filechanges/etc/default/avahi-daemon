@@ -1,0 +1,4 @@
+# 1 = Try to detect unicast dns servers that serve .local and disable avahi in
+# that case, 0 = Don't try to detect .local unicast dns servers, can cause
+# troubles on misconfigured networks
+AVAHI_DAEMON_DETECT_LOCAL=0

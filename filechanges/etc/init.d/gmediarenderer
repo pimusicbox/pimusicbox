@@ -31,7 +31,9 @@ UPNP_UUID=`ip link show | awk '/ether/ {print "salt:)-" $2}' | head -1 | md5sum 
 
 DAEMON="/usr/local/bin/gmediarender"
 PIDFILE=/var/run/gmediarender.pid
-DAEMON_ARGS="-P $PIDFILE -d -f $UPNP_DEVICE_NAME --gstout-audiosink=alsasink -u $UPNP_UUID --gstout-initial-volume-db=$INITIAL_VOLUME_DB"
+#DAEMON_ARGS="-P $PIDFILE -d --gstout-audiosink=alsasink --gstout-initial-volume-db=$INITIAL_VOLUME_DB --logfile=/var/log/gmediarender.log -f "\""$UPNP_DEVICE_NAME"\"" -u $UPNP_UUID"
+
+echo $DAEMON_ARGS
 
 USER="mopidy:audio"
 
@@ -42,7 +44,7 @@ RETVAL=0
 start() {
     echo -n "Starting gmediarender: "
     start-stop-daemon --start --quiet --pidfile "$PIDFILE" \
-                      --exec "$DAEMON" --oknodo -- $DAEMON_ARGS
+                      --exec "$DAEMON" --oknodo -- -P $PIDFILE -d --gstout-audiosink=alsasink --gstout-initial-volume-db=$INITIAL_VOLUME_DB --logfile=/var/log/gmediarender.log -f "$UPNP_DEVICE_NAME" -u "$UPNP_UUID"
     log_end_msg $?
 }
 

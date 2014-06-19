@@ -158,8 +158,9 @@ class RootResource(object):
         config.write()
         logger.info('Rebooting system')
         os.system("shutdown -r now")
+        os.system("sudo shutdown -r now")
 #        os.system("/opt/musicbox/startup.sh")
-        return "<html><body><h1>Settings Saved!</h1><script>toast('Applying changes (might need a rebbot)...', 10000);setTimeout(function(){window.location('/');}, 10000);</script><a href='/'>Back</a></body></html>"
+        return "<html><body><h1>Settings Saved!</h1><script>toast('Applying changes (reboot)...', 5000);setTimeout(function(){window.location.assign('/');}, 10000);</script><a href='/'>Back</a></body></html>"
 
     @cherrypy.expose
     def Settings(self, **params):
@@ -171,7 +172,7 @@ class RootResource(object):
         try:
             config = ConfigObj(config_file, configspec=spec_file, file_error=True)
         except (ConfigObjError, IOError), e:
-            error = 'Could not load ini file!'
+            error = 'Could not load ini file! %s %s %s', e, ConfigObjError, IOError
 #        print (error)
         #read values of valid items (in the spec-file)
         validItems = ConfigObj(spec_file)
@@ -200,12 +201,14 @@ class RootResource(object):
     def haltSystem(self, **params):
         logger.info('Halting system')
         os.system("shutdown -h now")
+        os.system("sudo shutdown -h now")
 
     @cherrypy.expose
     @cherrypy.tools.allow(methods=['POST'])
     def rebootSystem(self, **params):
         logger.info('Rebooting system')
         os.system("shutdown -r now")
+        os.system("sudo shutdown -r now")
 
     @cherrypy.expose
     def log(self, **params):

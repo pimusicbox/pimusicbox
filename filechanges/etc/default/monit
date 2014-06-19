@@ -1,0 +1,10 @@
+# /etc/default/monit
+
+# Defaults for monit initscript.  This file is sourced by
+# /bin/sh from /etc/init.d/monit.
+
+# You must set this variable to yes for monit to start
+START=yes
+
+# Options to pass to monit
+#MONIT_OPTS=

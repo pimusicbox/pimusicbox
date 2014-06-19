@@ -33,14 +33,15 @@ rm /tmp/settings.ini > /dev/null 2>&1 || true
 
 INI_READ=true
 
+REBOOT=0
+
 if [ "$INI__musicbox__resize_once" == "1" ]
 then
     #set resize_once=false in ini file
     sed -i -e "/^\[musicbox\]/,/^\[.*\]/ s|^\(resize_once[ \t]*=[ \t]*\).*$|\1false\r|" $CONFIG_FILE
     log_progress_msg "Initalizing resize..." "$NAME"
     sh /opt/musicbox/resizefs.sh -y
-    reboot
-    exit
+    $REBOOT=1
 fi
 
 #get name of device and trim
@@ -61,9 +62,12 @@ then
     echo "$CLEAN_NAME" > /etc/hostname
     echo "127.0.0.1       localhost $CLEAN_NAME" > /etc/hosts
     log_end_msg "Name of device set..." "$NAME"
-#    reboot
-    /etc/init.d/avahi-daemon restart
-    /etc/init.d/samba restart
+    $REBOOT=1
+fi
+
+if [ "$REBOOT" == 1 ]
+then
+    reboot
     exit
 fi
 
@@ -78,28 +82,29 @@ then
     sed -i -e "/^\[musicbox\]/,/^\[.*\]/ s|^\(root_password[ \t]*=[ \t]*\).*$|\1\r|" $CONFIG_FILE
 fi
 
-#put wifi settings for wpa roaming
+#allow shutdown for all users
+chmod u+s /sbin/shutdown
+
+if [ "$INI__network__wifi_network" != "" ]
+then
+    #put wifi settings for wpa roaming
 cat >/etc/wpa.conf <<EOF
-update_config=1
-network={
-    ssid="$INI__network__wifi_network"
-    psk="$INI__network__wifi_password"
-}
-
-network={
-        key_mgmt=NONE
-}
+    update_config=1
+    network={
+        ssid="$INI__network__wifi_network"
+        psk="$INI__network__wifi_password"
+        scan_ssid=1
+    }
 EOF
-#ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-#update_config=1
-#EOF
 
-/etc/init.d/networking restart
+    #enable wifi
+    ifdown wlan0
+    ifup wlan0
+
+#    /etc/init.d/networking restart
+fi
 
 . /opt/musicbox/setsound.sh
-
-#enable wifi
-ifup wlan0
 
 if [ "$INI__network__workgroup" != "" ]
 then
@@ -109,28 +114,12 @@ then
     /etc/init.d/samba restart
 fi
 
-##start shairport in the background
-#if [ "$OUTPUT" == "usb" ]
-#then
-#    #start shairport for usb (alsa device 1,0)
-#    su $MB_USER -c "/opt/shairport/shairport.pl -d -a $CLEAN_NAME --ao_driver alsa --ao_devicename \"hw:1,0\" --play_prog=\"ncmpcpp stop \"" > /dev/null 2>&1 &
-##    su $MB_USER -c "/opt/shairport/shairport.pl -d -a $CLEAN_NAME --ao_driver alsa --ao_devicename \"hw:1,0\"" > /dev/null 2>&1 &
-#else
-#    #start shairport normally
-##    /opt/shairport/shairport.pl -d -a MusicBox > /dev/null 2>&1 &
-#    su $MB_USER -c "/opt/shairport/shairport.pl -d -a $CLEAN_NAME --play_prog=\"ncmpcpp stop \"" > /dev/null 2>&1 &
-##    su $MB_USER -c "/opt/shairport/shairport.pl -d -a $CLEAN_NAME" > /dev/null 2>&1 &
-#fi
-
 #redirect 6680 to 80
 #iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 6680 > /dev/null 2>&1 || true
-
-#/etc/init.d/dropbear start
 
 # start SSH if enabled
 if [ "$INI__network__enable_ssh" == "1" ]
 then
-#    $SSH_COMMAND start
     iptables -A INPUT -p tcp --dport 22 -j ACCEPT > /dev/null 2>&1 || true
 else
     $SSH_STOP
@@ -169,23 +158,23 @@ fi
 # scan local/networked music files if setting is true
 if [ "$INI__musicbox__scan_always" == "1" -o "$INI__musicbox__scan_once" == "1" ]
 then
-    log_progress_msg "Scanning music-files, please wait..." "$NAME"
-#    /etc/init.d/mopidy force-reload
+    log_progress_msg "Scanning music-files, please wait..."
+    /etc/init.d/mopidy stop
     /etc/init.d/mopidy run local scan
-    #somehow mopidy is not killed ok. kill manually
+    #if somehow mopidy is not killed ok. kill manually
     killall -9 mopidy
-    /etc/init.d/mopidy restart
+    /etc/init.d/mopidy start
 fi
 
 if [ "$INI__network__name" != "$CLEAN_NAME" -a "$INI__network__name" != "" ]
 then
-    log_warning_msg "The new name of your MusicBox, $INI__network__name, is not ok! It should be max. 9 alphanumerical caracters." "$NAME"
+    log_warning_msg "The new name of your MusicBox, $INI__network__name, is not ok! It should be max. 9 alphanumerical caracters."
 fi
 
 # Print the IP address
 _IP=$(hostname -I) || true
 if [ "$_IP" ]; then
-    log_progress_msg "My IP address is $_IP. Connect to MusicBox in your browser via http://$CLEAN_NAME.local or http://$_IP " "$NAME"
+    log_progress_msg "My IP address is $_IP. Connect to MusicBox in your browser via http://$CLEAN_NAME.local or http://$_IP "
 fi
 
 if [ "$INI__musicbox__autoplay" -a "$INI__musicbox__autoplaywait" ]
@@ -197,7 +186,7 @@ then
     mpc play
 fi
 
-# for some reason gmediarenderer won't start. Do it here
-#/etc/init.d/gmediarenderer start
+# check and clean dirty bit of vfat partition if unsavely removed
+fsck /dev/mmcblk0p1 -v -a -w -p > /dev/null 2>&1 || true
 
 log_end_msg 0

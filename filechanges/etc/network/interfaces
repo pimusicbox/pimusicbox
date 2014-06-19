@@ -1,20 +1,17 @@
 # interfaces(5) file used by ifup(8) and ifdown(8)
 auto lo
-
 iface lo inet loopback
 
-auto eth0
+#auto eth0
 allow-hotplug eth0
 iface eth0 inet dhcp
 
-#auto wlan0
+auto wlan0
 #allow-hotplug wlan0
+iface wlan0 inet manual
 
-iface wlan0 inet dhcp
-
-#iface wlan0 inet manual
-#wpa-roam /etc/wpa.conf
-wpa-conf /etc/wpa.conf
+wpa-roam /etc/wpa.conf
 
 wireless-power off
+
 iface default inet dhcp
