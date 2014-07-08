@@ -1,5 +1,14 @@
 Pi MusicBox Changelog
 
+0.5 8 july 2014
++Updated Google Music, SoundCloud
++SoundCloud search works
++Added missing webclient fonts
++Playing files from the network enhanced
++Disabled Samba printing
++Small changes, bugfixes
+-HifiBerry Digi support is not complete :( See https://github.com/woutervanwijk/Pi-MusicBox/issues/100
+
 0.5 beta2
 +Google Music works again!
 +Fixed bugs in webinterface

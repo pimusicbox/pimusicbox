@@ -1,0 +1,262 @@
+<!doctype html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+        <title>Pi MusicBox - A Spotify, SoundCloud, Google Music player for the Raspberry Pi, with remote control</title>
+        <meta name="description" content="Easily play Spotify, SoundCloud, Google Music, Podcasts, Webradio, Subsonic on your (DIY) audio system using the Raspberry Pi and control it from your couch! AirPlay and DLNA streaming included!">
+        <meta name="keywords" content="spotify, player, music, musicbox, raspberry pi,free, sonos, subsonic, streaming, audo system, open source, connect, remote, soundcloud, google music, webradio, podcasts, radio, mpd, usb dac, airtunes, airplay, dlna, last.fm, hifi, headless, web interface">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <link rel="stylesheet" href="css/jquery.fancybox.css" type="text/css" media="screen" />
+        <script type="text/javascript" src="js/jquery.fancybox.pack.js"></script>
+        <link href="css/layout.css" rel="stylesheet" type="text/css" />
+        <link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
+        <script type="text/javascript">
+            var switchTo5x = true;
+        </script>
+        <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
+        <script type="text/javascript">
+            stLight.options({
+                publisher : "f38aa90c-6454-453d-8968-757a3daea467",
+                doNotHash : false,
+                doNotCopy : false,
+                hashAddressBar : false
+            });
+        </script>
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-3143458-7']);
+            _gaq.push(['_trackPageview']);
+
+            (function() {
+                var ga = document.createElement('script');
+                ga.type = 'text/javascript';
+                ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0];
+                s.parentNode.insertBefore(ga, s);
+            })();
+
+        </script>
+        <link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon"/>
+        <link rel="icon" href="favicon.ico" type="image/x-ico"/>
+    </head>
+<body>
+
+<a href="/"><img src="images/logo-small.png" width="340" class="logo" /></a>
+<div class="wrapper">
+    <div class="social">
+        <a href="https://www.facebook.com/raspberrypimusicbox" target="_blank"><img src="images/fb.png" /></a>
+        <a href="https://twitter.com/pimusicbox" target="_blank"><img src="images/tw.png" /></a>
+    </div>
+    <h1>Pi MusicBox History</h1>
+<h2>What's new, pussycat?</h2>
+           <p>
+        <p>
+            MusicBox 0.5 (8 july 2014) contains the following improvements (MD5 6d07b76ee6c0aa96e6258a23285ffa57):
+        </p>
+            <ul>
+            <li>+Updated Google Music, SoundCloud</li>
+            <li>+Added missing webclient fonts</li>
+            <li>+Playing files from the network enhanced</li>
+            <li>+Disabled Samba printing</li>
+            <li>+Small changes, bugfixes</li>
+            <li>-HifiBerry Digi support is not complete :( See https://github.com/woutervanwijk/Pi-MusicBox/issues/100</li>
+             </ul>
+        <br/>
+        <p>
+            MusicBox 0.5 beta2 (18 june 2014):
+        </p>
+            <ul>
+            <li>+Google Music works again!</li>
+            <li>+Fixed bugs in webinterface</li>
+            <li>+Networking bug fixed</li>
+            <li>+Icons for media sources in webinterface</li>
+            <li>+Search fixed</li>
+            <li>+Added codecs for internetradio (gstreamer-plugins bad and ugly)</li>
+            <li>+Hifiberry Digi supported</li>
+            <li>+More wifi-usb sticks supported, I hope</li>
+            <li>-Bigger package (because of gstreamer plugins)</li>
+             </ul>
+        <br/>
+        <p>
+            MusicBox 0.5 beta1 (10 may 2014):
+        </p>
+            <ul>
+            <li>Best release evah! Way less stuttering of sound!</li>
+            <li>DLNA/UPNP streaming works out of the box (using gmediarender-resurect)</li>
+            <li>Fixed settings page, webclient, search bugs</li>
+            <li>Added Internet Archive and Soma FM support</li>
+            <li>Better Wifi. Will autoconnect to an open network if found</li>
+            <li>Reverted back to old MusicBox system, new kernel (with better USB support). And thanks to that:</li>
+            <li>Smaller package, fits on a 1GB SD Card again</li>
+            <li>Monitoring of crashed daemons Shairport, Mopidy, Gmediarender</li>
+            <li>Detection of crashed Pi (watchdog)</li>
+            <li>Latest kernel (with a lot of fixes for USB)</li>
+            <li>Whoosh backend for local files (should be faster)</li>
+            <li>Updated Podcast</li>
+            <li>- Gmusic does not work reliable (yet)</li>
+            <li>- Upnp/Airplay/Mopidy cannot play at the same time. Don't do that, it can crash the services and this could need a reboot!</li>
+             </ul>
+        <br/>
+        <p>
+            Earlier versions of MusicBox 0.5 contained the following improvements:
+        </p>
+            <ul>
+            <li>Much improved performance and stability of Mopidy</li>
+            <li>New Settings page for easily selecting most settings of MusicBox!!</li>
+            <li>Webclient updated to (way) better support browsing</li>
+            <li>Podcast working, including browsing podcasts from iTunes, gpodder</li>
+            <li>UPNP/DLNA Streaming using gmediarender-resurrect</li>
+            <li>Seperate webserver (lighttpd) on startup</li>
+            <li>Jukebox functionality included with aternative webclient JukePi. Great for the office!</li>
+            <li>Also included alternative webclient Moped</li>
+            <li>TuneIn, Dirble, Podcasts enabled by default</li>
+            <li>- Firewall disabled for now</li>
+            <li>Automatically play a stream at startup</li>
+            <li>Webclient: Easier to add radiostations from Dirble/TuneIn browsing to the favorites in the radio section</li>
+            <li>motd ascii art</li>
+            <li>Filecheck added for fat partition</li>
+            <li>Mopidy 0.18.x, with lots of enhancements</li>
+            <li>Browsing support for local media files, Spotify, Dirble, etc</li>
+            <li>Dirble, Subsonic, Internet Archive Sound, TuneIn Radio support</li>
+            <li>Better webradio (Mopidy can read m3u and asx files now!)</li>
+            <li>Quick hack to easily edit default radio stations in webinterface (use radiostations.js)</li>
+            <li>Better USB Sound, better i2s</li>
+            <li>Settings.ini and mopidy.conf merged to one file, so you can configure Mopidy specific settings yourself easily</li>
+            <li>Mopidy runs as a service</li>
+            <li>Logging on startup (not totally there yet)</li>
+            <li>Better networking</li>
+            <li>Bugfixes</li>
+            </ul>
+
+    <p><a href="http://dl.mopidy.com/musicbox0.4.3.zip">MusicBox 0.4.3</a> (8 january 2014, ZIP MD5: 314303d57ec4691556763e350aa3a87e )
+</p>
+            <ul>
+            <li>USB disks mounted at boot and scanned for music</li>
+            <li>Better recognition of USB Dacs (Simon)</li>
+            <li>Better scrolling on iOS</li>
+            <li>Start SSH before filescan</li>
+            <li>Slightly smaller image file (did not fit on all cards)</li>
+            </ul>
+            <br /><br/>
+       <p>
+            <a href="http://dl.mopidy.com/musicbox0.4.2.1.zip">MusicBox 0.4.2.1</a> (31 december 2013, ZIP MD5: 1d641b0a1ac0ac9d406aab6b91530092 ):
+        </p>
+            <ul>
+            <li>Bugfixes for Spotify bitrate and default volume</li>
+            <li>Again: No hamsters were harmed during the production</li>
+            </ul>
+            <br /><br/>
+        <p>
+            <a href="http://dl.mopidy.com/musicbox0.4.2.zip">MusicBox 0.4.2</a> (30 december 2013, ZIP MD5: 628139ef3762b4ac947f1d054e94c1bc ):
+        </p>
+            <ul>
+            <li>Best sounding Pi MusicBox ever! No hiccups, no unwanted noises, just music!</li>
+            <li>Shutdown/Reboot from interface</li>
+            <li>Font-icons for shuffle/repeat in interface</li>
+            <li>Newer Kernel: 3.10.24+ (i2s included)</li>
+            <li>Disabled power management for wireless dongles</li>
+            <li>Better hdmi support (hotplug, force open)</li>
+            <li>Split startup script into multiple files for better management</li>
+            <li>Initial i2s support by Simon de Bakker/HifiBerry</li>
+            <li>Set default volume in config file (Simon again)</li>
+            <li>Log file viewable via webinterface ( http://musicbox.local/log ) </li>
+            <li>Initial work to support a settings page in the webinterface (not working yet)</li>
+            <li>No hamsters were harmed during the production</li>
+            </ul>
+            <br /><br/>
+    <p>
+            <a href="http://dl.mopidy.com/musicbox0.4.1.zip">MusicBox 0.4.1</a> (21 december 2013, ZIP MD5: 8aacbf1d37bafc29182e497bbb34a890 ):
+        </p>
+            <ul>
+            <li>
+Bugfix for SoundCloud in webinterface</li>
+<li>Bugfix for distorted sound on some webradiostations</li>
+                </ul>
+                <br /><br/>
+    <p>
+            <a href="http://dl.mopidy.com/musicbox0.4.zip">MusicBox 0.4</a> (15 december 2013, ZIP MD5: c533b3daca86da80a1084c7b0704fa3a ):
+        </p>
+            <ul>
+            <li>New, much improved webinterface</li>
+            <li>Use multiple Pi's on the same network (Multiroom Audio)</li>
+<li>Webradio support</li>
+<li>SoundCloud support (beta!)</li>
+<li>Google Music support (alpha!)</li>
+<li>More stable</li>
+<li>Windows workgroup name configuration</li>
+<li>Other big updates to web client (faster, cleaner, more stable, more options)</li>
+<li>Big updates to Mopidy music server</li>
+<li>Optimizations to have less services running, less logging, less writes to SD-Card, less unwanted noises</li>
+<li>Better security trough a simple firewall</li>
+<li>Mopidy runs as a normal user</li>
+<li>SSH service disabled by default</li>
+<li>Automatically change passwords of musicbox and root users</li>
+                </ul>
+                <br /><br/>
+    <p>
+                            <a href="http://dl.mopidy.com/musicbox0.3.zip">MusicBox 0.3</a>:
+                <ul>
+                    <li>
+                        All configuration is done in one ini-file
+                    </li>
+                    <li>
+                        Much smaller download
+                    </li>
+                    <li>
+                        HDMI output enabled
+                    </li>
+                    <li>
+                        Autodetection of HDMI, USB, analog at start (you can override this in the ini-file)
+                    </li>
+                    <li>
+                        LastFM scrobbling enabled
+                    </li>
+                    <li>
+                        Webinterface updated (speedier)
+                    </li>
+                    <li>
+                        Settings editable with Windows Notepad
+                    </li>
+                    <li>
+                        Works on 1GB SD-Card
+                    </li>
+                    <li>
+                        Initial support for playback of local mp3 files on the SD-Card and putting them there via Windows networking (see instructions)
+                    </li>
+                    <li>
+                        Initial support for playback of mp3 files on a Windows Network share (see instructions)
+                    </li>
+                    <li>
+                        Automatic resizing to the size of the SD-card (use at your own risk...)
+                    </li>
+                </ul>
+        <br/>
+        <ul>
+                <li>
+                    v0.2.2: Windows finds the musicbox.local address by itself now (samba).
+                </li>
+                <li>
+                    v0.2.1: Removed ugly sounds on analog port when changing tracks (pulseaudio). An USB-soundcard is still recommended.
+                </li>
+                <li>
+                    v0.2: New, much nicer web-interface (Jquery Mobile).
+                </li>
+                <li>
+                    v0.2: Based on Raspbian (Moebius) for better performance and stability
+                </li>
+            </ul>
+        </p>
+
+<a href="#" class="scrollUp">Scroll to the Top</a>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $(".fancybox").fancybox();
+    });
+</script>
+<!-- Initilize fancybox !-->
+
+
+</body>
+</html>

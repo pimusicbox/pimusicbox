@@ -157,8 +157,8 @@ class RootResource(object):
 #                    print params[itemName]
         config.write()
         logger.info('Rebooting system')
-        os.system("shutdown -r now")
         os.system("sudo shutdown -r now")
+        os.system("shutdown -r now")
 #        os.system("/opt/musicbox/startup.sh")
         return "<html><body><h1>Settings Saved!</h1><script>toast('Applying changes (reboot)...', 5000);setTimeout(function(){window.location.assign('/');}, 10000);</script><a href='/'>Back</a></body></html>"
 
@@ -200,15 +200,15 @@ class RootResource(object):
     @cherrypy.tools.allow(methods=['POST'])
     def haltSystem(self, **params):
         logger.info('Halting system')
-        os.system("shutdown -h now")
         os.system("sudo shutdown -h now")
+        os.system("shutdown -h now")
 
     @cherrypy.expose
     @cherrypy.tools.allow(methods=['POST'])
     def rebootSystem(self, **params):
         logger.info('Rebooting system')
-        os.system("shutdown -r now")
         os.system("sudo shutdown -r now")
+        os.system("shutdown -r now")
 
     @cherrypy.expose
     def log(self, **params):

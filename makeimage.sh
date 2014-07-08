@@ -9,7 +9,7 @@ DRIVE='/dev/sdb'
 PART1=$DRIVE'1'
 PART2=$DRIVE'2'
 ZEROROOT='y'
-COUNT=1750
+COUNT=960
 
 umount $PART1
 umount $PART2
@@ -102,30 +102,40 @@ rm $MNT2/etc/udev/rules.d/*.rules
 
 #logs
 rm $MNT2/var/log/*
-rm -r $MNT2/var/log/apt/*
-
+rm $MNT2/var/log/apt/*
+echo "" > $MNT2/var/log/mopidy/mopidy.log
 
 #remove spotify/audio settings
-rm -r $MNT2/var/lib/mopidy/.cache/gmusicapi/*
-rm -r $MNT2/var/lib/mopidy/.cache/mopidy/spotify/*
+rm -r $MNT2/var/lib/mopidy/*
+rm -r $MNT2/home/mopidy/.config/mopidy/spotify
+rm -r $MNT2/home/mopidy/.cache/*
+rm -r $MNT2/home/mopidy/.local/*
 rm -r $MNT2/var/lib/mopidy/.local/share/mopidy/local/*
-rm -r $MNT2/var/lib/mopidy/spotify/*
+rm $MNT2/etc/wicd/wireless-settings.conf
+rm -r $MNT2/var/lib/wicd/configurations/*
+rm -r $MNT2/var/lib/mopidy/*
 rm -r $MNT2/var/cache/mopidy/*
+
+#caches etc
+rm -r $MNT2/var/cache/apt/*
+rm -r $MNT2/var/cache/man/*
+rm -r $MNT2/var/backups/*.gz
+rm -r $MNT2/var/lib/aptitude/*
 rm -r $MNT2/tmp/*
+rm -r $MNT2/var/tmp/*
 
 #put version in login prompt
 echo -e 'MusicBox '$IMGVERSION"\n" > $MNT2/etc/issue
 
 #music
-rm -r $MNT2/music/SD\ Card/*
+rm -r $MNT2/music/MusicBox/*
 
 #bash history
 rm $MNT2/root/.bash_history
 rm $MNT2/root/.ssh/id_*
 
 #config
-rm -r $MNT2/home/musicbox/.config/mopidy/spotify
-rm -r $MNT2/home/musicbox/.config/mc
+rm -r $MNT2/home/mopidy/*
 
 #root
 rm -r $MNT2/root/*
@@ -177,12 +187,17 @@ rmdir $MNT
 umount $MNT2
 rmdir $MNT2
 
+echo "copy image"
+cp $ZIPNAME /media/sf_Downloads
+cp $IMGNAME /media/sf_Downloads
+
 echo "zip image"
-zip -9 $ZIPNAME $IMGNAME MusicBox_Manual.pdf
+zip -9 $ZIPNAME $IMGNAME MusicBox_Manual_0.4.pdf
 
 echo "copy zip"
 cp $ZIPNAME /media/sf_Downloads
-cp $IMGNAME /media/sf_Downloads
+
+rm $IMGNAME
 
 umount $MNT
 umount $MNT2

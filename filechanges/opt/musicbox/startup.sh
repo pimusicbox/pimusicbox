@@ -41,7 +41,7 @@ then
     sed -i -e "/^\[musicbox\]/,/^\[.*\]/ s|^\(resize_once[ \t]*=[ \t]*\).*$|\1false\r|" $CONFIG_FILE
     log_progress_msg "Initalizing resize..." "$NAME"
     sh /opt/musicbox/resizefs.sh -y
-    $REBOOT=1
+    REBOOT=1
 fi
 
 #get name of device and trim
@@ -62,7 +62,7 @@ then
     echo "$CLEAN_NAME" > /etc/hostname
     echo "127.0.0.1       localhost $CLEAN_NAME" > /etc/hosts
     log_end_msg "Name of device set..." "$NAME"
-    $REBOOT=1
+    REBOOT=1
 fi
 
 if [ "$REBOOT" == 1 ]
@@ -89,6 +89,7 @@ if [ "$INI__network__wifi_network" != "" ]
 then
     #put wifi settings for wpa roaming
 cat >/etc/wpa.conf <<EOF
+    ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
     update_config=1
     network={
         ssid="$INI__network__wifi_network"
@@ -144,7 +145,8 @@ if [ "$INI__network__mount_address" != "" ]
 then
     #mount samba share, readonly
     log_progress_msg "Mounting Windows Network drive..." "$NAME"
-    mount -t cifs -o sec=ntlm,ro,rsize=2048,wsize=4096,cache=strict,user=$INI__network__mount_user,password=$INI__network__mount_password $INI__network__mount_address /music/Network/
+    mount -t cifs -o sec=ntlm,ro,user=$INI__network__mount_user,password=$INI__network__mount_password $INI__network__mount_address /music/Network/
+#    mount -t cifs -o sec=ntlm,ro,rsize=2048,wsize=4096,cache=strict,user=$INI__network__mount_user,password=$INI__network__mount_password $INI__network__mount_address /music/Network/
 #add rsize=2048,wsize=4096,cache=strict because of usb (from raspyfi)
 fi
 

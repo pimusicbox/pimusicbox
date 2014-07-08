@@ -27,22 +27,22 @@ hdmi_force_hotplug=1
 
 # uncomment to force a HDMI mode rather than DVI. This can make audio work in
 # DMT (computer monitor) modes
-#hdmi_drive=2
+hdmi_drive=2
 
 # uncomment to increase signal to HDMI, if you have interference, blanking, or no display
 #config_hdmi_boost=4
 
 # Set variable arm_freq
-#arm_freq=800
+arm_freq=800
 
 # Set variable core_freq
-#core_freq=250
+core_freq=250
 
 # Set variable sdram_freq
-#sdram_freq=400
+sdram_freq=400
 
 # Set variable over_voltage
-#over_voltage=0
+over_voltage=0
 
 # Set variable gpu_mem
 gpu_mem=16
