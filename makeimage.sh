@@ -117,7 +117,8 @@ rm -r $MNT2/var/lib/mopidy/*
 rm -r $MNT2/var/cache/mopidy/*
 
 #caches etc
-rm -r $MNT2/var/cache/apt/*
+rm $MNT2/var/cache/apt/archives/*
+rm $MNT2/var/cache/apt/archives/partial/*
 rm -r $MNT2/var/cache/man/*
 rm -r $MNT2/var/backups/*.gz
 rm -r $MNT2/var/lib/aptitude/*
@@ -188,7 +189,6 @@ umount $MNT2
 rmdir $MNT2
 
 echo "copy image"
-cp $ZIPNAME /media/sf_Downloads
 cp $IMGNAME /media/sf_Downloads
 
 echo "zip image"
