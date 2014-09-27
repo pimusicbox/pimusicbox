@@ -26,6 +26,10 @@ log_begin_msg "Initializing MusicBox..."
 # convert windows ini to unix
 dos2unix -n $CONFIG_FILE /tmp/settings.ini > /dev/null 2>&1 || true
 
+#declare $INI before reading ini https://github.com/rudimeier/bash_ini_parser/issues/2
+unset INI
+declare -A INI
+
 # ini vars to mopidy settings
 read_ini /tmp/settings.ini
 
@@ -116,7 +120,7 @@ then
 fi
 
 #redirect 6680 to 80
-#iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 6680 > /dev/null 2>&1 || true
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 6680 > /dev/null 2>&1 || true
 
 # start SSH if enabled
 if [ "$INI__network__enable_ssh" == "1" ]
@@ -145,9 +149,7 @@ if [ "$INI__network__mount_address" != "" ]
 then
     #mount samba share, readonly
     log_progress_msg "Mounting Windows Network drive..." "$NAME"
-    MOUNT_UID=$(id -u mopidy)
-    MOUNT_GID=$(getent group mopidy | cut -d: -f3)
-    mount -t cifs -o sec=ntlm,ro,user=$INI__network__mount_user,password=$INI__network__mount_password,uid=$MOUNT_UID,gid=$MOUNT_GID,iocharset=utf8 $INI__network__mount_address /music/Network/
+    mount -t cifs -o sec=ntlm,ro,user=$INI__network__mount_user,password=$INI__network__mount_password $INI__network__mount_address /music/Network/
 #    mount -t cifs -o sec=ntlm,ro,rsize=2048,wsize=4096,cache=strict,user=$INI__network__mount_user,password=$INI__network__mount_password $INI__network__mount_address /music/Network/
 #add rsize=2048,wsize=4096,cache=strict because of usb (from raspyfi)
 fi

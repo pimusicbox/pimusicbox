@@ -1,5 +1,15 @@
 Pi MusicBox Changelog
 
+0.5.1alpha
++Google Music Works a lot better now
++Support for cards from IQ Audio, newer HifiBerry, model B+
++More responsive mopidy, version 0.19.4
++Youtube integration
++Nicer webclient with new homescreen
++Play streams from youtube, spotify, soundcloud, radio by pasting an url
++Search music per service
++SoundCloud search won't block other services
+
 0.5 8 july 2014
 +Updated Google Music, SoundCloud
 +SoundCloud search works

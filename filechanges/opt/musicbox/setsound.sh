@@ -31,6 +31,9 @@ function enumerate_alsa_cards()
             modalias=`cat $card/device/modalias`
             dev=(${modalias//:/ })
 
+#            echo "0 ${dev[0]}"
+#            echo "1 ${dev[1]}"
+
             case ${dev[0]} in
                 platform)
                     if [[ ${dev[1]} == "bcm2835"* ]]; then
@@ -40,10 +43,23 @@ function enumerate_alsa_cards()
                             log_progress_msg "HDMI output connected" "$NAME"
                             HDMI_CARD=$num
                         fi
+                    # hifiberry dac (1st gen)
                     elif [[ ${dev[1]} == "snd-hifiberry-dac" ]]; then
                         I2S_CARD=$num
-                        log_progress_msg "found i2s device: card$I2S_CARD" "$NAME"
+                    # hifiberry digi
+                    elif [[ ${dev[1]} == "snd-hifiberry-digi" ]]; then
+                        I2S_CARD=$num
+                    # hifiberry dac+
+                    elif [[ ${dev[1]} == "snd-hifiberry-dacplus" ]]; then
+                        I2S_CARD=$num
+                    # iq audio
+                    elif [[ ${dev[1]} == "snd-rpi-iqaudio-dac" ]]; then
+                        I2S_CARD=$num
+                    #wolfson
+                    elif [[ ${dev[1]} == "snd-rpi-wsp" ]]; then
+                        I2S_CARD=$num
                     fi
+                    log_progress_msg "found i2s device: card$I2S_CARD" "$NAME"
                     ;;
                 usb)
                     USB_CARD=$num
@@ -73,7 +89,7 @@ fi
 # it is at this momement not possible to detect wheter a i2s device is connected hence
 # i2s is only selected if explicitly given as output in the config file
 OUTPUT=$(echo $INI__musicbox__output | tr "[:upper:]" "[:lower:]")
-CARD=
+CARD=0
 
 # get alsa cards
 enumerate_alsa_cards
@@ -88,10 +104,36 @@ case $OUTPUT in
     usb)
         CARD=$USB_CARD
         ;;
-    i2s)
+    hifiberry_dac)
+        modprobe snd_soc_pcm5102a
+        modprobe snd_soc_hifiberry_dac
+        enumerate_alsa_cards
+        CARD=$I2S_CARD
+        ;;
+    hifiberry_digi)
+        modprobe snd_soc_wm8804
+        modprobe snd_soc_hifiberry_digi
+        enumerate_alsa_cards
+        CARD=$I2S_CARD
+        ;;
+    hifiberry_dacplus)
+        modprobe snd_soc_hifiberry_dacplus
+        enumerate_alsa_cards
+        CARD=$I2S_CARD
+        ;;
+    iqaudio_dac)
+        modprobe snd_soc_pcm512x
+        modprobe snd_soc_iqaudio_dac
+        enumerate_alsa_cards
+        CARD=$I2S_CARD
+        ;;
+    wolfson)
+        enumerate_alsa_cards
         CARD=$I2S_CARD
         ;;
 esac
+
+#echo "Card $CARD i2s $I2S_CARD"
 
 # if preferred output not found or given fall back to auto detection
 if [[ -z $CARD ]];
