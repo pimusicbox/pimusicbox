@@ -9,7 +9,9 @@ DRIVE='/dev/sdb'
 PART1=$DRIVE'1'
 PART2=$DRIVE'2'
 ZEROROOT='y'
-COUNT=960
+
+# size 875 (900?), count 975 works...
+COUNT=975
 
 umount $PART1
 umount $PART2
@@ -167,7 +169,7 @@ umount $MNT
 umount $MNT2
 
 # a user reported an SD size of 988286976, which would be 942 blocks of 1M
-# but $COUNT to be save
+# $COUNT is larger, sorry
 echo "DD $COUNT * 1M"
 dd bs=1M if=$DRIVE count=$COUNT | pv -s "$COUNT"m | dd of=musicbox$IMGVERSION.img
 

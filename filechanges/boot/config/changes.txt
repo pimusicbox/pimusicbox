@@ -1,6 +1,9 @@
 Pi MusicBox Changelog
 
-0.5.1alpha
+0.5.1 alpha2
++Mostly bugfixes
+
+0.5.1 alpha
 +Google Music Works a lot better now
 +Support for cards from IQ Audio, newer HifiBerry, model B+
 +More responsive mopidy, version 0.19.4
@@ -8,16 +11,18 @@ Pi MusicBox Changelog
 +Nicer webclient with new homescreen
 +Play streams from youtube, spotify, soundcloud, radio by pasting an url
 +Search music per service
-+SoundCloud search won't block other services
++SoundCloud search won't block other services anymore
++Google Music works better now, including search and browse.
 
 0.5 8 july 2014
 +Updated Google Music, SoundCloud
-+SoundCloud search works
 +Added missing webclient fonts
 +Playing files from the network enhanced
 +Disabled Samba printing
 +Small changes, bugfixes
++Faster USB, no more stuttering for some DACs
 -HifiBerry Digi support is not complete :( See https://github.com/woutervanwijk/Pi-MusicBox/issues/100
+-SoundCloud can break searching
 
 0.5 beta2
 +Google Music works again!

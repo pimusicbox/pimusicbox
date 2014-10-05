@@ -183,6 +183,9 @@ if [ "$_IP" ]; then
     log_progress_msg "My IP address is $_IP. Connect to MusicBox in your browser via http://$CLEAN_NAME.local or http://$_IP "
 fi
 
+# renice mopidy to 19, to have less stutter when playing tracks from spotify (at the start of a track)
+renice 19 `pgrep mopidy`
+
 if [ "$INI__musicbox__autoplay" -a "$INI__musicbox__autoplaywait" ]
 then
     log_progress_msg "Waiting $INI__musicbox__autoplaywait seconds before autoplay." "$NAME"
