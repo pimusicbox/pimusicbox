@@ -247,17 +247,22 @@
    include /etc/monit/conf.d/*
 #
 check process shairport with pidfile /var/run/shairport.pid
-      start program = "/usr/sbin/service shairport start"
-      stop  program = "/usr/sbin/service shairport stop"
-      restart program = "/usr/sbin/service shairport stop && service shairport start"
+      start program = "/etc/init.d/shairport start"
+      stop  program = "/etc/init.d/shairport stop"
+      restart program = "/etc/init.d/shairport stop && /etc/init.d/shairport start"
       if failed port 5002 for 2 cycles then restart
-check process gmediarender with pidfile /var/run/gmediarender.pid
-      start program = "/usr/sbin/service gmediarenderer start"
-      stop  program = "/usr/sbin/service gmediarenderer stop"
-      restart program = "/usr/sbin/service gmediarenderer restart"
-      if failed port 49494 for 2 cycles then restart
+#check process gmediarender with pidfile /var/run/gmediarender.pid
+#      start program = "/etc/init.d/gmediarenderer start"
+#      stop  program = "/etc/init.d/gmediarenderer stop"
+#      restart program = "/etc/init.d/gmediarenderer restart"
+#      if failed port 49494 for 2 cycles then restart
+check process upmpdcli with pidfile /var/run/upmpdcli.pid
+      start program = "/etc/init.d/ start"
+      stop  program = "/etc/init.d/upmpdcli stop"
+      restart program = "/etc/init.d/upmpdcli restart"
+#      if failed port 49494 for 2 cycles then restart
 check process mopidy with pidfile /var/run/mopidy.pid
-      start program = "/usr/sbin/service mopidy start"
-      stop  program = "/usr/sbin/service mopidy stop"
-      restart program = "/usr/sbin/service mopidy restart"
-      if failed port 6680 protocol http for 5 cycles then restart
+      start program = "/etc/init.d/mopidy start"
+      stop  program = "/etc/init.d/mopidy stop"
+      restart program = "/etc/init.d/mopidy restart"
+      if failed port 6680 protocol http for 2 cycles then restart
