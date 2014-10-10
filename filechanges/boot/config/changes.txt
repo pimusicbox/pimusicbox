@@ -1,10 +1,19 @@
 Pi MusicBox Changelog
 
-0.5.1 alpha2
-+Mostly bugfixes
+0.5.1 alpha3
++Replaced gmediarender with upmpdcli for better and more stable upnp streaming support.
++Fixed stuttering of Spotify at the start of a track
++Bugfixes for webclient interface (popups work better now)
++Enable/disable Shairport and DLNA streaming
++SSH/Dropbear enhancements 
++Bugfixes
+
+0.5.1 alpha2 - 6 october 2014
++Mostly bugfixes.
++Better support for albumart in webclient
 
 0.5.1 alpha
-+Google Music Works a lot better now
++Google Music Works a lot better now, including search, albums, artists, coverart, browsing
 +Support for cards from IQ Audio, newer HifiBerry, model B+
 +More responsive mopidy, version 0.19.4
 +Youtube integration
@@ -12,7 +21,6 @@ Pi MusicBox Changelog
 +Play streams from youtube, spotify, soundcloud, radio by pasting an url
 +Search music per service
 +SoundCloud search won't block other services anymore
-+Google Music works better now, including search and browse.
 
 0.5 8 july 2014
 +Updated Google Music, SoundCloud

@@ -11,7 +11,7 @@ MB_USER=musicbox
 CONFIG_FILE=/boot/config/settings.ini
 NAME="MusicBox"
 
-SSH_STOP='/etc/init.d/dropbear stop'
+SSH_START='/etc/init.d/dropbear start'
 
 # Define LSB log_* functions.
 . /lib/lsb/init-functions
@@ -125,10 +125,36 @@ iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 6680 > /de
 # start SSH if enabled
 if [ "$INI__network__enable_ssh" == "1" ]
 then
+    #create private keys for dropbear if they don't exist
+    if [ ! -f "/etc/dropbear/dropbear_dss_host_key" ]
+    then
+        echo "Create dss-key for dropbear..."
+        dropbearkey -t dss -f /etc/dropbear/dropbear_dss_host_key
+    fi
+    if [ ! -f "/etc/dropbear/dropbear_rsa_host_key" ]
+    then 
+        echo "Create rsa-key for dropbear..."
+        dropbearkey -t rsa -f /etc/dropbear/dropbear_rsa_host_key
+    fi
+
+    $SSH_START
+    #open ssh port
     iptables -A INPUT -p tcp --dport 22 -j ACCEPT > /dev/null 2>&1 || true
 else
-    $SSH_STOP
+    #close ssh port
     iptables -A INPUT -p tcp --dport 22 -j DENY > /dev/null 2>&1 || true
+fi
+
+# start upnp if enabled
+if [ "$INI__musicbox__enable_upnp" == "1" ]
+then
+    /etc/init.d/upmpdcli start
+fi
+
+# start shairport if enabled
+if [ "$INI__musicbox__enable_shairport" == "1" ]
+then
+    /etc/init.d/shairport start
 fi
 
 #check networking, sleep for a while
