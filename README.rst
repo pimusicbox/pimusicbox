@@ -1,4 +1,43 @@
-Pi MusicBox Changelog
+****************************
+Pi MusicBox
+****************************
+
+Pi MusicBox is the Swiss Army Knife of streaming music on the Raspberry Pi. With Pi MusicBox, you can create a cheap (Sonos-like) standalone streaming music player for Spotify and other music streams. 
+
+This is the code used to create the image (download from `www.pimusicbox.com
+<http://www.pimusicbox.com/>`_)
+
+Features
+========
+
+- Headless audio player based on Mopidy (no need for a monitor), streaming music from Spotify, SoundCloud, Google Music, Podcasts (with iTunes, gPodder directories), MP3/OGG/FLAC/AAC, Webradio (with TuneIn, Dirble directories), Subsonic, Soma FM.
+- Remote control it with a nice browser-interface or with an MPD-client like MPDroid for Android.
+- Also includes AirTunes/AirPlay and DLNA streaming from your phone, tablet (iOS and Android)
+- USB Audio support, for all kinds of USB soundcards, speakers, headphones. The sound from the Pi itself is not that good...
+- Wifi support (WPA, for Raspbian supported wifi-adapters)
+- No need for tinkering, no need to use the Linux commandline
+- Play music files from the SD Card, USB, Network.
+- Last.FM scrobbling.
+- Most HifiBerry, IQ Audio soundcards supported
+
+Usage
+=====
+
+The files (modified or new) for the system are in the directory /filechanges. In the root you'll find a description on how to build it and the build scripts.
+
+
+Project resources
+=================
+
+- `Source code <https://github.com/woutervanwijk/pi-musicbox>`_
+- `Issue tracker <https://github.com/woutervanwijk/pi-musicbox/issues>`_
+- `Development branch tarball <https://github.com/woutervanwijk/pi-musicbox/archive/master.tar.gz>`_
+
+
+Changelog
+=========
+
+Look at the file /filechanges/boot/config/changes.txt for a full overview. 
 
 v0.5.1 alpha3
 ----------------------------------------
@@ -127,96 +166,3 @@ v0.5.1 alpha3
 - Logging on startup (not totally there yet)
 - Newer kernel
 - Bugfixes
-
-0.4.3 - 8 january 2014
-USB disks mounted at boot and scanned for music
-Better recognition of USB Dacs (Simon)
-Better scrolling on iOS
-Start SSH before filescan
-Slightly smaller image file (did not fit on all cards)
-
-0.4.2.1 - 31 december 2013
-Fix for bug in setting default volume
-Fix for bug in setting spotify bitrate
-
-0.4.2 - 30 december 2013
-Best sounding Pi MusicBox ever! No hiccups, no unwanted noises, just music!
-Shutdown/Reboot from interface
-Font-icons for shuffle/repeat in interface
-Disabled power management for wireless dongles
-Better hdmi support (hotplug, force open)
-Newer Kernel: 3.10.24+ (i2s included)
-Split startup script into multiple files for better management
-Initial i2s support by Simon de Bakker/HifiBerry
-Set default volume in config file (Simon again)
-Log file viewable via webinterface ( http://musicbox.local/log ) 
-Initial work to support a settings page in the webinterface (not working yet)
-No hamsters were harmed during the production
-
-0.4.1 (21 december 2013)
-Bugfix for SoundCloud in webinterface
-Bugfix for distorted sound on some webradiostations
-
-0.4 (15 december 2013)
-Bugfixes: setting passwords, webclient inputfields in Safari
-Info:
-Uses Mopidy 0.15, Linux 3.6.11+ (updated Moebius Linux), 
-Shairport 0.05, Mopidy Webclient 0.15 (JQuery Mobile 1.3 + flat client)
-
-0.4-beta
-Much nicer interface, thanks to Ulrich Lichtenegger
-Small bugfixes
-
-0.4-alpha2
-A lot of smaller and bigger bugfixes
-Support for Google Music All Access
-
-0.4-alpha
-Use multiple Pi's on the same network (Multiroom Audio)
-Webradio support
-SoundCloud support (beta!)
-Google Music support (alpha!)
-Windows workgroup name configuration
-
-Completely refreshed system
-Big updates to web interface (faster, cleaner, more stable, more options)
-Big updates to Mopidy music server
-Optimizations to have less services running, less logging, less writes to SD-Card, no unwanted noises
-
-Security
-Better security trough a simple firewall
-Mopidy runs as a normal user now
-SSH service disabled by default
-Automatically change passwords of musicbox and root users
-
-0.3
-All configuration is done in one ini-file
-HDMI output supported
-Autodetection of HDMI at start (next to autodetection of USB)
-Override output setting in ini-file
-LastFM scrobbling enabled
-Webinterface updated (speedier)
-Local music files supported, accessible via windows network (but not yet in webinterface)
-
-0.2.2
-Windows finds the musicbox.local address by itself now (samba).
-
-0.2.1
-Removed ugly sounds on analog port when changing tracks (pulseaudio). An USB-soundcard is still recommended.
-
-0.2
-Based on Raspbian for better performance
-Nicer Webinterface
-Turbo
-
-0.01.4
-Enabled Medium Turbo mode to speedup everything, usb sound works automagically, bugs fixed. Login screen isn't cleared anymore. Set sound volume on boot. Reset network config, clear logs, etc. Script to create image. 
-
-0.01.3
-New kernel, added raspberry packages.
-
-0.01.1
-Updates, fixed some small bugs, updated webclient
-
-0.01
-Initial release
