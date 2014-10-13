@@ -59,7 +59,7 @@ function enumerate_alsa_cards()
                     elif [[ ${dev[1]} == "snd-rpi-wsp" ]]; then
                         I2S_CARD=$num
                     fi
-                    log_progress_msg "found i2s device: card$I2S_CARD" "$NAME"
+#                    log_progress_msg "found i2s device: card$I2S_CARD" "$NAME"
                     ;;
                 usb)
                     USB_CARD=$num
@@ -89,7 +89,12 @@ fi
 # it is at this momement not possible to detect wheter a i2s device is connected hence
 # i2s is only selected if explicitly given as output in the config file
 OUTPUT=$(echo $INI__musicbox__output | tr "[:upper:]" "[:lower:]")
-CARD=0
+CARD=
+
+if [ $OUTPUT == "auto" ]
+then
+    OUTPUT=""
+fi
 
 # get alsa cards
 enumerate_alsa_cards
@@ -133,11 +138,12 @@ case $OUTPUT in
         ;;
 esac
 
-#echo "Card $CARD i2s $I2S_CARD"
+echo "Card $CARD i2s $I2S_CARD output $OUTPUT usb $USB_CARD intc $INT_CARD"
 
 # if preferred output not found or given fall back to auto detection
 if [[ -z $CARD ]];
 then
+echo "autod"
     if [[ -n $USB_CARD ]]; then
         CARD=$USB_CARD
         OUTPUT="usb"
@@ -150,6 +156,8 @@ then
         fi
     fi
 fi
+
+echo "Card $CARD i2s $I2S_CARD output $OUTPUT usb $USB_CARD intc $INT_CARD"
 
 log_progress_msg "Line out set to $OUTPUT card $CARD" "$NAME"
 

@@ -39,12 +39,13 @@ Changelog
 
 Look at the file /filechanges/boot/config/changes.txt for a full overview. 
 
-v0.5.1 alpha3
+v0.5.1 beta
 ----------------------------------------
 
 - Replaced gmediarender with upmpdcli for better and more stable upnp streaming support.
 - Fixed stuttering of Spotify at the start of a track
 - Bugfixes for webclient interface (popups work better now)
+- Better soundcard detection
 - Enable/disable Shairport and DLNA streaming
 - SSH/Dropbear enhancements 
 - Bugfixes
