@@ -1,12 +1,13 @@
 Pi MusicBox Changelog
 
-v0.5.1 alpha3
+v0.5.1 beta
 ----------------------------------------
 
 - Replaced gmediarender with upmpdcli for better and more stable upnp streaming support.
-- Fixed stuttering of Spotify at the start of a track
+- Less stuttering of Spotify at the start of a track
 - Bugfixes for webclient interface (popups work better now)
 - Enable/disable Shairport and DLNA streaming
+- Sound detection fixed
 - SSH/Dropbear enhancements 
 - Bugfixes
 
