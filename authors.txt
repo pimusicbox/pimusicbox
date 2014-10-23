@@ -15,4 +15,4 @@ Big thanks to all the authors of these projects, testers, bug-fixers, reporters.
 
 i2s support by Simon de Bakker
 Flat webclient designed by Ulrich Lichtenegger
-Nick Steel: bugfixes, support
+Nick Steel: bugfixes, support, webclient

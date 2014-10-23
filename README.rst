@@ -11,9 +11,9 @@ Features
 ========
 
 - Headless audio player based on Mopidy (no need for a monitor), streaming music from Spotify, SoundCloud, Google Music, Podcasts (with iTunes, gPodder directories), MP3/OGG/FLAC/AAC, Webradio (with TuneIn, Dirble directories), Subsonic, Soma FM.
-- Remote control it with a nice browser-interface or with an MPD-client like MPDroid for Android.
+- Remote control it with a nice browser-interface or with an MPD-client like MPDroid for Android
 - Also includes AirTunes/AirPlay and DLNA streaming from your phone, tablet (iOS and Android)
-- USB Audio support, for all kinds of USB soundcards, speakers, headphones. The sound from the Pi itself is not that good...
+- USB Audio support, for all kinds of USB soundcards, speakers, headphones
 - Wifi support (WPA, for Raspbian supported wifi-adapters)
 - No need for tinkering, no need to use the Linux commandline
 - Play music files from the SD Card, USB, Network.

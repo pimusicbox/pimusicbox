@@ -1,4 +1,11 @@
-Pi MusicBox Changelog
+**Pi MusicBox Changelog**
+-------------------------
+
+v0.5.1 beta2
+----------------------------------------
+- Shairport-sync instead of Shairport. AirPlay audio now syncs.
+- Webclient enhancements
+- Alsamixer extension included for hardware mixers (no gui, only in ini file)
 
 v0.5.1 beta
 ----------------------------------------
@@ -8,7 +15,7 @@ v0.5.1 beta
 - Bugfixes for webclient interface (popups work better now)
 - Enable/disable Shairport and DLNA streaming
 - Sound detection fixed
-- SSH/Dropbear enhancements 
+- SSH/Dropbear enhancements
 - Bugfixes
 
 0.5.1 alpha2 - 6 october 2014
@@ -150,7 +157,7 @@ Newer Kernel: 3.10.24+ (i2s included)
 Split startup script into multiple files for better management
 Initial i2s support by Simon de Bakker/HifiBerry
 Set default volume in config file (Simon again)
-Log file viewable via webinterface ( http://musicbox.local/log ) 
+Log file viewable via webinterface ( http://musicbox.local/log )
 Initial work to support a settings page in the webinterface (not working yet)
 No hamsters were harmed during the production
 
@@ -161,7 +168,7 @@ Bugfix for distorted sound on some webradiostations
 0.4 (15 december 2013)
 Bugfixes: setting passwords, webclient inputfields in Safari
 Info:
-Uses Mopidy 0.15, Linux 3.6.11+ (updated Moebius Linux), 
+Uses Mopidy 0.15, Linux 3.6.11+ (updated Moebius Linux),
 Shairport 0.05, Mopidy Webclient 0.15 (JQuery Mobile 1.3 + flat client)
 
 0.4-beta
@@ -211,7 +218,7 @@ Nicer Webinterface
 Turbo
 
 0.01.4
-Enabled Medium Turbo mode to speedup everything, usb sound works automagically, bugs fixed. Login screen isn't cleared anymore. Set sound volume on boot. Reset network config, clear logs, etc. Script to create image. 
+Enabled Medium Turbo mode to speedup everything, usb sound works automagically, bugs fixed. Login screen isn't cleared anymore. Set sound volume on boot. Reset network config, clear logs, etc. Script to create image.
 
 0.01.3
 New kernel, added raspberry packages.
