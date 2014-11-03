@@ -50,7 +50,7 @@ function enumerate_alsa_cards()
                     elif [[ ${dev[1]} == "snd-hifiberry-digi" ]]; then
                         I2S_CARD=$num
                     # hifiberry dac+
-                    elif [[ ${dev[1]} == "snd-hifiberry-dacplus" ]]; then
+                    elif [[ ${dev[1]} == "snd-rpi-hifiberry-dacplus" ]]; then
                         I2S_CARD=$num
                     # iq audio
                     elif [[ ${dev[1]} == "snd-rpi-iqaudio-dac" ]]; then
