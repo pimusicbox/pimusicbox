@@ -22,7 +22,7 @@ ntpdate -u ntp.ubuntu.com
 sudo apt-get update && sudo apt-get --yes install logrotate alsa-utils python-cherrypy3 python-ws4py wpasupplicant python-spotify gstreamer0.10-alsa ifplugd gstreamer0.10-fluendo-mp3 gstreamer0.10-tools samba dos2unix avahi-utils alsa-base python-pylast cifs-utils avahi-autoipd libnss-mdns ntpdate ca-certificates ncmpcpp rpi-update linux-wlan-ng alsa-firmware-loaders iw atmel-firmware firmware-atheros firmware-brcm80211 firmware-ipw2x00 firmware-iwlwifi firmware-libertas firmware-linux firmware-linux-nonfree firmware-ralink firmware-realtek zd1211-firmware linux-wlan-ng-firmware alsa-firmware-loaders dropbear python-pip usbmount mopidy
 
 #mopidy from pip
-yes | pip install mopidy mopidy-spotify mopidy-scrobbler mopidy-soundcloud mopidy-dirble mopidy-gmusic mopidy-subsonic
+yes | pip install mopidy mopidy-spotify mopidy-scrobbler mopidy-soundcloud mopidy-dirble mopidy-gmusic mopidy-subsonic mopidy-audioaddict
 
 #**Configuration and Files**
 cd /opt
