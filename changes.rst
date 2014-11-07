@@ -1,11 +1,14 @@
 **Pi MusicBox Changelog**
 -------------------------
 
-v0.5.1 beta2
+v0.5.1 RC (7 november 2014)
 ----------------------------------------
-- Shairport-sync instead of Shairport. AirPlay audio now syncs.
+- Shairport-sync instead of Shairport. AirPlay audio now syncs to e.g. a video
 - Webclient enhancements
 - Alsamixer extension included for hardware mixers (no gui, only in ini file)
+- Removed fastclick to prevent accidental clicks in the webinterface
+- Updated mopidy extensions
+- Bugfixes
 
 v0.5.1 beta
 ----------------------------------------

@@ -167,7 +167,7 @@ rm -r $MNT2/music/MusicBox/*
 
 #bash history
 rm $MNT2/root/.bash_history
-rm $MNT2/root/.ssh/id_*
+rm $MNT2/root/.ssh/*
 
 #config
 rm -r $MNT2/home/mopidy/*
