@@ -27,7 +27,9 @@ hdmi_force_hotplug=1
 
 # uncomment to force a HDMI mode rather than DVI. This can make audio work in
 # DMT (computer monitor) modes
-hdmi_drive=2
+
+#uncomment this if you have no sound on your hdmi output
+#hdmi_drive=2
 
 # uncomment to increase signal to HDMI, if you have interference, blanking, or no display
 #config_hdmi_boost=4

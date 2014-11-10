@@ -154,7 +154,7 @@ fi
 # start shairport if enabled
 if [ "$INI__musicbox__enable_shairport" == "1" ]
 then
-    /etc/init.d/shairport start
+    /etc/init.d/shairport-sync start
 fi
 
 #check networking, sleep for a while
@@ -191,12 +191,19 @@ fi
 if [ "$INI__musicbox__scan_always" == "1" -o "$INI__musicbox__scan_once" == "1" ]
 then
     log_progress_msg "Scanning music-files, please wait..."
-    /etc/init.d/mopidy stop
     /etc/init.d/mopidy run local scan
     #if somehow mopidy is not killed ok. kill manually
     killall -9 mopidy
     /etc/init.d/mopidy start
 fi
+
+#remove cachedir for playlist problems https://github.com/mopidy/mopidy-spotify/issues/27
+rm -r /var/cache/mopidy/spotify
+mkdir /var/cache/mopidy/spotify
+chown -R mopidy:mopidy /var/cache/mopidy/
+
+#start mopidy
+/etc/init.d/mopidy start
 
 if [ "$INI__network__name" != "$CLEAN_NAME" -a "$INI__network__name" != "" ]
 then
@@ -220,6 +227,7 @@ then
     mpc add "$INI__musicbox__autoplay"
     mpc play
 fi
+
 
 # check and clean dirty bit of vfat partition if unsavely removed
 fsck /dev/mmcblk0p1 -v -a -w -p > /dev/null 2>&1 || true
