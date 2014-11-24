@@ -198,9 +198,9 @@ then
 fi
 
 #remove cachedir for playlist problems https://github.com/mopidy/mopidy-spotify/issues/27
-rm -r /var/cache/mopidy/spotify
-mkdir /var/cache/mopidy/spotify
-chown -R mopidy:mopidy /var/cache/mopidy/
+#rm -r /var/cache/mopidy/spotify
+#mkdir /var/cache/mopidy/spotify
+#chown -R mopidy:mopidy /var/cache/mopidy/
 
 #start mopidy
 /etc/init.d/mopidy start

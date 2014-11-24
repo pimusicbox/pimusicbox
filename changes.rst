@@ -1,6 +1,12 @@
 **Pi MusicBox Changelog**
 -------------------------
 
+v0.5.1 RC2 (24 november 2014)
+----------------------------------------
+- No more slow loading of Spotify playlists
+- Added audioaddict extension
+- Other bugfixes
+
 v0.5.1 RC (7 november 2014)
 ----------------------------------------
 - Shairport-sync instead of Shairport. AirPlay audio now syncs to e.g. a video
