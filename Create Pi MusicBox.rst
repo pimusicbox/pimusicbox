@@ -44,7 +44,7 @@ Depending on your configuration, you could leave out certain packages, e.g. the 
 
 Then install mopidy and the extensions we need:
 
-    sudo pip install -U mopidy mopidy-spotify mopidy-local-sqlite mopidy-local-whoosh mopidy-scrobbler mopidy-soundcloud mopidy-dirble mopidy-tunein mopidy-gmusic mopidy-dirble mopidy-subsonic mopidy-http-kuechenradio mopidy-moped mopidy-musicbox-webclient mopidy-websettings mopidy-internetarchive mopidy-podcast mopidy-podcast-itunes mopidy-podcast-gpodder.net mopidy-simplewebclient mopidy-somafm mopidy-spotify-tunigo mopidy-youtube
+    sudo pip install -U mopidy mopidy-spotify mopidy-local-sqlite mopidy-local-whoosh mopidy-scrobbler mopidy-soundcloud mopidy-dirble mopidy-tunein mopidy-gmusic mopidy-subsonic mopidy-http-kuechenradio mopidy-moped mopidy-musicbox-webclient mopidy-websettings mopidy-internetarchive mopidy-podcast mopidy-podcast-itunes mopidy-podcast-gpodder.net mopidy-simplewebclient mopidy-somafm mopidy-spotify-tunigo mopidy-youtube
 
 Google Music works a lot better if you use the development version of mopidy-gmusic:
 
