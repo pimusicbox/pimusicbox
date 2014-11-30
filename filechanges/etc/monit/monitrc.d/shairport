@@ -1,0 +1,5 @@
+check process shairport-sync with pidfile /var/run/shairport-sync.pid
+      start program = "/etc/init.d/shairport-sync start"
+      stop  program = "/etc/init.d/shairport-sync stop"
+      restart program = "/etc/init.d/shairport-sync restart"
+      #if failed port 5002 for 2 cycles then restart

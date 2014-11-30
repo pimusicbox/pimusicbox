@@ -1,0 +1,5 @@
+check process upmpdcli with pidfile /var/run/upmpdcli.pid
+      start program = "/etc/init.d/upmpdcli start"
+      stop  program = "/etc/init.d/upmpdcli stop"
+      restart program = "/etc/init.d/upmpdcli restart"
+#      if failed port 49494 for 2 cycles then restart

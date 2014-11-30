@@ -103,12 +103,13 @@ cat >/etc/wpa.conf <<EOF
 EOF
 
     #enable wifi
-    ifdown wlan0
-    ifup wlan0
+#    ifdown wlan0
+#    ifup wlan0
 
-#    /etc/init.d/networking restart
+    /etc/init.d/networking restart
 fi
 
+#include code from setsound script
 . /opt/musicbox/setsound.sh
 
 if [ "$INI__network__workgroup" != "" ]
@@ -149,13 +150,21 @@ fi
 if [ "$INI__musicbox__enable_upnp" == "1" ]
 then
     /etc/init.d/upmpdcli start
+    ln -s /etc/monit/monitrc.d/upmpdcli /etc/monit/conf.d/upmpdcli
+else
+    rm /etc/monit/conf.d/upmpdcli
 fi
 
 # start shairport if enabled
 if [ "$INI__musicbox__enable_shairport" == "1" ]
 then
     /etc/init.d/shairport-sync start
+    ln -s /etc/monit/monitrc.d/shairport /etc/monit/conf.d/shairport
+else
+    rm /etc/monit/conf.d/shairport
 fi
+
+service monit start
 
 #check networking, sleep for a while
 MYIP=$(hostname -I)
@@ -196,11 +205,6 @@ then
     killall -9 mopidy
     /etc/init.d/mopidy start
 fi
-
-#remove cachedir for playlist problems https://github.com/mopidy/mopidy-spotify/issues/27
-#rm -r /var/cache/mopidy/spotify
-#mkdir /var/cache/mopidy/spotify
-#chown -R mopidy:mopidy /var/cache/mopidy/
 
 #start mopidy
 /etc/init.d/mopidy start
