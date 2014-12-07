@@ -1,6 +1,11 @@
 **Pi MusicBox Changelog**
 -------------------------
 
+v0.5.1 (7 december 2014)
+----------------------------------------
+- Monitoring of crashed services enhanced
+- Small bugfix in html
+
 v0.5.1 RC2 (24 november 2014)
 ----------------------------------------
 - No more slow loading of Spotify playlists
