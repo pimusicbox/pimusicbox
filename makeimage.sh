@@ -98,16 +98,16 @@ mount $PART1 $MNT
 #start copying/removing stuff
 
 #backup and delete configuration files on FAT partition (when musicbox is started in /boot/config)
-cp -r $MNT/config $TMPDIR
-rm -r $MNT/config
+cp -rf $MNT/config $TMPDIR
+rm -rf $MNT/config
 
 # copy clean config to FAT partition
-cp -r config $MNT
-rm -r $MNT/config/.*
+cp -rf config $MNT
+rm -rf $MNT/config/.*
 
 #remove (apple) hidden stuff
-rm -r $MNT/.*
-rm -r $MNT/config/.*
+rm -rf $MNT/.*
+rm -rf $MNT/config/.*
 
 #clean up the free space of FAT for better compression
 echo "Zero FAT"
@@ -118,7 +118,7 @@ rm $MNT/zero
 mount $PART2 $MNT2
 
 #copy a backup or root to temp
-cp -r $MNT2/root $TMPDIR
+cp -rf $MNT2/root $TMPDIR
 
 #remove network settings, etc
 rm $MNT2/var/lib/dhcp/*.leases
@@ -130,28 +130,34 @@ rm $MNT2/etc/udev/rules.d/*.rules
 
 #logs
 rm $MNT2/var/log/*
+rm $MNT2/var/log/mopidy/*.gz
+rm $MNT2/var/log/mopidy/*.1
 rm $MNT2/var/log/apt/*
+rm -rf $MNT2/var/log/samba/*
+rm -rf $MNT2/var/log/fsck/*
 echo "" > $MNT2/var/log/mopidy/mopidy.log
 
 #remove spotify/audio settings
-rm -r $MNT2/var/lib/mopidy/*
-rm -r $MNT2/home/mopidy/.config/mopidy/spotify
-rm -r $MNT2/home/mopidy/.cache/*
-rm -r $MNT2/home/mopidy/.local/*
-rm -r $MNT2/var/lib/mopidy/.local/share/mopidy/local/*
+rm -rf $MNT2/var/lib/mopidy/*
+rm -rf $MNT2/home/mopidy/.config/mopidy/spotify
+rm -rf $MNT2/home/mopidy/.cache/*
+rm -rf $MNT2/home/mopidy/.local/*
+rm -rf $MNT2/var/lib/mopidy/.local/share/mopidy/local/*
 rm $MNT2/etc/wicd/wireless-settings.conf
-rm -r $MNT2/var/lib/wicd/configurations/*
-rm -r $MNT2/var/lib/mopidy/*
-rm -r $MNT2/var/cache/mopidy/*
+rm -rf $MNT2/var/lib/wicd/configurations/*
+rm -rf $MNT2/var/lib/mopidy/*
+rm -rf $MNT2/var/cache/mopidy/*
 
 #clear caches etc
+rm -rf $MNT2/var/cache/samba/*
+rm -rf $MNT2/var/cache/upmpdcli/*
 rm $MNT2/var/cache/apt/archives/*
 rm $MNT2/var/cache/apt/archives/partial/*
-rm -r $MNT2/var/cache/man/*
-rm -r $MNT2/var/backups/*.gz
-rm -r $MNT2/var/lib/aptitude/*
-rm -r $MNT2/tmp/*
-rm -r $MNT2/var/tmp/*
+rm -rf $MNT2/var/cache/man/*
+rm -rf $MNT2/var/backups/*.gz
+rm -rf $MNT2/var/lib/aptitude/*
+rm -rf $MNT2/tmp/*
+rm -rf $MNT2/var/tmp/*
 
 #remove dropbear keys
 cp $MNT2/etc/dropbear/dropbear_rsa_host_key $TMPDIR
@@ -163,21 +169,21 @@ rm $MNT2/etc/dropbear/dropbear_dss_host_key
 echo -e 'MusicBox '$IMGVERSION"\n" > $MNT2/etc/issue
 
 #remove music files
-rm -r $MNT2/music/MusicBox/*
+rm -rf $MNT2/music/MusicBox/*
 
 #bash history
 rm $MNT2/root/.bash_history
 rm $MNT2/root/.ssh/*
 
 #config
-rm -r $MNT2/home/mopidy/*
+rm -rf $MNT2/home/mopidy/*
 
 #root
-rm -r $MNT2/root/*
+rm -rf $MNT2/root/*
 
 #old stuff from rpi-update
-rm -r $MNT2/boot.bk
-rm -r $MNT2/lib/modules.bk
+rm -rf $MNT2/boot.bk
+rm -rf $MNT2/lib/modules.bk
 
 #clean up the free space of root partition for better compression
 if [ "$ZEROROOT" = "Y" -o "$ZEROROOT" = "y" ]; then
@@ -186,32 +192,11 @@ if [ "$ZEROROOT" = "Y" -o "$ZEROROOT" = "y" ]; then
     rm $MNT2/zero
 fi
 
+#wait for files to sync
 sync
 
-#wait for everything to settle
-echo "wait 15 sec for mount"
-sleep 15
-
 umount $MNT
 umount $MNT2
-
-#wait for everything to settle
-echo "wait 15 sec for mount"
-sleep 15
-
-#unmount again, if first time did not work (it sometimes does)
-umount $MNT
-umount $MNT2
-
-#echo "wait 15 sec for mount again"
-#sleep 15
-
-#echo "Ok?"
-#read TST
-
-#unmount again, if first time did not work (it sometimes does)
-#umount $MNT
-#umount $MNT2
 
 # copy disk using dd, sector-wise
 # $COUNT is the number of blocks to copy. It should fit on most 1G cards
@@ -224,13 +209,13 @@ dd bs=1M if=$DRIVE count=$COUNT | pv -s "$COUNT"m | dd of=musicbox$IMGVERSION.im
 echo "Copy Config back"
 mount $PART1 $MNT
 mount $PART2 $MNT2
-cp -r $TMPDIR/config $MNT
-rm -r $TMPDIR/config
+cp -rf $TMPDIR/config $MNT
+rm -rf $TMPDIR/config
 
 #restore root
-cp -r $TMPDIR/root $MNT2
-rm -r $TMPDIR/root
-chown -R root:root $MNT2/root
+cp -rf $TMPDIR/root $MNT2
+rm -rf $TMPDIR/root
+chown -rf root:root $MNT2/root
 
 #restore dropbear keys
 mv $TMPDIR/dropbear_rsa_host_key $MNT2/etc/dropbear
@@ -238,10 +223,6 @@ mv $TMPDIR/dropbear_dss_host_key $MNT2/etc/dropbear
 
 #sync files
 sync
-
-#wait
-echo "wait 15 sec for umount"
-sleep 15
 
 #clean up
 umount $MNT

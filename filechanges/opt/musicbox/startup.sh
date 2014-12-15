@@ -101,11 +101,6 @@ cat >/etc/wpa.conf <<EOF
         scan_ssid=1
     }
 EOF
-
-    #enable wifi
-#    ifdown wlan0
-#    ifup wlan0
-
     /etc/init.d/networking restart
 fi
 
@@ -172,7 +167,8 @@ while [ "$MYIP" == "" -a "$INI__network__wait_for_network" != "0" ]
 do
     echo "Waiting for network..."
     echo
-    sleep 5
+    /etc/init.d/networking restart
+    sleep 30
     MYIP=$(hostname -I)
 done
 
