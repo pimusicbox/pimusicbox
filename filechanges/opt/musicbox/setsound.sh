@@ -91,7 +91,7 @@ fi
 OUTPUT=$(echo $INI__musicbox__output | tr "[:upper:]" "[:lower:]")
 CARD=
 
-if [ $OUTPUT == "auto" ]
+if [ "$OUTPUT" == "auto" ]
 then
     OUTPUT=""
 fi

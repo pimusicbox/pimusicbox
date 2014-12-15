@@ -101,6 +101,11 @@ cat >/etc/wpa.conf <<EOF
         scan_ssid=1
     }
 EOF
+
+    #enable wifi
+#    ifdown wlan0
+#    ifup wlan0
+
     /etc/init.d/networking restart
 fi
 
@@ -145,18 +150,18 @@ fi
 if [ "$INI__musicbox__enable_upnp" == "1" ]
 then
     /etc/init.d/upmpdcli start
-    ln -s /etc/monit/monitrc.d/upmpdcli /etc/monit/conf.d/upmpdcli
+    ln -s /etc/monit/monitrc.d/upmpdcli /etc/monit/conf.d/upmpdcli > /dev/null 2>&1 || true
 else
-    rm /etc/monit/conf.d/upmpdcli
+    rm /etc/monit/conf.d/upmpdcli > /dev/null 2>&1 || true
 fi
 
 # start shairport if enabled
 if [ "$INI__musicbox__enable_shairport" == "1" ]
 then
     /etc/init.d/shairport-sync start
-    ln -s /etc/monit/monitrc.d/shairport /etc/monit/conf.d/shairport
+    ln -s /etc/monit/monitrc.d/shairport /etc/monit/conf.d/shairport > /dev/null 2>&1 || true
 else
-    rm /etc/monit/conf.d/shairport
+    rm /etc/monit/conf.d/shairport > /dev/null 2>&1 || true
 fi
 
 service monit start
@@ -198,7 +203,7 @@ then
     log_progress_msg "Scanning music-files, please wait..."
     /etc/init.d/mopidy run local scan
     #if somehow mopidy is not killed ok. kill manually
-    killall -9 mopidy
+    killall -9 mopidy > /dev/null 2>&1 || true
     /etc/init.d/mopidy start
 fi
 
