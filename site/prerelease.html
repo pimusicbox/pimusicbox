@@ -50,103 +50,44 @@
     </div>
     <h1>Pi MusicBox Prerelease</h1>
         <p>
-            MusicBox 0.5.1 RC2 (24 november 2014) contains the following improvements:
+            MusicBox 0.5.2 beta (15 december 2014) contains the following improvements:
         </p>
             <ul>
-            <li>No more slow loading of Spotify playlists</li>
-            <li>Added audioaddict extension</li>
-            <li>Other bugfixes</li>
-            </ul>
-        <br/><p>
-            MusicBox 0.5.1 RC (7 november 2014) contains the following improvements:
-        </p>
-            <ul>
-            <li>Shairport-sync instead of Shairport. AirPlay audio now syncs to e.g. a video</li>
-            <li>Webclient enhancements</li>
-            <li>Alsamixer extension included for hardware mixers (no gui, only in ini file)</li>
-            <li>Removed fastclick to prevent accidental clicks in the webinterface</li>
-            <li>Updated mopidy extensions</li>
-            <li>Bugfixes</li>
+            <li>Wifi not coming up bug fixed</li>
+            <li>Resize bug fixed</li>
+            <li>Webinterface stops streams instead of pause</li>
+            <li>Fixed Spotify stuttering</li>
+            <li>Fixed Spotify Browse</li>
+            <li>Button to easily save current stream to favorites</li>
             </ul>
         <br/>
-        <p>
-            MusicBox 0.5.1 beta (13 october 2014) contains the following improvements:
-        </p>
-            <ul>
-            <li>Replaced gmediarender with upmpdcli for better and more stable upnp streaming support.</li>
-            <li>Less stuttering of Spotify at the start of a track </li>
-            <li>Bugfixes for webclient interface (popups work better now)</li>
-            <li>Soundcard detection fixed</li>
-            <li>SSH/Dropbear enhancements.</li>
-            <li>Bugfixes</li>
-            </ul>
-        <br/>
-        <p>
-            MusicBox 0.5.1 alpha2 (6 october 2014) contains the following improvements:
-        </p>
-            <ul>
-            <li>+Brand new Google Music, including albums, browse, search</li>
-            <li>+Support for more i2s audiocards</li>
-            <li>+More responsive mopidy, version 0.19.4</li>
-            <li>+Nicer webclient with new homescreen, better coverart</li>
-            <li>+Play streams from youtube, spotify, soundcloud, radio by pasting an url</li>
-            <li>+Search music per service</li>
-            <li>+Youtube integration</li>
-            <li>+SoundCloud search fixed</li>
-             </ul>
+        
         <br/>
         <p>
             Earlier versions of MusicBox contained the following improvements:
         </p>
             <ul>
-            <li>Best release evah! Way less stuttering of sound!</li>
-            <li>DLNA/UPNP streaming works out of the box (using gmediarender-resurect)</li>
-            <li>Added Internet Archive and Soma FM support</li>
-            <li>Better Wifi. Will autoconnect to an open network if found</li>
-            <li>Monitoring of crashed daemons Shairport, Mopidy, Gmediarender</li>
-            <li>Detection of crashed Pi (watchdog)</li>
-            <li>Latest kernel (with a lot of fixes for USB)</li>
-            <li>Whoosh backend for local files (should be faster)</li>
-            <li>Updated Podcast</li>
-            <li>+Icons for media sources in webinterface</li>
-            <li>+Added codecs for internetradio (gstreamer-plugins bad and ugly)</li>
-            <li>+Hifiberry Digi supported</li>
-            <li>+More wifi-usb sticks supported, I hope</li>
-            <li>-Bigger package (because of gstreamer plugins)</li>
-            <li>Much improved performance and stability of Mopidy</li>
-            <li>New Settings page for easily selecting most settings of MusicBox!!</li>
-            <li>Webclient updated to (way) better support browsing</li>
-            <li>Podcast working, including browsing podcasts from iTunes, gpodder</li>
-            <li>UPNP/DLNA Streaming using gmediarender-resurrect</li>
-            <li>Seperate webserver (lighttpd) on startup</li>
-            <li>Jukebox functionality included with aternative webclient JukePi. Great for the office!</li>
-            <li>Also included alternative webclient Moped</li>
-            <li>TuneIn, Dirble, Podcasts enabled by default</li>
-            <li>- Firewall disabled for now</li>
-            <li>Automatically play a stream at startup</li>
-            <li>Webclient: Easier to add radiostations from Dirble/TuneIn browsing to the favorites in the radio section</li>
-            <li>motd ascii art</li>
-            <li>Filecheck added for fat partition</li>
-            <li>Mopidy 0.18.x, with lots of enhancements</li>
-            <li>Browsing support for local media files, Spotify, Dirble, etc</li>
-            <li>Dirble, Subsonic, Internet Archive Sound, TuneIn Radio support</li>
-            <li>Better webradio (Mopidy can read m3u and asx files now!)</li>
-            <li>Quick hack to easily edit default radio stations in webinterface (use radiostations.js)</li>
-            <li>Better USB Sound, better i2s</li>
-            <li>Settings.ini and mopidy.conf merged to one file, so you can configure Mopidy specific settings yourself easily</li>
-            <li>Mopidy runs as a service</li>
-            <li>Logging on startup (not totally there yet)</li>
-            <li>Better networking</li>
-            <li>Bugfixes</li>
+            <li>Added audioaddict extension</li>
+            <li>Shairport-sync instead of Shairport. AirPlay audio now syncs to e.g. a video</li>
+            <li>Alsamixer extension included for hardware mixers (no gui, only in ini file)</li>
+            <li>Removed fastclick to prevent accidental clicks in the webinterface</li>
+            <li>Replaced gmediarender with upmpdcli for better and more stable upnp streaming support.</li>
+            <li>Brand new Google Music, including albums, browse, search</li>
+            <li>Support for more i2s audiocards</li>
+            <li>More responsive mopidy, version 0.19.4</li>
+            <li>Nicer webclient with new homescreen, better coverart</li>
+            <li>Play streams from youtube, spotify, soundcloud, radio by pasting an url</li>
+            <li>Search music per service</li>
+            <li>Youtube integration</li>
             </ul>
         <div class="fadedline"></div>
         <h3> Instructions</h3>
         <ul>
             <li>
-                Download the image. It's about 270MB in (compressed) size; 1GB uncompressed.<br/><br/>
+                Download the image. It's about 262MB in (compressed) size; 1GB uncompressed.<br/><br/>
                 <ul>
 <!--                    <li><a href="http://dl.mopidy.com/musicbox0.5beta2.zip">musicbox0.5beta2.zip (Fast mirror, Rackspace)</a> </li><br/> -->
-                    <li><a href="musicbox0.5.1rc2.zip">musicbox0.5.1rc2.zip (from this site)</a></li>
+                    <li><a href="musicbox0.5.2beta.zip">musicbox0.5.2beta.zip (from this site)</a></li>
                 </ul><br/>
                  This can take a while, so spread the word in the meantime, please spread the word!<br/><br/>
   <span class='st_facebook_large' displayText='Facebook'></span>

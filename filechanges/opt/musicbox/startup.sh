@@ -104,7 +104,7 @@ EOF
 
     #enable wifi
 #    ifdown wlan0
-#    ifup wlan0
+    ifup wlan0
 
     /etc/init.d/networking restart
 fi
