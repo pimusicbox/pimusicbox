@@ -8,8 +8,19 @@ iface eth0 inet dhcp
 
 auto wlan0
 allow-hotplug wlan0
+
 iface wlan0 inet manual
 wpa-roam /etc/wpa.conf
+
+#for static ip on wifi, comment out the two lines above (iface and wpa-roam), uncomment the following lines and change the ip numbers to the correct values
+
+#iface wlan0 inet static
+#wpa-conf /etc/wpa.conf
+#address 10.0.0.9
+#netmask 255.255.255.0
+#gateway 10.0.0.1
+
 wireless-power off
+
 
 iface default inet dhcp
