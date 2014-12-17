@@ -98,11 +98,11 @@ mount $PART1 $MNT
 #start copying/removing stuff
 
 #backup and delete configuration files on FAT partition (when musicbox is started in /boot/config)
-cp -rf $MNT/config $TMPDIR
+cp -Rf $MNT/config $TMPDIR
 rm -rf $MNT/config
 
 # copy clean config to FAT partition
-cp -rf config $MNT
+cp -Rf config $MNT
 rm -rf $MNT/config/.*
 
 #remove (apple) hidden stuff
@@ -118,7 +118,7 @@ rm $MNT/zero
 mount $PART2 $MNT2
 
 #copy a backup or root to temp
-cp -rf $MNT2/root $TMPDIR
+cp -Rf $MNT2/root $TMPDIR
 
 #remove network settings, etc
 rm $MNT2/var/lib/dhcp/*.leases
@@ -179,7 +179,9 @@ rm $MNT2/root/.ssh/*
 rm -rf $MNT2/home/mopidy/*
 
 #root
-rm -rf $MNT2/root/*
+rm -rf $MNT2/root
+mkdir $MNT2/root
+chown root:root $MNT2/root
 
 #old stuff from rpi-update
 rm -rf $MNT2/boot.bk
@@ -209,13 +211,13 @@ dd bs=1M if=$DRIVE count=$COUNT | pv -s "$COUNT"m | dd of=musicbox$IMGVERSION.im
 echo "Copy Config back"
 mount $PART1 $MNT
 mount $PART2 $MNT2
-cp -rf $TMPDIR/config $MNT
+cp -Rf $TMPDIR/config $MNT
 rm -rf $TMPDIR/config
 
 #restore root
-cp -rf $TMPDIR/root $MNT2
+cp -Rf $TMPDIR/root $MNT2
 rm -rf $TMPDIR/root
-chown -rf root:root $MNT2/root
+chown -R root:root $MNT2/root
 
 #restore dropbear keys
 mv $TMPDIR/dropbear_rsa_host_key $MNT2/etc/dropbear
