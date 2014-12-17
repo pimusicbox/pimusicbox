@@ -30,7 +30,7 @@ Project resources
 =================
 
 - `Source code <https://github.com/woutervanwijk/pi-musicbox>`_
-- `Changelog <https://github.com/woutervanwijk/pi-musicbox/changes.rst>`_
+- `Changelog <https://github.com/woutervanwijk/Pi-MusicBox/blob/master/changes.rst>`_
 - `Issue tracker <https://github.com/woutervanwijk/pi-musicbox/issues>`_
 - `Development branch tarball <https://github.com/woutervanwijk/pi-musicbox/archive/master.tar.gz>`_
 
