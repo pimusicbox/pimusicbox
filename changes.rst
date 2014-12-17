@@ -1,6 +1,16 @@
 **Pi MusicBox Changelog**
 -------------------------
 
+v0.5.2 (18 december 2014)
+----------------------------------------
+- Wifi not coming up bug fixed
+- Resize bug fixed
+- Webinterface stops streams instead of pause
+- Button to easily save current stream to favorites
+- Fixed Spotify stuttering
+- Fixed Spotify Browse
+- Changed default settings of audio, SomaFM and others
+
 v0.5.1 (7 december 2014)
 ----------------------------------------
 - Monitoring of crashed services enhanced
