@@ -1,6 +1,12 @@
 **Pi MusicBox Changelog**
 -------------------------
 
+v0.5.3 (18 januari 2015)
+----------------------------------------
+- Mopidy 0.19.5 with bugfixes
+- New version of Shairport-sync to fix problems
+- Filesystem check settings changed, also to fix fsck problems
+
 v0.5.2 (18 december 2014)
 ----------------------------------------
 - Wifi not coming up bug fixed
