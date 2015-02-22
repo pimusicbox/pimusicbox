@@ -52,7 +52,7 @@ fi
 HOSTNM=`cat /etc/hostname | tr -cd "[:alnum:]"`
 #get name in ini and trim
 CLEAN_NAME=$(echo $INI__network__name | tr -cd "[:alnum:]")
-#max 9 caracters (max netbios length = 15, + '.local')
+#max 9 characters (max netbios length = 15, + '.local')
 CLEAN_NAME=$(echo $CLEAN_NAME | cut -c 1-9)
 
 if [ "$CLEAN_NAME" == "" ]
