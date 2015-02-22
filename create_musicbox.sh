@@ -53,9 +53,9 @@ cp -R opt/* /opt
 #Make the system work:
 cp -R etc/* /etc
 
-chmod +x /etc/netwok/if-up.d/iptables
-chown root:root /etc/firewall/musicbox_iptables.sh
-chmod 600 /etc/firewall/musicbox_iptables.sh
+chmod +x /etc/network/if-up.d/iptables
+chown root:root /etc/firewall/musicbox_iptables
+chmod 600 /etc/firewall/musicbox_iptables
 
 #Next, create a symlink from the package to the /opt/defaultwebclient.
 ln -fs /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static /opt/webclient
