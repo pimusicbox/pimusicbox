@@ -185,7 +185,7 @@ if [ "$INI__network__mount_address" != "" ]
 then
     #mount readonly
     log_progress_msg "Mounting Samba share..." "$NAME"
-    mount -t cifs -o sec=ntlmssp,ro,user=$INI__network__mount_user,password=$INI__network__mount_password $INI__network__mount_address /music/Network/
+    mount -t cifs -o sec=ntlmssp,ro,rsize=2048,wsize=4096,cache=strict,nounix,noperm,username=$INI__network__mount_user,password=$INI__network__mount_password $INI__network__mount_address /music/Network/
 #    mount -t cifs -o sec=ntlm,ro,rsize=2048,wsize=4096,cache=strict,user=$INI__network__mount_user,password=$INI__network__mount_password $INI__network__mount_address /music/Network/
 #add rsize=2048,wsize=4096,cache=strict because of usb (from raspyfi)
 fi
