@@ -100,15 +100,15 @@ Webclient:
 
 Create a symlink from the package to the /opt/webclient and to /opt/defaultwebclient. This is done because you could install other webclients and just point the link to the newly installed client:
 
-    ln -fs /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static /opt/webclient
+    ln -fsn /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static /opt/webclient
 
-    ln -fs /opt/webclient /opt/defaultwebclient
+    ln -fsn /opt/webclient /opt/defaultwebclient
 
 Remove the streamuris.js and point it to the file in /boot/config
 
     mv /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static/js/streamuris.js streamuris.bk
 
-    ln -fs /boot/config/streamuris.js /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static/js/streamuris.js
+    ln -fsn /boot/config/streamuris.js /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static/js/streamuris.js
 
 Let everyone shutdown the system (to support it from the webclient):
 
@@ -162,8 +162,8 @@ Disable the SSH service for more security if you want (it can be started with an
 
 Link the mopidy configuration to the new one in /boot/config
     mkdir -p /var/lib/mopidy/.config/mopidy
-    ln -fs /boot/config/settings.ini /home/mopidy/.config/mopidy/mopidy.conf
-    ln -fs /boot/config/settings.ini /var/lib/mopidy/.config/mopidy/mopidy.conf
+    ln -fsn /boot/config/settings.ini /home/mopidy/.config/mopidy/mopidy.conf
+    ln -fsn /boot/config/settings.ini /var/lib/mopidy/.config/mopidy/mopidy.conf
 
 
 That’s it. MusicBox should now start when you reboot!
