@@ -19,53 +19,45 @@ HDMI_CARD=
 
 function enumerate_alsa_cards()
 {
-    SYSFS_SOUND_PATH=/sys/class/sound
-
-    # iterate over all since gaps can occur if a device is hot(un)plugged 
-    for i in `seq 0 9`
+    aplay -l | grep card | while read -r line 
     do
-        card=$SYSFS_SOUND_PATH/card$i
-        if [[ -d $card ]]
-        then
-            num=`cat $card/number`
-            modalias=`cat $card/device/modalias`
-            dev=(${modalias//:/ })
+        ## Dac
+        #card 0: sndrpihifiberry [snd_rpi_hifiberry_dac], device 0: HifiBerry DAC HiFi pcm5102a-hifi-0 []
+        ## Digi
+        #card 2: sndrpihifiber_1 [snd_rpi_hifiberry_digi], device 0: HifiBerry Digi HiFi wm8804-spdif-0 []
+        ## Dac+
+        #card 1: sndrpihifiber_1 [snd_rpi_hifiberry_dacplus], device 0: HiFiBerry DAC+ HiFi pcm512x-hifi-0 []
+        #IQaudIO
+        #card 1: sndrpiiqaudioda [snd_rpi_iqaudio_dac], device 0: IQaudIO DAC HiFi pcm512x-hifi-0 []
+        ## Wolfson
+        #Card 0: sndrpiwsp [snd_rpi_wsp], device 0: WM5102 AiFi wm5102-aif1-0 []
+        ## Onboard
+        #card 0: ALSA [bcm2835 ALSA], device 0: bcm2835 ALSA [bcm2835 ALSA]
+        #card 0: ALSA [bcm2835 ALSA], device 1: bcm2835 ALSA [bcm2835 IEC958/HDMI]
+        ## USB
+        #card 2: AUDIO [USB  AUDIO], device 0: USB Audio [USB Audio]
+        #card 2: DAC [USB Audio DAC], device 0: USB Audio [USB Audio]
+        #card 2: CODEC [USB Audio CODEC], device 0: USB Audio [USB Audio]
 
-#            echo "0 ${dev[0]}"
-#            echo "1 ${dev[1]}"
-
-            case ${dev[0]} in
-                platform)
-                    if [[ ${dev[1]} == "bcm2835"* ]]; then
-                        INT_CARD=$num
-                        log_progress_msg "found internal device: card$INT_CARD" "$NAME"
-                        if tvservice -s | grep -q HDMI; then
-                            log_progress_msg "HDMI output connected" "$NAME"
-                            HDMI_CARD=$num
-                        fi
-                    # hifiberry dac (1st gen)
-                    elif [[ ${dev[1]} == "snd-hifiberry-dac" ]]; then
-                        I2S_CARD=$num
-                    # hifiberry digi
-                    elif [[ ${dev[1]} == "snd-rpi-hifiberry-digi" ]]; then
-                        I2S_CARD=$num
-                    # hifiberry dac+
-                    elif [[ ${dev[1]} == "snd-rpi-hifiberry-dacplus" ]]; then
-                        I2S_CARD=$num
-                    # iq audio
-                    elif [[ ${dev[1]} == "snd-rpi-iqaudio-dac" ]]; then
-                        I2S_CARD=$num
-                    #wolfson
-                    elif [[ ${dev[1]} == "snd-rpi-wsp" ]]; then
-                        I2S_CARD=$num
-                    fi
-#                    log_progress_msg "found i2s device: card$I2S_CARD" "$NAME"
-                    ;;
-                usb)
-                    USB_CARD=$num
-                    log_progress_msg "found usb device: card$USB_CARD" "$NAME"
-                    ;;
-            esac
+        # Replace unwanted '[]:,' characters.
+        dev=($(echo $line | tr -d "[\[\]:,]"))
+        card_num=${dev[1]}
+        name=${dev[3]}
+        if [[ $name == "bcm2835"* ]]; then
+            INT_CARD=$card_num
+            log_progress_msg "Found internal device: card$INT_CARD $name"
+            if tvservice -s | grep -q HDMI; then
+                log_progress_msg "HDMI output connected"
+                HDMI_CARD=$card_num
+            fi
+        elif [[ $name == *"$OUTPUT" ]]; then
+            I2S_CARD=$card_num
+            log_progress_msg "Found i2s device: card$I2S_CARD $name"
+        elif [[ $line =~ "usb audio" ]]; then
+            USB_CARD=$card_num
+            log_progress_msg "Found usb device: card$USB_CARD $name"
+        else
+            log_progress_msg "Found unknown device: card$card_num $name"
         fi
     done
 }
@@ -73,10 +65,10 @@ function enumerate_alsa_cards()
 if [[ $INI_READ != true ]] 
 then
     echo "read ini"
-    # import ini parser
+    # Import ini parser
     . /opt/musicbox/read_ini.sh
 
-    # convert windows ini to unix
+    # Convert windows ini to unix
     dos2unix -n $CONFIG_FILE /tmp/settings.ini > /dev/null 2>&1 || true
 
     # ini vars to mopidy settings
@@ -85,18 +77,18 @@ then
     rm /tmp/settings.ini > /dev/null 2>&1 || true
 fi
 
-# if output not defined, it will automatically detect USB / HDMI / Analog in given order
-# it is at this momement not possible to detect wheter a i2s device is connected hence
+# If output not defined, it will automatically detect USB / HDMI / Analog in given order
+# It is at this moment not possible to detect whether an i2s device is connected hence
 # i2s is only selected if explicitly given as output in the config file
 OUTPUT=$(echo $INI__musicbox__output | tr "[:upper:]" "[:lower:]")
 CARD=
 
-if [ "$OUTPUT" == "auto" ]
+if [[ -z "$OUTPUT" ]]
 then
-    OUTPUT=""
+    OUTPUT="auto"
 fi
 
-# get alsa cards
+# Get alsa cards
 enumerate_alsa_cards
 
 case $OUTPUT in
@@ -133,6 +125,7 @@ case $OUTPUT in
         CARD=$I2S_CARD
         ;;
     wolfson)
+        OUTPUT=wsp
         enumerate_alsa_cards
         CARD=$I2S_CARD
         ;;
@@ -140,7 +133,7 @@ esac
 
 echo "Card $CARD i2s $I2S_CARD output $OUTPUT usb $USB_CARD intc $INT_CARD"
 
-# if preferred output not found or given fall back to auto detection
+# If preferred output not found or given fall back to auto detection
 if [[ -z $CARD ]];
 then
 echo "autod"
@@ -199,18 +192,16 @@ ctl.!default {
 EOF
 fi
 
-#reset mixer
+# Reset mixer
 amixer cset numid=3 0 > /dev/null 2>&1 || true
 
-#set mixer to analog output
 if [ "$OUTPUT" == "analog" ]
 then
+    # Set mixer to analog output
     amixer cset numid=3 1 > /dev/null 2>&1 || true
-fi
-
-#set mixer to hdmi
-if [ "$OUTPUT" == "hdmi" ]
+elif [ "$OUTPUT" == "hdmi" ]
 then
+    # Set mixer to hdmi
     amixer cset numid=3 2 > /dev/null 2>&1 || true
 fi
 
@@ -227,21 +218,17 @@ for CTL in \
         "DAC,0" \
         "DAC,1" \
         Speaker \
-	Playback \
-	Digital \
-	Aux \
-	Front \
-	Center
+    Playback \
+    Digital \
+    Aux \
+    Front \
+    Center
 do
-	#set initial hardware volume
-        amixer set -c $CARD "$CTL" 96% unmute > /dev/null 2>&1 || true 
-#	 amixer set -c $CARD "$CTL" ${VOLUME}% unmute > /dev/null 2>&1 || true 
+    # Set initial hardware volume
+    amixer set -c $CARD "$CTL" 96% unmute > /dev/null 2>&1 || true 
+    #amixer set -c $CARD "$CTL" ${VOLUME}% unmute > /dev/null 2>&1 || true 
 done
 
-#set PCM of Pi higher, because it's really quit otherwise (hardware thing)
+# Set PCM of Pi higher, because it's really quiet otherwise (hardware thing)
 amixer -c 0 set PCM playback 98% > /dev/null 2>&1 || true &
 #amixer -c 0 set PCM playback ${VOLUME}% > /dev/null 2>&1 || true &
-
-#/etc/init.d/shairport restart
-#/etc/init.d/mopidy restart
-#/etc/init.d/gmediarenderer restart
