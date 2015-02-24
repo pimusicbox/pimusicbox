@@ -98,6 +98,7 @@ update-rc.d ssh disable
 
 #Link the mopidy configuration to the new one in /boot/config
 ln -fsn /boot/config/settings.ini /home/mopidy/.config/mopidy/mopidy.conf
+mkdir -p /var/lib/mopidy/.config/mopidy
 ln -fsn /boot/config/settings.ini /var/lib/mopidy/.config/mopidy/mopidy.conf
 
 #**Optimizations**
