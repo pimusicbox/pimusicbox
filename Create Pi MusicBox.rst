@@ -38,7 +38,7 @@ Next, issue this command to update the distribution. This is good because newer 
 
 Install all packages we need with this command:
 
-    sudo apt-get update && sudo apt-get --yes --no-install-suggests --no-install-recommends install logrotate alsa-utils wpasupplicant gstreamer0.10-alsa ifplugd gstreamer0.10-fluendo-mp3 gstreamer0.10-tools samba dos2unix avahi-utils alsa-base cifs-utils avahi-autoipd libnss-mdns ntpdate ca-certificates ncmpcpp rpi-update linux-wlan-ng alsa-firmware-loaders iw atmel-firmware firmware-atheros firmware-brcm80211 firmware-ipw2x00 firmware-iwlwifi firmware-libertas firmware-linux firmware-linux-nonfree firmware-ralink firmware-realtek zd1211-firmware linux-wlan-ng-firmware alsa-firmware-loaders iptables build-essential python-dev python-pip python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gstreamer0.10-plugins-ugly gstreamer0.10-tools usbmount monit upmpdcli watchdog cifs-utils dropbear mpc dosfstools logrotate
+    sudo apt-get update && sudo apt-get --yes --no-install-suggests --no-install-recommends install logrotate alsa-utils wpasupplicant gstreamer0.10-alsa ifplugd gstreamer0.10-fluendo-mp3 gstreamer0.10-tools samba dos2unix avahi-utils alsa-base cifs-utils avahi-autoipd libnss-mdns ntpdate ca-certificates ncmpcpp rpi-update linux-wlan-ng alsa-firmware-loaders iw atmel-firmware firmware-atheros firmware-brcm80211 firmware-ipw2x00 firmware-iwlwifi firmware-libertas firmware-linux firmware-linux-nonfree firmware-ralink firmware-realtek zd1211-firmware linux-wlan-ng-firmware alsa-firmware-loaders iptables build-essential python-dev python-pip python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gstreamer0.10-plugins-ugly gstreamer0.10-tools usbmount monit upmpdcli watchdog dropbear mpc dosfstools logrotate
 
 Depending on your configuration, you could leave out certain packages, e.g. the firmware files if you don't use a wireless dongle.
 
@@ -90,25 +90,25 @@ Make the system work:
 
 Network configuration:
 
-    chmod +x /etc/netwok/if-up.d/iptables
+    chmod +x /etc/network/if-up.d/iptables
 
-    chown root:root /etc/firewall/musicbox_iptables.sh
+    chown root:root /etc/firewall/musicbox_iptables
 
-    chmod 600 /etc/firewall/musicbox_iptables.sh
+    chmod 600 /etc/firewall/musicbox_iptables
 
 Webclient:
 
 Create a symlink from the package to the /opt/webclient and to /opt/defaultwebclient. This is done because you could install other webclients and just point the link to the newly installed client:
 
-    ln -s /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static /opt/webclient
+    ln -fsn /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static /opt/webclient
 
-    ln -s /opt/webclient /opt/defaultwebclient
+    ln -fsn /opt/webclient /opt/defaultwebclient
 
 Remove the streamuris.js and point it to the file in /boot/config
 
     mv /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static/js/streamuris.js streamuris.bk
 
-    ln -s /boot/config/streamuris.js /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static/js/streamuris.js
+    ln -fsn /boot/config/streamuris.js /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static/js/streamuris.js
 
 Let everyone shutdown the system (to support it from the webclient):
 
@@ -161,9 +161,9 @@ Disable the SSH service for more security if you want (it can be started with an
     update-rc.d ssh disable
 
 Link the mopidy configuration to the new one in /boot/config
-
-    ln -s /boot/config/settings.ini /home/mopidy/.config/mopidy/mopidy.conf
-    ln -s /boot/config/settings.ini /var/lib/mopidy/.config/mopidy/mopidy.conf
+    ln -fsn /boot/config/settings.ini /home/mopidy/.config/mopidy/mopidy.conf
+    mkdir -p /var/lib/mopidy/.config/mopidy
+    ln -fsn /boot/config/settings.ini /var/lib/mopidy/.config/mopidy/mopidy.conf
 
 
 That’s it. MusicBox should now start when you reboot!

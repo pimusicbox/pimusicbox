@@ -22,7 +22,7 @@ apt-get dist-upgrade -y
 ntpdate -u ntp.ubuntu.com
 
 #Then install all packages we need with this command:
-sudo apt-get update && sudo apt-get --yes --no-install-suggests --no-install-recommends install logrotate alsa-utils wpasupplicant gstreamer0.10-alsa ifplugd gstreamer0.10-fluendo-mp3 gstreamer0.10-tools samba dos2unix avahi-utils alsa-base cifs-utils avahi-autoipd libnss-mdns ntpdate ca-certificates ncmpcpp rpi-update linux-wlan-ng alsa-firmware-loaders iw atmel-firmware firmware-atheros firmware-brcm80211 firmware-ipw2x00 firmware-iwlwifi firmware-libertas firmware-linux firmware-linux-nonfree firmware-ralink firmware-realtek zd1211-firmware linux-wlan-ng-firmware alsa-firmware-loaders iptables build-essential python-dev python-pip python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gstreamer0.10-plugins-ugly gstreamer0.10-tools usbmount monit upmpdcli watchdog cifs-utils dropbear mpc dosfstools logrotate
+sudo apt-get update && sudo apt-get --yes --no-install-suggests --no-install-recommends install logrotate alsa-utils wpasupplicant gstreamer0.10-alsa ifplugd gstreamer0.10-fluendo-mp3 gstreamer0.10-tools samba dos2unix avahi-utils alsa-base cifs-utils avahi-autoipd libnss-mdns ntpdate ca-certificates ncmpcpp rpi-update linux-wlan-ng alsa-firmware-loaders iw atmel-firmware firmware-atheros firmware-brcm80211 firmware-ipw2x00 firmware-iwlwifi firmware-libertas firmware-linux firmware-linux-nonfree firmware-ralink firmware-realtek zd1211-firmware linux-wlan-ng-firmware alsa-firmware-loaders iptables build-essential python-dev python-pip python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gstreamer0.10-plugins-ugly gstreamer0.10-tools usbmount monit upmpdcli watchdog dropbear mpc dosfstools logrotate
 
 #mopidy from pip
 sudo pip install -U mopidy mopidy-spotify mopidy-local-sqlite mopidy-local-whoosh mopidy-scrobbler mopidy-soundcloud mopidy-dirble mopidy-tunein mopidy-gmusic mopidy-subsonic mopidy-http-kuechenradio mopidy-moped mopidy-musicbox-webclient mopidy-websettings mopidy-internetarchive mopidy-podcast mopidy-podcast-itunes mopidy-podcast-gpodder.net mopidy-simplewebclient mopidy-somafm mopidy-spotify-tunigo mopidy-youtube
@@ -53,17 +53,17 @@ cp -R opt/* /opt
 #Make the system work:
 cp -R etc/* /etc
 
-chmod +x /etc/netwok/if-up.d/iptables
-chown root:root /etc/firewall/musicbox_iptables.sh
-chmod 600 /etc/firewall/musicbox_iptables.sh
+chmod +x /etc/network/if-up.d/iptables
+chown root:root /etc/firewall/musicbox_iptables
+chmod 600 /etc/firewall/musicbox_iptables
 
 #Next, create a symlink from the package to the /opt/defaultwebclient.
-ln -s /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static /opt/webclient
-ln -s /opt/webclient /opt/defaultwebclient
+ln -fsn /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static /opt/webclient
+ln -fsn /opt/webclient /opt/defaultwebclient
 
 #Remove the streamuris.js and point it to the file in /boot/config
 mv /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static/js/streamuris.js streamuris.bk
-ln -s /boot/config/streamuris.js /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static/js/streamuris.js
+ln -fsn /boot/config/streamuris.js /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static/js/streamuris.js
 
 #Let everyone shutdown the system (to support it from the webclient):
 chmod u+s /sbin/shutdown
@@ -97,8 +97,9 @@ chown -R mopidy:mopidy /music
 update-rc.d ssh disable
 
 #Link the mopidy configuration to the new one in /boot/config
-ln -s /boot/config/settings.ini /home/mopidy/.config/mopidy/mopidy.conf
-ln -s /boot/config/settings.ini /var/lib/mopidy/.config/mopidy/mopidy.conf
+ln -fsn /boot/config/settings.ini /home/mopidy/.config/mopidy/mopidy.conf
+mkdir -p /var/lib/mopidy/.config/mopidy
+ln -fsn /boot/config/settings.ini /var/lib/mopidy/.config/mopidy/mopidy.conf
 
 #**Optimizations**
 #For the music to play without cracks, you have to optimize your system a bit.

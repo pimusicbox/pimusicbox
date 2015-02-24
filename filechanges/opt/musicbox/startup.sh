@@ -52,7 +52,7 @@ fi
 HOSTNM=`cat /etc/hostname | tr -cd "[:alnum:]"`
 #get name in ini and trim
 CLEAN_NAME=$(echo $INI__network__name | tr -cd "[:alnum:]")
-#max 9 caracters (max netbios length = 15, + '.local')
+#max 9 characters (max netbios length = 15, + '.local')
 CLEAN_NAME=$(echo $CLEAN_NAME | cut -c 1-9)
 
 if [ "$CLEAN_NAME" == "" ]
@@ -212,7 +212,7 @@ fi
 
 if [ "$INI__network__name" != "$CLEAN_NAME" -a "$INI__network__name" != "" ]
 then
-    log_warning_msg "The new name of your MusicBox, $INI__network__name, is not ok! It should be max. 9 alphanumerical caracters."
+    log_warning_msg "The new name of your MusicBox, $INI__network__name, is not ok! It should be max. 9 alphanumerical characters."
 fi
 
 # Print the IP address
@@ -234,7 +234,7 @@ then
 fi
 
 
-# check and clean dirty bit of vfat partition if unsavely removed
+# check and clean dirty bit of vfat partition if not safely removed
 fsck /dev/mmcblk0p1 -v -a -w -p > /dev/null 2>&1 || true
 
 log_end_msg 0
