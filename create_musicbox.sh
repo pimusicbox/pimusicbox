@@ -58,12 +58,12 @@ chown root:root /etc/firewall/musicbox_iptables
 chmod 600 /etc/firewall/musicbox_iptables
 
 #Next, create a symlink from the package to the /opt/defaultwebclient.
-ln -fs /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static /opt/webclient
-ln -fs /opt/webclient /opt/defaultwebclient
+ln -fsn /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static /opt/webclient
+ln -fsn /opt/webclient /opt/defaultwebclient
 
 #Remove the streamuris.js and point it to the file in /boot/config
 mv /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static/js/streamuris.js streamuris.bk
-ln -fs /boot/config/streamuris.js /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static/js/streamuris.js
+ln -fsn /boot/config/streamuris.js /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static/js/streamuris.js
 
 #Let everyone shutdown the system (to support it from the webclient):
 chmod u+s /sbin/shutdown
@@ -97,8 +97,8 @@ chown -R mopidy:mopidy /music
 update-rc.d ssh disable
 
 #Link the mopidy configuration to the new one in /boot/config
-ln -fs /boot/config/settings.ini /home/mopidy/.config/mopidy/mopidy.conf
-ln -fs /boot/config/settings.ini /var/lib/mopidy/.config/mopidy/mopidy.conf
+ln -fsn /boot/config/settings.ini /home/mopidy/.config/mopidy/mopidy.conf
+ln -fsn /boot/config/settings.ini /var/lib/mopidy/.config/mopidy/mopidy.conf
 
 #**Optimizations**
 #For the music to play without cracks, you have to optimize your system a bit.
