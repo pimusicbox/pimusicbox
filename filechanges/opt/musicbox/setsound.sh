@@ -11,6 +11,7 @@ CONFIG_FILE=/boot/config/settings.ini
 log_use_fancy_output
 
 log_begin_msg "Setting sound configuration..."
+rm -f /etc/asound.conf
 
 I2S_CARD=
 USB_CARD=
@@ -19,7 +20,7 @@ HDMI_CARD=
 
 function enumerate_alsa_cards()
 {
-    aplay -l | grep card | while read -r line 
+    while read -r line
     do
         ## Dac
         #card 0: sndrpihifiberry [snd_rpi_hifiberry_dac], device 0: HifiBerry DAC HiFi pcm5102a-hifi-0 []
@@ -47,7 +48,7 @@ function enumerate_alsa_cards()
             INT_CARD=$card_num
             log_progress_msg "Found internal device: card$INT_CARD $name"
             if tvservice -s | grep -q HDMI; then
-                log_progress_msg "HDMI output connected"
+                echo "HDMI output connected"
                 HDMI_CARD=$card_num
             fi
         elif [[ $name == *"$OUTPUT" ]]; then
@@ -59,7 +60,7 @@ function enumerate_alsa_cards()
         else
             log_progress_msg "Found unknown device: card$card_num $name"
         fi
-    done
+    done < <(aplay -l | grep card)
 }
 
 if [[ $INI_READ != true ]] 
@@ -90,7 +91,7 @@ fi
 
 # Get alsa cards
 enumerate_alsa_cards
-
+echo "foun int crd $INT_CARD"
 case $OUTPUT in
     analog)
         CARD=$INT_CARD
@@ -152,7 +153,13 @@ fi
 
 echo "Card $CARD i2s $I2S_CARD output $OUTPUT usb $USB_CARD intc $INT_CARD"
 
-log_progress_msg "Line out set to $OUTPUT card $CARD" "$NAME"
+if [[ -z $CARD ]];
+then
+    echo "ERROR - NO CARD FOUND"
+    exit 1
+fi
+
+log_progress_msg "Line out set to $OUTPUT card $CARD"
 
 if [ "$OUTPUT" == "usb" -a "$INI__musicbox__downsample_usb" == "1" ]
 # resamples to 44K because of problems with some usb-dacs on 48k (probably related to usb drawbacks of Pi)
