@@ -91,7 +91,7 @@ fi
 
 # Get alsa cards
 enumerate_alsa_cards
-echo "foun int crd $INT_CARD"
+
 case $OUTPUT in
     analog)
         CARD=$INT_CARD
