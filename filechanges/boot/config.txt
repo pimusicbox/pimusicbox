@@ -50,3 +50,11 @@ over_voltage=0
 gpu_mem=16
 
 force_hdmi_open=1
+
+# Uncomment one of these lines to enable an audio interface
+#dtoverlay=hifiberry-amp
+#dtoverlay=hifiberry-dac
+#dtoverlay=hifiberry-dacplus
+#dtoverlay=hifiberry-digi
+#dtoverlay=iqaudio-dac
+#dtoverlay=iqaudio-dacplus
