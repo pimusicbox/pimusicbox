@@ -20,6 +20,7 @@ HDMI_CARD=
 
 function enumerate_alsa_cards()
 {
+    i2s_output=$(echo $OUTPUT | tr -cd "[:alnum:]")
     while read -r line
     do
         ## Dac
@@ -30,6 +31,7 @@ function enumerate_alsa_cards()
         #card 1: sndrpihifiber_1 [snd_rpi_hifiberry_dacplus], device 0: HiFiBerry DAC+ HiFi pcm512x-hifi-0 []
         #IQaudIO
         #card 1: sndrpiiqaudioda [snd_rpi_iqaudio_dac], device 0: IQaudIO DAC HiFi pcm512x-hifi-0 []
+        #card 1: IQaudIODAC [IQaudIODAC], device 0: IQaudIO DAC HiFi pcm512x-hifi-0 []
         ## Wolfson
         #Card 0: sndrpiwsp [snd_rpi_wsp], device 0: WM5102 AiFi wm5102-aif1-0 []
         ## Onboard
@@ -43,7 +45,7 @@ function enumerate_alsa_cards()
         # Replace unwanted '[]:,' characters.
         dev=($(echo $line | tr -d "[\[\]:,]"))
         card_num=${dev[1]}
-        name=${dev[3]}
+        name=$(echo ${dev[3]} | tr -cd "[:alnum:]" | tr "[:upper:]" "[:lower:]")
         if [[ $name == "bcm2835"* ]]; then
             INT_CARD=$card_num
             log_progress_msg "Found internal device: card$INT_CARD $name"
@@ -51,7 +53,7 @@ function enumerate_alsa_cards()
                 echo "HDMI output connected"
                 HDMI_CARD=$card_num
             fi
-        elif [[ $name == *"$OUTPUT" ]]; then
+        elif [[ $name == *"$i2s_output" ]]; then
             I2S_CARD=$card_num
             log_progress_msg "Found i2s device: card$I2S_CARD $name"
         elif [[ $line =~ "usb audio" ]]; then
