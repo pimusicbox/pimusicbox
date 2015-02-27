@@ -21,8 +21,6 @@ DAEMON=/usr/local/bin/$NAME
 
 MBNAME=`cat /etc/hostname | tr -cd "[:alnum:]"`
 
-/usr/local/bin/shairport -d -a "$NAME (MusicBox)" -w -B "mpc stop" --pidfile /var/run/shairport.pid
-
 # We don't use the DAEMON_ARGS variable here because some of the identifiers may have spaces in them, and so are
 # impossible to pass as arguments.
 
