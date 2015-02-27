@@ -48,19 +48,17 @@ function enumerate_alsa_cards()
         name=$(echo ${dev[3]} | tr -cd "[:alnum:]" | tr "[:upper:]" "[:lower:]")
         if [[ $name == "bcm2835"* ]]; then
             INT_CARD=$card_num
-            log_progress_msg "Found internal device: card$INT_CARD $name"
+            log_progress_msg "Found internal device: card$INT_CARD"
             if tvservice -s | grep -q HDMI; then
                 echo "HDMI output connected"
                 HDMI_CARD=$card_num
             fi
         elif [[ $name == *"$i2s_output" ]]; then
             I2S_CARD=$card_num
-            log_progress_msg "Found i2s device: card$I2S_CARD $name"
-        elif [[ $line =~ "usb audio" ]]; then
-            USB_CARD=$card_num
-            log_progress_msg "Found usb device: card$USB_CARD $name"
+            log_progress_msg "Found i2s device: card$I2S_CARD"
         else
-            log_progress_msg "Found unknown device: card$card_num $name"
+            USB_CARD=$card_num
+            log_progress_msg "Found usb device: card$USB_CARD"
         fi
     done < <(aplay -l | grep card)
 }
@@ -157,11 +155,11 @@ echo "Card $CARD i2s $I2S_CARD output $OUTPUT usb $USB_CARD intc $INT_CARD"
 
 if [[ -z $CARD ]];
 then
-    echo "ERROR - NO CARD FOUND"
+    log_failure_msg "No sound device found"
     exit 1
 fi
 
-log_progress_msg "Line out set to $OUTPUT card $CARD"
+log_progress_msg "Line out set to $OUTPUT card $CARD" "$NAME"
 
 if [ "$OUTPUT" == "usb" -a "$INI__musicbox__downsample_usb" == "1" ]
 # resamples to 44K because of problems with some usb-dacs on 48k (probably related to usb drawbacks of Pi)
@@ -241,3 +239,4 @@ done
 # Set PCM of Pi higher, because it's really quiet otherwise (hardware thing)
 amixer -c 0 set PCM playback 98% > /dev/null 2>&1 || true &
 #amixer -c 0 set PCM playback ${VOLUME}% > /dev/null 2>&1 || true &
+log_end_msg
