@@ -1,18 +1,39 @@
-Pi MusicBox is created by Wouter van Wijk. It is based on the following great projects: 
+Pi MusicBox was created by Wouter van Wijk and includes contributions from the following people: 
+- Simon de Bakker <simon@simbits.nl>
+- Matthias Strubel
+- Ulrich Lichtenegger <ulilicht@googlemail.com>
+- Nick Steel <kingosticks@gmail.com>
+- Remco Brink <remco@rc6.org>
+- Amit Kotlovski <amitbk@gmail.com>
+- John Cass <john.cass77@gmail.com>
 
--Raspbian (based on Debian (based on Linux)) raspbian.org
--Mopidy music server (+ my own Mopidy Webclient): mopidy.com (main authors: Stein Magnus Jodal and Thomas Adamcik)
--Mopidy Soundcloud: https://github.com/mopidy/mopidy-soundcloud
--Mopidy Gmusic: https://github.com/hechtus/mopidy-gmusic
--Shairport: https://github.com/abrasive/shairport
--All the projects that are used to create the these projects
--All the projects that are used to create the projects that are used to create these projects 
--All the projects that ... 
--A lot of people giving solutions on forums... 
--And of course the work of the guys 'n girls who brought you the Raspberry Pi
+Pi MusicBox makes use of the following great projects:
+- Raspbian (based on Debian Linux): http://raspbian.org
+- Mopidy: https://www.mopidy.com
+- Mopidy-Dirble: https://github.com/mopidy/mopidy-dirble
+- Mopidy-Gmusic: https://github.com/hechtus/mopidy-gmusic
+- Mopidy-HTTP-Kuechenradio: https://github.com/tkem/mopidy-http-kuechenradio
+- Mopidy-InternetArchive: https://github.com/tkem/mopidy-internetarchive
+- Mopidy-Local-SQLite: https://github.com/tkem/mopidy-local-sqlite
+- Mopidy-Moped: https://github.com/martijnboland/moped
+- Mopidy-MusicBox-Webclient: https://github.com/woutervanwijk/Mopidy-MusicBox-Webclient
+- Mopidy-Podcast: https://github.com/tkem/mopidy-podcast
+- Mopidy-Scrobbler: https://github.com/mopidy/mopidy-scrobbler
+- Mopidy-SomaFM: https://github.com/AlexandrePTJ/mopidy-somafm
+- Mopidy-Soundcloud: https://github.com/mopidy/mopidy-soundcloud
+- Mopidy-Spotify: https://github.com/mopidy/mopidy-spotify
+- Mopidy-Spotify-Tunigo: https://github.com/trygveaa/mopidy-spotify-tunigo
+- Mopidy-Subsonic: https://github.com/rattboi/mopidy-subsonic
+- Mopidy-TuneIn: https://github.com/kingosticks/mopidy-tunein/
+- Mopidy-WebSettings: https://github.com/woutervanwijk/mopidy-websettings
+- Mopidy-Youtube: https://github.com/dz0ny/mopidy-youtube
+- Shairport Sync: https://github.com/mikebrady/shairport-sync
+- upmpdcli: http://www.lesbonscomptes.com/upmpdcli/
+- monit: http://mmonit.com/monit
+- All the projects that are used to create the these projects
+- All the projects that are used to create the projects that are used to create these projects 
+- All the projects that ... 
+- A lot of people giving solutions on forums... 
+- And of course the work of the guys 'n girls who brought you the Raspberry Pi
 
 Big thanks to all the authors of these projects, testers, bug-fixers, reporters.
-
-i2s support by Simon de Bakker
-Flat webclient designed by Ulrich Lichtenegger
-Nick Steel: bugfixes, support, webclient
