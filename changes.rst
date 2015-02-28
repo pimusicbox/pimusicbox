@@ -1,6 +1,10 @@
 **Pi MusicBox Changelog**
 -------------------------
 
+v0.5.4 (25 February 2015)
+----------------------------------------
+- Initial Raspberry Pi 2 compatability.
+
 v0.5.3 (18 januari 2015)
 ----------------------------------------
 - Mopidy 0.19.5 with bugfixes
