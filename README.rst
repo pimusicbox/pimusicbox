@@ -41,5 +41,5 @@ Project resources
 - `Issue tracker <https://github.com/woutervanwijk/pi-musicbox/issues>`_
 - `Development branch tarball <https://github.com/woutervanwijk/pi-musicbox/archive/master.tar.gz>`_
 
-- Twitter: `@PiMusicBox <https://twitter.com/pimusicbox>`_
-- Facebook: `raspberrypimusicbox <https://www.facebook.com/raspberrypimusicbox>`_
+* Twitter: `@PiMusicBox <https://twitter.com/pimusicbox>`_
+* Facebook: `raspberrypimusicbox <https://www.facebook.com/raspberrypimusicbox>`_
