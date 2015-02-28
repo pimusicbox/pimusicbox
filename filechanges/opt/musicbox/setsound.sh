@@ -20,7 +20,8 @@ HDMI_CARD=
 
 function enumerate_alsa_cards()
 {
-    i2s_output=$(echo $OUTPUT | tr -cd "[:alnum:]")
+    # Remove unwanted characters from argument.
+    i2s_NAME=$(echo $1 | tr -d "[:punct:]")
     while read -r line
     do
         ## Dac
@@ -42,25 +43,31 @@ function enumerate_alsa_cards()
         #card 2: DAC [USB Audio DAC], device 0: USB Audio [USB Audio]
         #card 2: CODEC [USB Audio CODEC], device 0: USB Audio [USB Audio]
 
-        # Replace unwanted '[]:,' characters.
-        dev=($(echo $line | tr -d "[\[\]:,]"))
+        # Remove unwanted characters, make lowercase and split on whitespace.
+        line=$(echo $line | tr "[:upper:]" "[:lower:]" | tr -d "[:punct:]")
+        dev=($(echo $line))
         card_num=${dev[1]}
-        name=$(echo ${dev[3]} | tr -cd "[:alnum:]" | tr "[:upper:]" "[:lower:]")
-        if [[ $name == "bcm2835"* ]]; then
+        name=${dev[3]}
+        if [[ $name == "bcm2835" ]]; then
             INT_CARD=$card_num
             log_progress_msg "Found internal device: card$INT_CARD"
             if tvservice -s | grep -q HDMI; then
                 echo "HDMI output connected"
                 HDMI_CARD=$card_num
             fi
-        elif [[ $name == *"$i2s_output" ]]; then
+        elif [[ $i2s_NAME && $name == *"$i2s_NAME" ]]; then
             I2S_CARD=$card_num
             log_progress_msg "Found i2s device: card$I2S_CARD"
-        else
+        elif [[ $line =~ "usb audio" ]]; then
             USB_CARD=$card_num
             log_progress_msg "Found usb device: card$USB_CARD"
+        else
+            UNKNOWN_CARD=$card_num
+            log_progress_msg "Found unknown device: card$UNKNOWN_CARD"
         fi
     done < <(aplay -l | grep card)
+    # No usb card found, assume anything unknown is actually a usb card.
+    [[ -z $USB_CARD ]] && USB_CARD=$UNKNOWN_CARD
 }
 
 if [[ $INI_READ != true ]] 
@@ -88,7 +95,6 @@ if [[ -z "$OUTPUT" ]]
 then
     OUTPUT="auto"
 fi
-
 # Get alsa cards
 enumerate_alsa_cards
 
@@ -105,29 +111,28 @@ case $OUTPUT in
     hifiberry_dac)
         modprobe snd_soc_pcm5102a
         modprobe snd_soc_hifiberry_dac
-        enumerate_alsa_cards
+        enumerate_alsa_cards $OUTPUT
         CARD=$I2S_CARD
         ;;
     hifiberry_digi)
         modprobe snd_soc_wm8804
         modprobe snd_soc_hifiberry_digi
-        enumerate_alsa_cards
+        enumerate_alsa_cards $OUTPUT
         CARD=$I2S_CARD
         ;;
     hifiberry_dacplus)
         modprobe snd_soc_hifiberry_dacplus
-        enumerate_alsa_cards
+        enumerate_alsa_cards $OUTPUT
         CARD=$I2S_CARD
         ;;
     iqaudio_dac)
         modprobe snd_soc_pcm512x
         modprobe snd_soc_iqaudio_dac
-        enumerate_alsa_cards
+        enumerate_alsa_cards $OUTPUT
         CARD=$I2S_CARD
         ;;
     wolfson)
-        OUTPUT=wsp
-        enumerate_alsa_cards
+        enumerate_alsa_cards wsp
         CARD=$I2S_CARD
         ;;
 esac
@@ -137,7 +142,7 @@ echo "Card $CARD i2s $I2S_CARD output $OUTPUT usb $USB_CARD intc $INT_CARD"
 # If preferred output not found or given fall back to auto detection
 if [[ -z $CARD ]];
 then
-echo "autod"
+echo "No output was specified/found, falling back to auto detection"
     if [[ -n $USB_CARD ]]; then
         CARD=$USB_CARD
         OUTPUT="usb"
@@ -155,11 +160,11 @@ echo "Card $CARD i2s $I2S_CARD output $OUTPUT usb $USB_CARD intc $INT_CARD"
 
 if [[ -z $CARD ]];
 then
-    log_failure_msg "No sound device found"
+    log_failure_msg "No ouput card found"
     exit 1
 fi
 
-log_progress_msg "Line out set to $OUTPUT card $CARD" "$NAME"
+log_progress_msg "Line out set to $OUTPUT card $CARD"
 
 if [ "$OUTPUT" == "usb" -a "$INI__musicbox__downsample_usb" == "1" ]
 # resamples to 44K because of problems with some usb-dacs on 48k (probably related to usb drawbacks of Pi)
