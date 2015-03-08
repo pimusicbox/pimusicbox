@@ -57,9 +57,8 @@ chmod +x /etc/network/if-up.d/iptables
 chown root:root /etc/firewall/musicbox_iptables
 chmod 600 /etc/firewall/musicbox_iptables
 
-#Next, create a symlink from the package to the /opt/defaultwebclient.
+#Next, create a symlink from the package to the web client.
 ln -fsn /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static /opt/webclient
-ln -fsn /opt/webclient /opt/defaultwebclient
 
 #Remove the streamuris.js and point it to the file in /boot/config
 mv /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static/js/streamuris.js streamuris.bk
