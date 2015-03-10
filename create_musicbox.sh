@@ -71,7 +71,7 @@ chmod u+s /sbin/shutdown
 #**Add the mopidy user**
 #Mopidy runs under the user mopidy. Add it.
 useradd -m mopidy
-passwd mopidy
+passwd -l mopidy
 
 #Add the user to the group audio:
 usermod -a -G audio mopidy
