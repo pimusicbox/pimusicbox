@@ -98,11 +98,9 @@ Network configuration:
 
 Webclient:
 
-Create a symlink from the package to the /opt/webclient and to /opt/defaultwebclient. This is done because you could install other webclients and just point the link to the newly installed client:
+Create a symlink from the package to the /opt/webclient:
 
     ln -fsn /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static /opt/webclient
-
-    ln -fsn /opt/webclient /opt/defaultwebclient
 
 Remove the streamuris.js and point it to the file in /boot/config
 
