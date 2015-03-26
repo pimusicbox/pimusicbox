@@ -109,7 +109,7 @@ ln -fsn /boot/config/settings.ini /var/lib/mopidy/.config/mopidy/mopidy.conf
 #**USB Fix**
 #It's tricky to get good sound out of the Pi. For USB Audio (sound cards, etc),
 # it is essential to disable the so called FIQ_SPLIT. Why? It seems that audio
-# at high nitrates interferes with the ethernet activity, which also runs over USB.
+# at high bitrates interferes with the ethernet activity, which also runs over USB.
 # These options are added at the beginning of the cmdline.txt file in /boot
 sed -i '1s/^/dwc_otg.fiq_fix_enable=1 dwc_otg.fiq_split_enable=0 smsc95xx.turbo_mode=N /' /boot/cmdline.txt
 

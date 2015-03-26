@@ -39,7 +39,7 @@ INI_READ=true
 
 REBOOT=0
 
-if [ "$INI__musicbox__resize_once" == "1" ]
+if [ "${INI["musicbox__resize_once"]}" == "1" ]
 then
     #set resize_once=false in ini file
     sed -i -e "/^\[musicbox\]/,/^\[.*\]/ s|^\(resize_once[ \t]*=[ \t]*\).*$|\1false\r|" $CONFIG_FILE
@@ -51,7 +51,7 @@ fi
 #get name of device and trim
 HOSTNM=`cat /etc/hostname | tr -cd "[:alnum:]"`
 #get name in ini and trim
-CLEAN_NAME=$(echo $INI__network__name | tr -cd "[:alnum:]")
+CLEAN_NAME=$(echo ${INI["network__name"]} | tr -cd "[:alnum:]")
 #max 9 characters (max netbios length = 15, + '.local')
 CLEAN_NAME=$(echo $CLEAN_NAME | cut -c 1-9)
 
@@ -78,10 +78,10 @@ fi
 log_progress_msg "MusicBox name is $CLEAN_NAME" "$NAME"
 
 # do the change password stuff
-if [ "$INI__musicbox__root_password" != "" ]
+if [ "${INI["musicbox__root_password"]}" != "" ]
 then
     log_progress_msg "Setting root user Password" "$NAME"
-    echo "root:$INI__musicbox__root_password" | chpasswd
+    echo "root:${INI["musicbox__root_password"]}" | chpasswd
     #remove password
     sed -i -e "/^\[musicbox\]/,/^\[.*\]/ s|^\(root_password[ \t]*=[ \t]*\).*$|\1\r|" $CONFIG_FILE
 fi
@@ -89,15 +89,15 @@ fi
 #allow shutdown for all users
 chmod u+s /sbin/shutdown
 
-if [ "$INI__network__wifi_network" != "" ]
+if [ "${INI["network__wifi_network"]}" != "" ]
 then
     #put wifi settings for wpa roaming
 cat >/etc/wpa.conf <<EOF
     ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
     update_config=1
     network={
-        ssid="$INI__network__wifi_network"
-        psk="$INI__network__wifi_password"
+        ssid="${INI["network__wifi_network"]}"
+        psk="${INI["network__wifi_password"]}"
         scan_ssid=1
     }
 EOF
@@ -112,10 +112,10 @@ fi
 #include code from setsound script
 . /opt/musicbox/setsound.sh
 
-if [ "$INI__network__workgroup" != "" ]
+if [ "${INI["network__workgroup"]}" != "" ]
 then
     #change smb.conf workgroup value
-    sed -i "s/workgroup = .*$/workgroup = $INI__network__workgroup/ig" /etc/samba/smb.conf
+    sed -i "s/workgroup = .*$/workgroup = ${INI["network__workgroup/ig"]}" /etc/samba/smb.conf
     #restart samba
     /etc/init.d/samba restart
 fi
@@ -124,7 +124,7 @@ fi
 iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 6680 > /dev/null 2>&1 || true
 
 # start SSH if enabled
-if [ "$INI__network__enable_ssh" == "1" ]
+if [ "${INI["network__enable_ssh"]}" == "1" ]
 then
     #create private keys for dropbear if they don't exist
     if [ ! -f "/etc/dropbear/dropbear_dss_host_key" ]
@@ -147,7 +147,7 @@ else
 fi
 
 # start upnp if enabled
-if [ "$INI__musicbox__enable_upnp" == "1" ]
+if [ "${INI["musicbox__enable_upnp"]}" == "1" ]
 then
     /etc/init.d/upmpdcli start
     ln -s /etc/monit/monitrc.d/upmpdcli /etc/monit/conf.d/upmpdcli > /dev/null 2>&1 || true
@@ -156,7 +156,7 @@ else
 fi
 
 # start shairport if enabled
-if [ "$INI__musicbox__enable_shairport" == "1" ]
+if [ "${INI["musicbox__enable_shairport"]}" == "1" ]
 then
     /etc/init.d/shairport-sync start
     ln -s /etc/monit/monitrc.d/shairport /etc/monit/conf.d/shairport > /dev/null 2>&1 || true
@@ -168,7 +168,7 @@ service monit start
 
 #check networking, sleep for a while
 MYIP=$(hostname -I)
-while [ "$MYIP" == "" -a "$INI__network__wait_for_network" != "0" ]
+while [ "$MYIP" == "" -a "${INI["network__wait_for_network"]}" != "0" ]
 do
     echo "Waiting for network..."
     echo
@@ -181,24 +181,24 @@ done
 ntpdate ntp.ubuntu.com > /dev/null 2>&1 || true
 
 #mount windows share
-if [ "$INI__network__mount_address" != "" ]
+if [ "${INI["network__mount_address"]}" != "" ]
 then
     #mount samba share, readonly
     log_progress_msg "Mounting Windows Network drive..." "$NAME"
-    mount -t cifs -o sec=ntlm,ro,user=$INI__network__mount_user,password=$INI__network__mount_password $INI__network__mount_address /music/Network/
-#    mount -t cifs -o sec=ntlm,ro,rsize=2048,wsize=4096,cache=strict,user=$INI__network__mount_user,password=$INI__network__mount_password $INI__network__mount_address /music/Network/
+    mount -t cifs -o sec=ntlm,ro,user=${INI["network__mount_user"]},password=${INI["network__mount_password"]} ${INI["network__mount_address"]} /music/Network/
+#    mount -t cifs -o sec=ntlm,ro,rsize=2048,wsize=4096,cache=strict,user=${INI["network__mount_user"]},password=${INI["network__mount_password"]} ${INI["network__mount_address"]} /music/Network/
 #add rsize=2048,wsize=4096,cache=strict because of usb (from raspyfi)
 fi
 
 # scan local music files once
-if [ "$INI__musicbox__scan_once" == "1" ]
+if [ "${INI["musicbox__scan_once"]}" == "1" ]
 then
     #set SCAN_ONCE = false
     sed -i -e "/^\[musicbox\]/,/^\[.*\]/ s|^\(scan_once[ \t]*=[ \t]*\).*$|\1false\r|" $CONFIG_FILE
 fi
 
 # scan local/networked music files if setting is true
-if [ "$INI__musicbox__scan_always" == "1" -o "$INI__musicbox__scan_once" == "1" ]
+if [ "${INI["musicbox__scan_always"]}" == "1" -o "${INI["musicbox__scan_once"]}" == "1" ]
 then
     log_progress_msg "Scanning music-files, please wait..."
     /etc/init.d/mopidy run local scan
@@ -210,9 +210,9 @@ fi
 #start mopidy
 /etc/init.d/mopidy start
 
-if [ "$INI__network__name" != "$CLEAN_NAME" -a "$INI__network__name" != "" ]
+if [ "${INI["network__name"]}" != "$CLEAN_NAME" -a "${INI["network__name"]}" != "" ]
 then
-    log_warning_msg "The new name of your MusicBox, $INI__network__name, is not ok! It should be max. 9 alphanumerical characters."
+    log_warning_msg "The new name of your MusicBox, ${INI["network__name"]}, is not ok! It should be max. 9 alphanumerical characters."
 fi
 
 # Print the IP address
@@ -224,17 +224,17 @@ fi
 # renice mopidy to 19, to have less stutter when playing tracks from spotify (at the start of a track)
 renice 19 `pgrep mopidy`
 
-if [ "$INI__musicbox__autoplay" -a "$INI__musicbox__autoplaywait" ]
+if [ "${INI["musicbox__autoplay"]}" -a "${INI["musicbox__autoplaywait"]}" ]
 then
-    log_progress_msg "Waiting $INI__musicbox__autoplaywait seconds before autoplay." "$NAME"
-    sleep $INI__musicbox__autoplaywait
-    log_progress_msg "Playing $INI__musicbox__autoplay" "$NAME"
-    mpc add "$INI__musicbox__autoplay"
+    log_progress_msg "Waiting ${INI["musicbox__autoplaywait"]} seconds before autoplay." "$NAME"
+    sleep ${INI["musicbox__autoplaywait"]}
+    log_progress_msg "Playing ${INI["musicbox__autoplay"]}" "$NAME"
+    mpc add "${INI["musicbox__autoplay"]}"
     mpc play
 fi
 
 
-# check and clean dirty bit of vfat partition not safely removed
+# check and clean dirty bit of vfat partition if not safely removed
 fsck /dev/mmcblk0p1 -v -a -w -p > /dev/null 2>&1 || true
 
 log_end_msg 0

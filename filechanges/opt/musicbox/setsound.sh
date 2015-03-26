@@ -79,6 +79,10 @@ then
     # Convert windows ini to unix
     dos2unix -n $CONFIG_FILE /tmp/settings.ini > /dev/null 2>&1 || true
 
+    #declare $INI before reading ini https://github.com/rudimeier/bash_ini_parser/issues/2
+    unset INI
+    declare -A INI
+
     # ini vars to mopidy settings
     read_ini /tmp/settings.ini
 
@@ -88,7 +92,7 @@ fi
 # If output not defined, it will automatically detect USB / HDMI / Analog in given order
 # It is at this moment not possible to detect whether an i2s device is connected hence
 # i2s is only selected if explicitly given as output in the config file
-OUTPUT=$(echo $INI__musicbox__output | tr "[:upper:]" "[:lower:]")
+OUTPUT=$(echo ${INI["musicbox__output"]} | tr "[:upper:]" "[:lower:]")
 CARD=
 
 if [[ -z "$OUTPUT" ]]
@@ -171,7 +175,7 @@ fi
 
 log_progress_msg "Line out set to $OUTPUT card $CARD"
 
-if [ "$OUTPUT" == "usb" -a "$INI__musicbox__downsample_usb" == "1" ]
+if [ "$OUTPUT" == "usb" -a "${INI["musicbox__downsample_usb"]}" == "1" ]
 # resamples to 44K because of problems with some usb-dacs on 48k (probably related to usb drawbacks of Pi)
 # and extra buffer for usb
 #if [ "$OUTPUT" == "usb" ]

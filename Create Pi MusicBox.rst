@@ -199,7 +199,7 @@ Update the kernel to make sure all optimizations of newer core-software:
 
 **USB Fix**
 
-It's tricky to get good sound out of the Pi. For USB Audio (sound cards, etc), it is essential to disable the so called FIQ_SPLIT. Why? It seems that audio at high nitrates interferes with the ethernet activity, which also runs over USB. Add these options to the cmdline.txt file on your SD Card.
+It's tricky to get good sound out of the Pi. For USB Audio (sound cards, etc), it is essential to disable the so called FIQ_SPLIT. Why? It seems that audio at high bitrates interferes with the ethernet activity, which also runs over USB. Add these options to the cmdline.txt file on your SD Card.
 
     dwc_otg.fiq_fix_enable=1 dwc_otg.fiq_split_enable=0
 
