@@ -44,7 +44,7 @@ Depending on your configuration, you could leave out certain packages, e.g. the 
 
 Then install mopidy and the extensions we need:
 
-    sudo pip install -U mopidy mopidy-spotify mopidy-local-sqlite mopidy-local-whoosh mopidy-scrobbler mopidy-soundcloud mopidy-dirble mopidy-tunein mopidy-gmusic mopidy-subsonic mopidy-http-kuechenradio mopidy-moped mopidy-musicbox-webclient mopidy-websettings mopidy-internetarchive mopidy-podcast mopidy-podcast-itunes mopidy-podcast-gpodder.net Mopidy-Simple-Webclient mopidy-somafm mopidy-spotify-tunigo mopidy-youtube
+    sudo pip install -U mopidy mopidy-spotify mopidy-local-sqlite mopidy-local-whoosh mopidy-scrobbler mopidy-soundcloud mopidy-dirble mopidy-tunein mopidy-gmusic mopidy-subsonic mopidy-mobile mopidy-moped mopidy-musicbox-webclient mopidy-websettings mopidy-internetarchive mopidy-podcast mopidy-podcast-itunes mopidy-podcast-gpodder.net Mopidy-Simple-Webclient mopidy-somafm mopidy-spotify-tunigo mopidy-youtube
 
 Google Music works a lot better if you use the development version of mopidy-gmusic:
 
@@ -101,6 +101,8 @@ Webclient:
 Create a symlink from the package to the /opt/webclient and to /opt/defaultwebclient. This is done because you could install other webclients and just point the link to the newly installed client:
 
     ln -fsn /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static /opt/webclient
+    
+    ln -fsn /usr/local/lib/python2.7/dist-packages/mopidy_moped/static /opt/moped
 
     ln -fsn /opt/webclient /opt/defaultwebclient
 
