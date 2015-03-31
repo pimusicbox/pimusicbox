@@ -6,6 +6,7 @@ Pi MusicBox was created by Wouter van Wijk and includes contributions from the f
 - Remco Brink <remco@rc6.org>
 - Amit Kotlovski <amitbk@gmail.com>
 - John Cass <john.cass77@gmail.com>
+- Bastien Nocera <@hadess>
 
 Pi MusicBox makes use of the following great projects:
 - Raspbian (based on Debian Linux): http://raspbian.org
