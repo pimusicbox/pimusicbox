@@ -99,8 +99,13 @@ cat >/etc/wpa.conf <<EOF
         key_mgmt=WPA-PSK
         ssid="$INI__network__wifi_network"
         psk="$INI__network__wifi_password"
-        scan_ssid=$INI__network__wifi_scan_ssid
 EOF
+    if [ "$INI__network__wifi_scan_ssid" == "0" ]
+    then
+        echo "        scan_ssid=0" >>/etc/wpa.conf
+    else
+        echo "        scan_ssid=1" >>/etc/wpa.conf
+    fi
     if [ "$INI__network__wifi_wpa2_aes" == "1" ]
     then
 cat >>/etc/wpa.conf <<EOF
