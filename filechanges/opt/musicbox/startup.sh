@@ -96,9 +96,20 @@ cat >/etc/wpa.conf <<EOF
     ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
     update_config=1
     network={
+        key_mgmt=WPA-PSK
         ssid="$INI__network__wifi_network"
         psk="$INI__network__wifi_password"
-        scan_ssid=1
+        scan_ssid=$INI__network__wifi_scan_ssid
+EOF
+    if [ "$INI__network__wifi_wpa2_aes" == "1" ]
+    then
+cat >>/etc/wpa.conf <<EOF
+        proto=RSN
+        pairwise=CCMP
+        group=CCMP
+EOF
+    fi
+cat >>/etc/wpa.conf <<EOF
     }
 EOF
 
