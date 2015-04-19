@@ -84,7 +84,7 @@ then
     declare -A INI
 
     # ini vars to mopidy settings
-    read_ini /tmp/settings.ini
+    read_ini -nv /tmp/settings.ini
 
     rm /tmp/settings.ini > /dev/null 2>&1 || true
 fi

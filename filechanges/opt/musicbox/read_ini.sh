@@ -117,8 +117,7 @@ function read_ini()
 			;;
 
 			--allow_no_value | -nv )
-				shift
-				NV=$1
+				NV=1
 			;;
 
 			--prefix | -p )
@@ -144,7 +143,7 @@ function read_ini()
 	done
 
 	if [ -z "$INI_FILE" ] && [ "${CLEAN_ENV}" = 0 ] ;then
-		echo -e "Usage: read_ini [-c] [-b 0| -b 1]] [-p PREFIX] FILE"\
+		echo -e "Usage: read_ini [-c] [-b 0| -b 1] [-nv] [-p PREFIX] FILE"\
 			"[SECTION]\n  or   read_ini -c [-p PREFIX]" >&2
 		cleanup_bash
 		return 1
