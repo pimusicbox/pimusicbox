@@ -281,5 +281,3 @@ function read_ini()
 
 	cleanup_bash
 }
-
-

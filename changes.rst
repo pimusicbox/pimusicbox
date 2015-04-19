@@ -1,6 +1,22 @@
 **Pi MusicBox Changelog**
 -------------------------
 
+v0.6 (6 april 2015)
+----------------------------------------
+- Raspberry Pi 2 compatability (using updated kernel)
+- Enhanced support for local/networked files
+- New version of the MusicBox Webinterface (2.0)
+- Stability fixes
+- Many other bugfixes
+- Compatible with Mopidy v0.19.5
+
+v0.6.0 RC (29 March 2015)
+----------------------------------------
+- Added support for HiFiBerry AMP
+- Fixed USB soundcard detection
+- Removed some entries for extensions in settings.ini where using defaults.
+- Compatible with Mopidy v0.19.5
+
 v0.5.4 (25 February 2015)
 ----------------------------------------
 - Initial Raspberry Pi 2 compatability.

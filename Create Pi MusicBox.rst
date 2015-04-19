@@ -38,13 +38,13 @@ Next, issue this command to update the distribution. This is good because newer 
 
 Install all packages we need with this command:
 
-    sudo apt-get update && sudo apt-get --yes --no-install-suggests --no-install-recommends install logrotate alsa-utils wpasupplicant gstreamer0.10-alsa ifplugd gstreamer0.10-fluendo-mp3 gstreamer0.10-tools samba dos2unix avahi-utils alsa-base cifs-utils avahi-autoipd libnss-mdns ntpdate ca-certificates ncmpcpp rpi-update linux-wlan-ng alsa-firmware-loaders iw atmel-firmware firmware-atheros firmware-brcm80211 firmware-ipw2x00 firmware-iwlwifi firmware-libertas firmware-linux firmware-linux-nonfree firmware-ralink firmware-realtek zd1211-firmware linux-wlan-ng-firmware alsa-firmware-loaders iptables build-essential python-dev python-pip python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gstreamer0.10-plugins-ugly gstreamer0.10-tools usbmount monit upmpdcli watchdog dropbear mpc dosfstools logrotate
+    sudo apt-get update && sudo apt-get --yes --no-install-suggests --no-install-recommends install logrotate alsa-utils wpasupplicant gstreamer0.10-alsa ifplugd gstreamer0.10-fluendo-mp3 gstreamer0.10-tools samba dos2unix avahi-utils alsa-base cifs-utils avahi-autoipd libnss-mdns ntpdate ca-certificates ncmpcpp rpi-update linux-wlan-ng alsa-firmware-loaders iw atmel-firmware firmware-atheros firmware-brcm80211 firmware-ipw2x00 firmware-iwlwifi firmware-libertas firmware-linux firmware-linux-nonfree firmware-ralink firmware-realtek zd1211-firmware linux-wlan-ng-firmware iptables build-essential python-dev python-pip python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gstreamer0.10-plugins-ugly usbmount monit upmpdcli watchdog dropbear mpc dosfstools
 
 Depending on your configuration, you could leave out certain packages, e.g. the firmware files if you don't use a wireless dongle.
 
 Then install mopidy and the extensions we need:
 
-    sudo pip install -U mopidy mopidy-spotify mopidy-local-sqlite mopidy-local-whoosh mopidy-scrobbler mopidy-soundcloud mopidy-dirble mopidy-tunein mopidy-gmusic mopidy-subsonic mopidy-http-kuechenradio mopidy-moped mopidy-musicbox-webclient mopidy-websettings mopidy-internetarchive mopidy-podcast mopidy-podcast-itunes mopidy-podcast-gpodder.net mopidy-simplewebclient mopidy-somafm mopidy-spotify-tunigo mopidy-youtube
+    sudo pip install -U mopidy mopidy-spotify mopidy-local-sqlite mopidy-local-whoosh mopidy-scrobbler mopidy-soundcloud mopidy-dirble mopidy-tunein mopidy-gmusic mopidy-subsonic mopidy-mobile mopidy-moped mopidy-musicbox-webclient mopidy-websettings mopidy-internetarchive mopidy-podcast mopidy-podcast-itunes mopidy-podcast-gpodder.net Mopidy-Simple-Webclient mopidy-somafm mopidy-spotify-tunigo mopidy-youtube
 
 Google Music works a lot better if you use the development version of mopidy-gmusic:
 
@@ -102,6 +102,8 @@ Create a symlink from the package to the /opt/webclient and to /opt/defaultwebcl
 
     ln -fsn /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static /opt/webclient
 
+    ln -fsn /usr/local/lib/python2.7/dist-packages/mopidy_moped/static /opt/moped
+
     ln -fsn /opt/webclient /opt/defaultwebclient
 
 Remove the streamuris.js and point it to the file in /boot/config
@@ -120,7 +122,7 @@ Mopidy runs under the user mopidy. Add it.
 
     useradd -m mopidy
 
-    passwd mopidy
+    passwd -l mopidy
 
 Add the user to the group audio:
 
@@ -197,7 +199,7 @@ Update the kernel to make sure all optimizations of newer core-software:
 
 **USB Fix**
 
-It's tricky to get good sound out of the Pi. For USB Audio (sound cards, etc), it is essential to disable the so called FIQ_SPLIT. Why? It seems that audio at high bitrates interferes with the ethernet activity, which also runs over USB. Add these options to the cmdline.txt file on your SD Card.
+It's tricky to get good sound out of the Pi. For USB Audio (sound cards, etc), it is essential to disable the so called FIQ_SPLIT. Why? It seems that audio at high nitrates interferes with the ethernet activity, which also runs over USB. Add these options to the cmdline.txt file on your SD Card.
 
     dwc_otg.fiq_fix_enable=1 dwc_otg.fiq_split_enable=0
 
