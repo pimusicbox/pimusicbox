@@ -1,8 +1,10 @@
 #
 # Copyright (c) 2009    Kevin Porter / Advanced Web Construction Ltd
 #                       (http://coding.tinternet.info, http://webutils.co.uk)
-# Copyright (c) 2010-2012     Ruediger Meier <sweet_f_a@gmx.de>
+# Copyright (c) 2010-2015     Ruediger Meier <sweet_f_a@gmx.de>
 #                             (https://github.com/rudimeier/)
+#
+# License: BSD-3-Clause, see LICENSE file
 #
 # Simple INI file parser.
 #
@@ -60,19 +62,43 @@ function read_ini()
 
 	# Set defaults
 	local BOOLEANS=1
+	local NV=0
 	local VARNAME_PREFIX=INI
 	local CLEAN_ENV=0
+	local INDENT_LEVEL=0
+	local CURRENT_INDENT_LEVEL=0
+	local LONGEST_LINE=0
+
+	# Regular expression so skip blank lines and commented out lines
+	local RE_SKIP='^(\s*$)|^\s*(#|;)'
+
+	# Regular expression to fine leading spaces
+	RE_SPACES='^(\ +)'
+
+	# Regular expression for tracking down section markers
+	RE_SEC='\[([^]]+)\]'
+
+	# Regular expression for value lines
+	RE=''
+    RE_REG='^(.*?)\s*(=|:)\s*(.+)$'
+
+    # Regular expression to use if optional values are allowed
+	RE_OPT='^(.*?)\s*(=|:)\s*(.*)$|(.*?)\s*$'
+	#RE_OPT='^(.*?)\s*(?:(=|:)\s*(.*))?$'
 
 	# {{{ START Options
 
 	# Available options:
-	#	--boolean		Whether to recognise special boolean values: ie for 'yes', 'true'
-	#					and 'on' return 1; for 'no', 'false' and 'off' return 0. Quoted
-	#					values will be left as strings
-	#					Default: on
+	#	--boolean		 Whether to recognise special boolean values: ie for 'yes', 'true'
+	#					 and 'on' return 1; for 'no', 'false' and 'off' return 0. Quoted
+	#					 values will be left as strings
+	#					 Default: on
 	#
-	#	--prefix=STRING	String to begin all returned variables with (followed by '__').
-	#					Default: INI
+	#	--allow_no_value Whether keys without values are allowed in the ini file: ie. 'key' or 'key='
+	#					 Default: off
+	#
+	#	--prefix=STRING	 String to begin all returned variables with (followed by '__').
+	#					 Default: INI
 	#
 	#	First non-option arg is filename, second is section name
 
@@ -88,6 +114,11 @@ function read_ini()
 			--booleans | -b )
 				shift
 				BOOLEANS=$1
+			;;
+
+			--allow_no_value | -nv )
+				shift
+				NV=$1
 			;;
 
 			--prefix | -p )
@@ -124,16 +155,21 @@ function read_ini()
 		return 1
 	fi
 
+	local INI_ALL_VARNAME="${VARNAME_PREFIX}__ALL_VARS"
+	local INI_ALL_SECTION="${VARNAME_PREFIX}__ALL_SECTIONS"
 	local INI_NUMSECTIONS_VARNAME="${VARNAME_PREFIX}__NUMSECTIONS"
 	if [ "${CLEAN_ENV}" = 1 ] ;then
 		# TODO How to clear the whole array without unset it
 		for i in "${!INI[@]}" ;do
 			unset ${VARNAME_PREFIX}['$i']
 		done
+		eval unset "\$${INI_ALL_VARNAME}"
 	fi
 
 	# TODO How to declare -A ${VARNAME_PREFIX} non local? Or we have to
 	# check for a global declared one
+	unset ${INI_ALL_VARNAME}
+	unset ${INI_ALL_SECTION}
 	unset ${INI_NUMSECTIONS_VARNAME}
 
 	if [ -z "$INI_FILE" ] ;then
@@ -152,6 +188,15 @@ function read_ini()
 		BOOLEANS=1
 	fi
 
+	if [ "$NV" == "0" ]
+	then
+	    RE=$RE_REG
+	else
+	    RE=$RE_OPT
+	fi
+
+    # Get longest line in the file - used to reset indentation level
+	LONGEST_LINE=$(wc -L < "$INI_FILE")
 
 	# }}} END Options
 
@@ -160,43 +205,48 @@ function read_ini()
 	local LINE_NUM=0
 	local SECTIONS_NUM=0
 	local SECTION=""
-	
-	# IFS is used in "read" and we want to switch it within the loop
-	local IFS=$' \t\n'
-	local IFS_OLD="${IFS}"
-	
+
 	# we need some optional shell behavior (shopt) but want to restore
 	# current settings before returning
 	local SWITCH_SHOPT=""
 	pollute_bash
 	
-	while read -r line || [ -n "$line" ]
+	while IFS= read -r line || [ -n "$line" ]
 	do
 #echo line = "$line"
 
 		((LINE_NUM++))
 
 		# Skip blank lines and comments
-		if [ -z "$line" -o "${line:0:1}" = ";" -o "${line:0:1}" = "#" ]
+		if [[ "${line}" =~ $RE_SKIP ]]
 		then
+		    # Empty line marks end of value
+		    INDENT_LEVEL="$LONGEST_LINE"
 			continue
 		fi
 
+		# Check if multi-line value
+        if [[ "${line}" =~ $RE_SPACES ]]
+        then
+            LEADING_SPACES="${BASH_REMATCH[1]}"
+            CUR_INDENT_LEVEL=${#LEADING_SPACES}
+        else
+            CUR_INDENT_LEVEL=0
+        fi
+
 		# Section marker?
-		if [[ "${line}" =~ ^\[.*\]$ ]]
+		if [[ "${line}" =~ $RE_SEC ]]
 		then
-			# Set SECTION var to name of section (strip [ and ] from section marker)
-			SECTION="${line#[}"
-			SECTION="${SECTION%]}"
-			read SECTION <<<"${SECTION}"
+			# Set SECTION var to name of section
+			SECTION="${BASH_REMATCH[1]}"
 			if ! [[ "${line}" =~ ^[[:print:]]+$  ]] ;then
 				echo "Error: Invalid section:" >&2
 				echo " ${LINE_NUM}: '$line'" >&2
 				cleanup_bash
 				return 1
 			fi
+			eval "${INI_ALL_SECTION}=\"\${${INI_ALL_SECTION}# } $SECTION\""
 			((SECTIONS_NUM++))
-
 			continue
 		fi
 
@@ -209,26 +259,46 @@ function read_ini()
 			fi
 		fi
 
-		# Valid var/value line? (check for variable name and then '=')
-		if ! [[ "${line}" =~ ^[[:print:]]+[[:space:]]*= ]]
+		# Valid var/value line? (check for variable name and then '=' or ':')
+        LINE_IS_VALID=1
+
+		if [[ "${line}" =~ $RE ]]
 		then
-			echo "Error: Invalid line:" >&2
+		    if [ $CUR_INDENT_LEVEL -gt $INDENT_LEVEL ]
+		    then
+                VAL="$VAL${line}"
+		    else
+		        VAR="${BASH_REMATCH[1]}"
+			    VAL="${BASH_REMATCH[3]}"
+			    INDENT_LEVEL=$CUR_INDENT_LEVEL
+		    fi
+		elif [ $CUR_INDENT_LEVEL -gt $INDENT_LEVEL ]
+		then
+		    line="${line##+([[:space:]])}"
+            VAL="$VAL\\n${line}"
+		else
+	        LINE_IS_VALID=0
+		fi
+
+		if [ "$VAL" = "" ] && [ "$NV" = 0 ]
+		then
+		    LINE_IS_VALID=0
+		fi
+
+		if [ "$LINE_IS_VALID" = 0 ]
+		then
+		    echo "Error: Invalid line:" >&2
 			echo " ${LINE_NUM}: '$line'" >&2
 			cleanup_bash
 			return 1
-		fi
+	    fi
 
-
-		# split line at "=" sign
-		IFS="="
-		read -r VAR VAL <<< "${line}"
-		IFS="${IFS_OLD}"
-		
 		# delete spaces around the equal sign (using extglob)
+		VAR="${VAR##+([[:space:]])}"
 		VAR="${VAR%%+([[:space:]])}"
-		VAL="${VAL##+([[:space:]])}"
-		VAR=$(echo $VAR)
 
+		VAL="${VAL##+([[:space:]])}"
+		VAL="${VAL%%+([[:space:]])}"
 
 		# Construct variable name:
 		# ${VARNAME_PREFIX}__$SECTION__$VAR
@@ -241,17 +311,16 @@ function read_ini()
 		else
 			VARNAME=${SECTION}__${VAR//./_}
 		fi
+        eval "${INI_ALL_VARNAME}=\"\${${INI_ALL_VARNAME}# } ${VARNAME}\""
 
-		if [[ "${VAL}" =~ ^\".*\"$  ]]
+		if [[ "${VAL}" =~ (^\s*\")(.*)(\"\s*) ]]
 		then
 			# remove existing double quotes
-			VAL="${VAL##\"}"
-			VAL="${VAL%%\"}"
-		elif [[ "${VAL}" =~ ^\'.*\'$  ]]
+			VAL="${BASH_REMATCH[2]}"
+		elif [[ "${VAL}" =~ (^\s*\')(.*)(\'\s*) ]]
 		then
 			# remove existing single quotes
-			VAL="${VAL##\'}"
-			VAL="${VAL%%\'}"
+			VAL="${BASH_REMATCH[2]}"
 		elif [ "$BOOLEANS" = 1 ]
 		then
 			# Value is not enclosed in quotes
@@ -269,7 +338,7 @@ function read_ini()
 				;;
 			esac
 		fi
-		
+
 #  		echo "pair: '${VARNAME}' = '${VAL}'"
 		eval ${VARNAME_PREFIX}$'[${VARNAME}]=${VAL}'
 # 		eval $'echo "array: \'${VARNAME}\' = \'${'${VARNAME_PREFIX}$'[${VARNAME}]}\'"'
@@ -281,3 +350,5 @@ function read_ini()
 
 	cleanup_bash
 }
+
+
