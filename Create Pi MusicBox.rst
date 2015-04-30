@@ -13,6 +13,9 @@ to gain full rights.
 
 Make sure there is enough space on the SD Card. Use the command raspi-config to resize the filesystem when needed.
 
+Update the mount options so anyone can mount the boot partition and give everyone all permissions.
+    sed -i '/mmcblk0p1\s\+\/boot\s\+vfat/ s/defaults /defaults,rw,user,umask=000/' /etc/fstab
+
 Issue this command. This will prevent the system from installing unnecessary packages. This command takes care that the apt-system doesn’t fill up the SD Card with stuff you don’t need. If you don’t care about a bit of wasted space, or you use your system for other purposes, skip it.
 
     echo -e 'APT::Install-Recommends "0";\nAPT::Install-Suggests "0";\n' > /etc/apt/apt.conf

@@ -3,6 +3,9 @@
 # build your own Pi MusicBox.
 # reeeeeeaaallly alpha. Also see Create Pi MusicBox.rst
 
+#Update the mount options so anyone can mount the boot partition and give everyone all permissions.
+sed -i '/mmcblk0p1\s\+\/boot\s\+vfat/ s/defaults /defaults,user,umask=000/' /etc/fstab
+
 #make sure no unneeded packages are installed
 echo -e 'APT::Install-Recommends "0";\nAPT::Install-Suggests "0";\n' > /etc/apt/apt.conf
 
