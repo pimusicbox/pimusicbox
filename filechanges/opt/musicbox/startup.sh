@@ -234,7 +234,7 @@ then
 fi
 
 
-# check and clean dirty bit of vfat partition not safely removed
+# check and clean dirty bit of vfat partition if not safely removed
 fsck /dev/mmcblk0p1 -v -a -w -p > /dev/null 2>&1 || true
 
 log_end_msg 0
