@@ -3,88 +3,109 @@
 # build your own Pi MusicBox.
 # reeeeeeaaallly alpha. Also see Create Pi MusicBox.rst
 
-#Update the mount options so anyone can mount the boot partition and give everyone all permissions.
-sed -i '/mmcblk0p1\s\+\/boot\s\+vfat/ s/defaults /defaults,user,umask=000/' /etc/fstab
+if [ $(id -u) != "0" ]; then
+    echo "You must be the superuser to run this script" >&2
+    exit 1
+fi
 
-#make sure no unneeded packages are installed
-echo -e 'APT::Install-Recommends "0";\nAPT::Install-Suggests "0";\n' > /etc/apt/apt.conf
+# Install the most basic packages we need to continue
+apt-get update && apt-get --yes install sudo wget unzip ntpdate
 
-#Install the packages you need to continue:
-apt-get update && apt-get --yes install sudo wget unzip mc
-
-#Next, issue this command to update the distribution.
-#This is good because newer versions have fixes for audio and usb-issues:
-
+# Update the distribution to get latest fixes for audio and usb-issues
 apt-get dist-upgrade -y
 
-#Next, configure the installation of Mopidy, the music server that is the heart of MusicBox.
-#wget -q -O - http://apt.mopidy.com/mopidy.gpg | sudo apt-key add -
-#wget -q -O /etc/apt/sources.list.d/mopidy.list http://apt.mopidy.com/mopidy.list
-
-#update time, to prevent update problems
+# Update time, to prevent update problems
 ntpdate -u ntp.ubuntu.com
 
-#Then install all packages we need with this command:
-sudo apt-get update && sudo apt-get --yes --no-install-suggests --no-install-recommends install logrotate alsa-utils wpasupplicant gstreamer0.10-alsa ifplugd gstreamer0.10-fluendo-mp3 gstreamer0.10-tools samba dos2unix avahi-utils alsa-base cifs-utils avahi-autoipd libnss-mdns ntpdate ca-certificates ncmpcpp rpi-update alsa-firmware-loaders iw atmel-firmware firmware-atheros firmware-brcm80211 firmware-ipw2x00 firmware-iwlwifi firmware-libertas firmware-linux firmware-linux-nonfree firmware-ralink firmware-realtek zd1211-firmware iptables build-essential python-dev python-pip python-gst0.10 gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gstreamer0.10-plugins-ugly usbmount monit upmpdcli watchdog dropbear mpc dosfstools
+# Add additional package repositories
+wget -q -O - http://apt.mopidy.com/mopidy.gpg | apt-key add -
+wget -q -O /etc/apt/sources.list.d/mopidy.list http://apt.mopidy.com/mopidy.list
+sed -i 's/stable/wheezy/' /etc/apt/sources.list.d/mopidy.list
+wget -q -O - http://www.lesbonscomptes.com/key/jf@dockes.org.gpg.key | apt-key add -
+cat << EOF > /etc/apt/sources.list.d/upmpdcli.list
+deb http://www.lesbonscomptes.com/upmpdcli/downloads/debian/ unstable main
+deb-src http://www.lesbonscomptes.com/upmpdcli/downloads/debian/ unstable main
+EOF
 
-#mopidy from pip
-sudo pip install -U mopidy mopidy-spotify mopidy-local-sqlite mopidy-local-whoosh mopidy-scrobbler mopidy-soundcloud mopidy-dirble mopidy-tunein mopidy-gmusic mopidy-subsonic mopidy-mobile mopidy-moped mopidy-musicbox-webclient mopidy-websettings mopidy-internetarchive mopidy-podcast mopidy-podcast-itunes mopidy-podcast-gpodder.net Mopidy-Simple-Webclient mopidy-somafm mopidy-spotify-tunigo mopidy-youtube
+# Agree to Intel firmware license
+echo firmware-ipw2x00 firmware-ipw2x00/license/accepted boolean true | debconf-set-selections
+# Enable mopidy system service
+echo mopidy	mopidy/daemon	boolean	true | debconf-set-selections
 
-#Google Music works a lot better if you use the development version of mopidy-gmusic:
-sudo pip install https://github.com/hechtus/mopidy-gmusic/archive/develop.zip
+# Install debian packages
+apt-get update
+apt-get --yes --no-install-suggests --no-install-recommends install \
+    logrotate wpasupplicant ifplugd samba dos2unix cifs-utils iptables \
+    iw atmel-firmware firmware-atheros firmware-brcm80211 firmware-ipw2x00 \
+    firmware-iwlwifi firmware-libertas firmware-ralink firmware-realtek \
+    zd1211-firmware firmware-linux firmware-linux-nonfree
+    rpi-update dropbear libnss-mdns ca-certificates \
+    dosfstools usbmount watchdog alsa-utils alsa-base alsa-firmware-loaders \
+    avahi-utils avahi-autoipd build-essential libffi-dev libssl-dev \
+    python-dev python-pip python-gst0.10 \
+    gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gstreamer0.10-plugins-ugly \
+    gstreamer0.10-alsa gstreamer0.10-fluendo-mp3 gstreamer0.10-tools \
+    mopidy mopidy-spotify mopidy-scrobbler mopidy-soundcloud mopidy-dirble \
+    mopidy-alsamixer mpc ncmpcpp monit upmpdcli
+
+# Upgrade pip
+pip install -U pip
+pip install requests[security]
+
+# Install additional python packages from pip
+pip install mopidy-internetarchive \
+            mopidy-local-sqlite \
+            mopidy-local-whoosh \
+            mopidy-mobile \
+            mopidy-moped \
+            mopidy-mopify \
+            mopidy-musicbox-webclient \
+            mopidy-podcast \
+            mopidy-podcast-itunes \
+            mopidy-podcast-gpodder.net \
+            mopidy-simple-webclient \
+            mopidy-spotify-tunigo \
+            mopidy-subsonic \
+            mopidy-tunein \
+            mopidy-youtube \
+            mopidy-websettings
+
+
+# mopidy-gmusic package is outdated, use development version
+pip install https://github.com/hechtus/mopidy-gmusic/archive/develop.zip
+pip install --upgrade --no-deps https://github.com/woutervanwijk/Mopidy-MusicBox-Webclient/archive/develop.zip
+pip install --upgrade --no-deps https://github.com/woutervanwijk/mopidy-websettings/archive/develop.zip
 
 #**Configuration and Files**
 cd /opt
 
-#Get the files of the Pi MusicBox project
+# Get the latest stable Pi MusicBox release
 wget https://github.com/woutervanwijk/Pi-MusicBox/archive/master.zip
-
-#Unpack the zip-file and remove it if you want.
 unzip master.zip
 rm master.zip
-
-#Then go to the directory which you just unpacked, subdirectory ‘filechanges’:
 cd Pi-MusicBox-master/filechanges
 
-#Now we are going to copy some files. Backup the old ones if you’re not sure!
-#This sets up the boot and opt directories:
-#manually copy cmdline.txt and config.txt if you want
-mkdir /boot/config
-cp -R boot/config /boot/config
+# Copy some files. Backup the old ones if you’re not sure!
+cp boot/config.txt /boot/config.txt
+cp -R boot/config /boot/
 cp -R opt/* /opt
-
-#Make the system work:
 cp -R etc/* /etc
 
 chmod +x /etc/network/if-up.d/iptables
 chown root:root /etc/firewall/musicbox_iptables
 chmod 600 /etc/firewall/musicbox_iptables
 
-#Next, create a symlink from the package to the /opt/defaultwebclient.
+# Create a symlink from the package to the /opt/defaultwebclient.
 ln -fsn /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static /opt/webclient
 ln -fsn /usr/local/lib/python2.7/dist-packages/mopidy_moped/static /opt/moped
 ln -fsn /opt/webclient /opt/defaultwebclient
 
-#Remove the streamuris.js and point it to the file in /boot/config
-mv /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static/js/streamuris.js streamuris.bk
+# Link the user-configurable files in /boot/config
 ln -fsn /boot/config/streamuris.js /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static/js/streamuris.js
+ln -fsn /boot/config/settings.ini /etc/mopidy/mopidy.conf
 
 #Let everyone shutdown the system (to support it from the webclient):
 chmod u+s /sbin/shutdown
-
-#**Add the mopidy user**
-#Mopidy runs under the user mopidy. Add it.
-useradd -m mopidy
-passwd -l mopidy
-
-#Add the user to the group audio:
-usermod -a -G audio mopidy
-
-#Create a couple of directories inside the user dir:
-mkdir -p /home/mopidy/.config/mopidy
-mkdir -p /home/mopidy/.cache/mopidy
-mkdir -p /home/mopidy/.local/share/mopidy
-chown -R mopidy:mopidy /home/mopidy
 
 #**Create Music directory for MP3/OGG/FLAC **
 #Create the directory containing the music and the one where the network share is mounted:
@@ -95,15 +116,14 @@ mkdir -p /music/USB2
 mkdir -p /music/USB3
 mkdir -p /music/USB4
 chmod -R 777 /music
-chown -R mopidy:mopidy /music
+chown -R mopidy:audio /music
 
-#Disable the SSH service for more security if you want (it can be started with an option in the configuration-file):
+# Disable the SSH service (can be enabled with an option in the configuration-file)
 update-rc.d ssh disable
 
-#Link the mopidy configuration to the new one in /boot/config
-ln -fsn /boot/config/settings.ini /home/mopidy/.config/mopidy/mopidy.conf
-mkdir -p /var/lib/mopidy/.config/mopidy
-ln -fsn /boot/config/settings.ini /var/lib/mopidy/.config/mopidy/mopidy.conf
+
+# Update the mount options so anyone can mount the boot partition and give everyone all permissions.
+#sed -i '/mmcblk0p1\s\+\/boot\s\+vfat/ s/defaults /defaults,user,umask=000/' /etc/fstab
 
 #**Optimizations**
 #For the music to play without cracks, you have to optimize your system a bit.
@@ -112,12 +132,10 @@ ln -fsn /boot/config/settings.ini /var/lib/mopidy/.config/mopidy/mopidy.conf
 #**USB Fix**
 #It's tricky to get good sound out of the Pi. For USB Audio (sound cards, etc),
 # it is essential to disable the so called FIQ_SPLIT. Why? It seems that audio
-# at high nitrates interferes with the ethernet activity, which also runs over USB.
-# These options are added at the beginning of the cmdline.txt file in /boot
+# at high bitrates interferes with the ethernet activity, which also runs over USB.
 sed -i '1s/^/dwc_otg.fiq_fix_enable=1 dwc_otg.fiq_split_enable=0 smsc95xx.turbo_mode=N /' /boot/cmdline.txt
 
 #cleanup
-apt-get remove build-essential python-pip
 apt-get autoremove
 apt-get clean
 apt-get autoclean
