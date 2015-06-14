@@ -228,7 +228,7 @@ if [ "$INI__musicbox__autoplay" -a "$INI__musicbox__autoplaymaxwait" ]
 then
     if ! [[ $INI__musicbox__autoplaymaxwait =~ ^[0-9]*+$ ]] ; then
         log_progress_msg "Value specified for 'autoplaymaxwait' is not a number, defaulting to 60" "$NAME"
-        $INI__musicbox__autoplaymaxwait = 60
+        INI__musicbox__autoplaymaxwait=60
     fi
     log_progress_msg "Waiting for Mopidy to accept connections..." "$NAME"
     waittime=0
