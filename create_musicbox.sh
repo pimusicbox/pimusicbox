@@ -3,6 +3,8 @@
 # build your own Pi MusicBox.
 # reeeeeeaaallly alpha. Also see Create Pi MusicBox.rst
 
+DEFAULT_PASSWORD='musicbox'
+
 if [ $(id -u) != "0" ]; then
     echo "You must be the superuser to run this script" >&2
     exit 1
@@ -139,5 +141,11 @@ sed -i '1s/^/dwc_otg.fiq_fix_enable=1 dwc_otg.fiq_split_enable=0 smsc95xx.turbo_
 apt-get autoremove
 apt-get clean
 apt-get autoclean
+
+# Set the default password
+if [ "$DEFAULT_PASSWORD" != "" ]
+then
+    echo "$(whoami):$DEFAULT_PASSWORD" | chpasswd
+fi
 
 #other options to be done by hand. Won't do it automatically on a running system
