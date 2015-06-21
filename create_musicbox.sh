@@ -42,17 +42,16 @@ apt-get --yes --no-install-suggests --no-install-recommends install \
     rpi-update dropbear libnss-mdns ca-certificates \
     dosfstools usbmount watchdog alsa-utils alsa-base alsa-firmware-loaders \
     avahi-utils avahi-autoipd build-essential libffi-dev libssl-dev \
-    python-dev python-pip python-gst0.10 \
+    python-dev python-gst0.10 \
     gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gstreamer0.10-plugins-ugly \
     gstreamer0.10-alsa gstreamer0.10-fluendo-mp3 gstreamer0.10-tools \
     mopidy mopidy-spotify mopidy-scrobbler mopidy-soundcloud mopidy-dirble \
     mopidy-alsamixer mpc ncmpcpp monit upmpdcli
 
-# Upgrade pip
-pip install -U pip
+# Install pip and additional python packages
+curl "https://bootstrap.pypa.io/get-pip.py" -o "/tmp/get-pip.py"
+python /tmp/get-pip.py
 pip install requests[security]
-
-# Install additional python packages from pip
 pip install mopidy-internetarchive \
             mopidy-local-sqlite \
             mopidy-local-whoosh \
@@ -73,6 +72,7 @@ pip install mopidy-internetarchive \
 
 # mopidy-gmusic package is outdated, use development version
 pip install https://github.com/hechtus/mopidy-gmusic/archive/develop.zip
+# Use development versions for now (DO_NOT_RELEASE)
 pip install --upgrade --no-deps https://github.com/woutervanwijk/Mopidy-MusicBox-Webclient/archive/develop.zip
 pip install --upgrade --no-deps https://github.com/woutervanwijk/mopidy-websettings/archive/develop.zip
 
