@@ -121,8 +121,12 @@ mkdir -p /music/USB4
 chmod -R 777 /music
 chown -R mopidy:audio /music
 
-# Disable the SSH service (can be enabled with an option in the configuration-file)
+# Disable SSH as we use dropbear instead.
 update-rc.d ssh disable
+# Disable all optional services by default. User enables desired services in settings.ini
+update-rc.d dropbear disable
+update-rc.d upmpdcli disable
+# TODO: Add shairport-sync here once we install it...
 
 
 # Update the mount options so anyone can mount the boot partition and give everyone all permissions.
