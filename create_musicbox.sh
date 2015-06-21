@@ -4,6 +4,7 @@
 # reeeeeeaaallly alpha. Also see Create Pi MusicBox.rst
 
 DEFAULT_PASSWORD='musicbox'
+GITHUB_BRANCH='develop'
 
 if [ $(id -u) != "0" ]; then
     echo "You must be the superuser to run this script" >&2
@@ -82,9 +83,9 @@ pip install --upgrade --no-deps https://github.com/woutervanwijk/mopidy-websetti
 cd /opt
 
 # Get the latest stable Pi MusicBox release
-wget https://github.com/woutervanwijk/Pi-MusicBox/archive/master.zip
-unzip master.zip
-rm master.zip
+wget https://github.com/woutervanwijk/Pi-MusicBox/archive/$GITHUB_BRANCH.zip
+unzip $GITHUB_BRANCH.zip
+rm $GITHUB_BRANCH.zip
 cd Pi-MusicBox-master/filechanges
 
 # Copy some files. Backup the old ones if you’re not sure!
