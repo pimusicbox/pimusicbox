@@ -11,6 +11,8 @@ if [ $(id -u) != "0" ]; then
     exit 1
 fi
 
+cd /tmp
+
 # Install the most basic packages we need to continue
 apt-get update && apt-get --yes install sudo wget unzip ntpdate
 
@@ -52,9 +54,9 @@ apt-get --yes --no-install-suggests --no-install-recommends install \
     mopidy-alsamixer mpc ncmpcpp monit upmpdcli
 
 # Install pip and additional python packages
-curl "https://bootstrap.pypa.io/get-pip.py" -o "/tmp/get-pip.py"
-python /tmp/get-pip.py
-pip install requests[security]
+wget -q https://bootstrap.pypa.io/get-pip.py
+python get-pip.py
+pip install --upgrade requests[security]
 pip install mopidy-internetarchive \
             mopidy-local-sqlite \
             mopidy-local-whoosh \
@@ -83,10 +85,10 @@ pip install --upgrade --no-deps https://github.com/woutervanwijk/mopidy-websetti
 cd /opt
 
 # Get the latest stable Pi MusicBox release
-wget https://github.com/woutervanwijk/Pi-MusicBox/archive/$GITHUB_BRANCH.zip
+wget -q https://github.com/woutervanwijk/Pi-MusicBox/archive/$GITHUB_BRANCH.zip
 unzip $GITHUB_BRANCH.zip
 rm $GITHUB_BRANCH.zip
-cd Pi-MusicBox-master/filechanges
+cd Pi-MusicBox-$GITHUB_BRANCH/filechanges
 
 # Copy some files. Backup the old ones if you’re not sure!
 cp boot/config.txt /boot/config.txt
