@@ -92,15 +92,29 @@ chmod u+s /sbin/shutdown
 if [ "$INI__network__wifi_network" != "" ]
 then
     #put wifi settings for wpa roaming
-cat >/etc/wpa.conf <<EOF
-    ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-    update_config=1
-    network={
-        ssid="$INI__network__wifi_network"
-        psk="$INI__network__wifi_password"
-        scan_ssid=1
-    }
+    if [ "$INI__network__wifi_password" != "" ]
+    then
+        cat >/etc/wpa.conf <<EOF
+            ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+            update_config=1
+            network={
+                ssid="$INI__network__wifi_network"
+                psk="$INI__network__wifi_password"
+                scan_ssid=1
+            }
 EOF
+    else
+        #if no password is given, set key_mgmt to NONE
+        cat >/etc/wpa.conf <<EOF
+            ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+            update_config=1
+            network={
+                ssid="$INI__network__wifi_network"
+                key_mgmt=NONE
+                scan_ssid=1
+            }
+EOF
+    fi
 
     #enable wifi
 #    ifdown wlan0
