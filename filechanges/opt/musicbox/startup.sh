@@ -103,7 +103,7 @@ then
                 psk="$INI__network__wifi_password"
                 scan_ssid=1
             }
-        EOF
+EOF
     else
         #if no password is given, set key_mgmt is sat to NONE
         cat >/etc/wpa.conf <<EOF
@@ -114,7 +114,7 @@ then
                 key_mgmt=NONE
                 scan_ssid=1
             }
-        EOF
+EOF
     fi
 
     #enable wifi
