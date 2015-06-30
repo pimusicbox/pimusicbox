@@ -105,12 +105,12 @@ then
             }
         EOF
     else
+        #if no password is given, set key_mgmt is sat to NONE
         cat >/etc/wpa.conf <<EOF
             ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
             update_config=1
             network={
                 ssid="$INI__network__wifi_network"
-                proto=RSN
                 key_mgmt=NONE
                 scan_ssid=1
             }
