@@ -244,13 +244,30 @@ fi
 # renice mopidy to 19, to have less stutter when playing tracks from spotify (at the start of a track)
 renice 19 `pgrep mopidy`
 
-if [ "$INI__musicbox__autoplay" -a "$INI__musicbox__autoplaywait" ]
+if [ "$INI__musicbox__autoplay" -a "$INI__musicbox__autoplaymaxwait" ]
 then
-    log_progress_msg "Waiting $INI__musicbox__autoplaywait seconds before autoplay." "$NAME"
-    sleep $INI__musicbox__autoplaywait
-    log_progress_msg "Playing $INI__musicbox__autoplay" "$NAME"
-    mpc add "$INI__musicbox__autoplay"
-    mpc play
+    if ! [[ $INI__musicbox__autoplaymaxwait =~ ^[0-9]*+$ ]] ; then
+        log_progress_msg "Value specified for 'autoplaymaxwait' is not a number, defaulting to 60" "$NAME"
+        INI__musicbox__autoplaymaxwait=60
+    fi
+    log_progress_msg "Waiting for Mopidy to accept connections..." "$NAME"
+    waittime=0
+    while ! nc -q 1 localhost 6600 </dev/null;
+        do
+            sleep 1;
+            waittime=$((waittime+1));
+            if [ $waittime -gt $INI__musicbox__autoplaymaxwait ]
+                then
+                    log_progress_msg "Timeout waiting for Mopidy to start, aborting" "$NAME"
+                    break;
+            fi
+        done
+    if [ $waittime -le $INI__musicbox__autoplaymaxwait ]
+        then
+            log_progress_msg "Mopidy startup complete, playing $INI__musicbox__autoplay" "$NAME"
+            mpc add "$INI__musicbox__autoplay"
+            mpc play
+    fi
 fi
 
 
