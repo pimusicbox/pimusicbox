@@ -1,6 +1,10 @@
 **Pi MusicBox Changelog**
 -------------------------
 
+v0.7 (UNRELEASED)
+----------------------------------------
+- Add support for equalization via alsaeq
+
 v0.6 (6 april 2015)
 ----------------------------------------
 - Raspberry Pi 2 compatability (using updated kernel)
