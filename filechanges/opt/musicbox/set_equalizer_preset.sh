@@ -16,7 +16,6 @@ set_equalizer_curve() {
 profile="${1:-flat}"
 case "${profile}" in
 flat) curve="65 65 65 65 65 65 65 65 65 65" ;;
-default) curve="66 68 70 68 66 66 64 62 60 58" ;;
 custom) curve=;;
 classical) curve="71 71 71 71 71 71 84 83 83 87" ;;
 club) curve="71 71 67 63 63 63 67 71 71 71" ;;
@@ -27,6 +26,7 @@ treble) curve="87 87 87 78 68 55 47 47 47 45" ;;
 large_hall) curve="56 56 63 63 71 79 79 79 71 71" ;;
 live) curve="79 71 66 64 63 63 66 68 68 69" ;;
 party) curve="61 61 71 71 71 71 71 71 61 61" ;;
+perfect) curve="62 65 68 66 65 64 66 68 70 67" ;;
 pop) curve="74 65 61 60 64 73 75 75 74 74" ;;
 reggae) curve="71 71 72 81 71 62 62 71 71 71" ;;
 rock) curve="58 63 80 84 77 66 58 55 55 55" ;;
