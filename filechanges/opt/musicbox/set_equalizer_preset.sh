@@ -1,4 +1,7 @@
 #!/bin/sh
+#
+# MusicBox equalizer presets script.
+#
 
 set_equalizer_curve() {
   curve="${*}"
