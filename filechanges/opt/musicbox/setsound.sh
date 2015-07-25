@@ -272,4 +272,12 @@ done
 # Set PCM of Pi higher, because it's really quiet otherwise (hardware thing)
 amixer -c 0 set PCM playback 98% > /dev/null 2>&1 || true &
 #amixer -c 0 set PCM playback ${VOLUME}% > /dev/null 2>&1 || true &
+
+
+if [ "$INI__musicbox__equalizer_profile" != "custom" ]
+then
+    echo "Setting equalizer profile to $INI__musicbox__equalizer_profile"
+    sh /opt/musicbox/set_equalizer_preset.sh $INI__musicbox__equalizer_profile"
+fi
+
 log_end_msg
