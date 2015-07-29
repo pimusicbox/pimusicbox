@@ -283,18 +283,16 @@ amixer -c 0 set PCM playback 98% > /dev/null 2>&1 || true &
 
 
 case $INI__musicbox__equalizer_profile in
-    "0" | "custom" | "default")
+    "0" | "custom")
         # don't do anything
+        ;;
+    "default")
+        rm /home/mopidy/.alsaequal.bin
         ;;
     *)
         log_progress_msg "Setting equalizer profile to '$INI__musicbox__equalizer_profile'"
         sh /opt/musicbox/set_equalizer_preset.sh $INI__musicbox__equalizer_profile
         ;;
 esac
-
-if [ "$INI__musicbox__equalizer_profile" == "default" ]
-then
-    rm /home/mopidy/.alsaequal.bin
-fi
 
 log_end_msg
