@@ -281,7 +281,6 @@ done
 amixer -c 0 set PCM playback 98% > /dev/null 2>&1 || true &
 #amixer -c 0 set PCM playback ${VOLUME}% > /dev/null 2>&1 || true &
 
-
 case $INI__musicbox__equalizer_profile in
     "0" | "custom")
         # don't do anything
