@@ -17,6 +17,7 @@ I2S_CARD=
 USB_CARD=
 INT_CARD=
 HDMI_CARD=
+VOLUME=96
 
 function enumerate_alsa_cards()
 {
@@ -124,10 +125,12 @@ case $OUTPUT in
         modprobe snd_soc_hifiberry_dacplus
         enumerate_alsa_cards $OUTPUT
         CARD=$I2S_CARD
+        VOLUME=81
         ;;
     hifiberry_amp)
         modprobe snd_soc_hifiberry_amp
         enumerate_alsa_cards $OUTPUT
+        VOLUME=70
         CARD=$I2S_CARD
         ;;
     iqaudio_dac)
@@ -242,10 +245,9 @@ for CTL in \
     Center
 do
     # Set initial hardware volume
-    amixer set -c $CARD "$CTL" ${INI__audio__mixer_volume}% unmute > /dev/null 2>&1 || true
+    amixer set -c $CARD "$CTL" ${VOLUME}% unmute > /dev/null 2>&1 || true
 done
 
 # Set PCM of Pi higher, because it's really quiet otherwise (hardware thing)
 amixer -c 0 set PCM playback 98% > /dev/null 2>&1 || true &
-#amixer -c 0 set PCM playback ${INI__audio__mixer_volume}% > /dev/null 2>&1 || true &
 log_end_msg
