@@ -171,18 +171,25 @@ fi
 
 log_progress_msg "Line out set to $OUTPUT card $CARD"
 
+log_progress_msg "Generating alsa configuration file..."
+
+if [ "$INI__musicbox__equalizer_profile" == "0" ]
+then
+cat << EOF > /etc/asound.conf
+pcm.!default noequal;
+EOF
+else
+cat << EOF > /etc/asound.conf
+pcm.!default equal;
+EOF
+fi
 if [ "$OUTPUT" == "usb" -a "$INI__musicbox__downsample_usb" == "1" ]
 # resamples to 44K because of problems with some usb-dacs on 48k (probably related to usb drawbacks of Pi)
 # and extra buffer for usb
-#if [ "$OUTPUT" == "usb" ]
 then
-cat << EOF > /etc/asound.conf
-pcm.!default {
-    type plug
-    slave.pcm plugequal;
-}
+cat << EOF >> /etc/asound.conf
 pcm.plugequal {
-    type dmix
+    type equal
     ipc_key 1024
     controls "/home/mopidy/.alsaequal.bin"
     slave.pcm {
@@ -193,22 +200,33 @@ pcm.plugequal {
 #            buffer_size 131072
     }
 }
-ctl.!default {
-    type hw
-    card $CARD
-}
-ctl.equal {
-    type equal;
-    controls "/home/mopidy/.alsaequal.bin"
-}
-pcm.equal {
-    type plug;
-    slave.pcm plugequal;
+pcm.noequal {
+    type dmix
+    ipc_key 1024
+    slave.pcm {
+        "plughw:$CARD,0";
+        rate 44100
+#            period_time 0
+#            period_size 4096
+#            buffer_size 131072
+    }
 }
 EOF
 else
-cat << EOF > /etc/asound.conf
-pcm.!default {
+cat << EOF >> /etc/asound.conf
+pcm.plugequal {
+    type equal;
+    slave.pcm "plughw:$CARD,0";
+    controls "/home/mopidy/.alsaequal.bin"
+}
+pcm.noequal {
+    type hw
+    card $CARD
+}
+EOF
+fi
+cat << EOF >> /etc/asound.conf
+pcm.equal {
     type plug
     slave.pcm plugequal;
 }
@@ -220,17 +238,7 @@ ctl.equal {
     type equal;
     controls "/home/mopidy/.alsaequal.bin"
 }
-pcm.plugequal {
-    type equal;
-    slave.pcm "plughw:$CARD,0";
-    controls "/home/mopidy/.alsaequal.bin"
-}
-pcm.equal {
-    type plug;
-    slave.pcm plugequal;
-}
 EOF
-fi
 
 # Reset mixer
 amixer cset numid=3 0 > /dev/null 2>&1 || true
@@ -274,10 +282,19 @@ amixer -c 0 set PCM playback 98% > /dev/null 2>&1 || true &
 #amixer -c 0 set PCM playback ${VOLUME}% > /dev/null 2>&1 || true &
 
 
-if [ "$INI__musicbox__equalizer_profile" != "custom" ]
+case $INI__musicbox__equalizer_profile in
+    "0" | "custom" | "default")
+        # don't do anything
+        ;;
+    *)
+        log_progress_msg "Setting equalizer profile to '$INI__musicbox__equalizer_profile'"
+        sh /opt/musicbox/set_equalizer_preset.sh $INI__musicbox__equalizer_profile
+        ;;
+esac
+
+if [ "$INI__musicbox__equalizer_profile" == "default" ]
 then
-    echo "Setting equalizer profile to $INI__musicbox__equalizer_profile"
-    sh /opt/musicbox/set_equalizer_preset.sh $INI__musicbox__equalizer_profile
+    rm /home/mopidy/.alsaequal.bin
 fi
 
 log_end_msg
