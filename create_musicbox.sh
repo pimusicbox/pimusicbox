@@ -37,7 +37,7 @@ if [ "$INSTALL_PACKAGES" -eq 1 ]; then
     # Agree to Intel firmware license
     echo firmware-ipw2x00 firmware-ipw2x00/license/accepted boolean true | debconf-set-selections
     # Enable mopidy system service
-    echo mopidy	mopidy/daemon	boolean	true | debconf-set-selections
+    echo mopidy	mopidy/daemon	boolean	false | debconf-set-selections
 
     # Install debian packages
     apt-get update
