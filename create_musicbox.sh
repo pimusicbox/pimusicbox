@@ -6,7 +6,7 @@
 SYSTEM_PASSWORD='musicbox'
 MUSICBOX_BRANCH='develop'
 
-if [ $(id -u) -ne 0 ]; then
+if [ "$(id -u)" -ne 0 ]; then
     echo "You must be the superuser to run this script" >&2
     exit 1
 fi
@@ -25,7 +25,7 @@ if [ "$INSTALL_PACKAGES" -eq 1 ]; then
     # Add additional package repositories
     wget -q -O - http://apt.mopidy.com/mopidy.gpg | apt-key add -
     wget -q -O /etc/apt/sources.list.d/mopidy.list http://apt.mopidy.com/mopidy.list
-    if [ $(lsb_release -c -s) = "wheezy" ]; then
+    if [ "$(lsb_release -c -s)" = wheezy ]; then
         sed -i 's/stable/wheezy/' /etc/apt/sources.list.d/mopidy.list
     fi
     wget -q -O - http://www.lesbonscomptes.com/key/jf@dockes.org.gpg.key | apt-key add -
