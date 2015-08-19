@@ -36,10 +36,9 @@ Project resources
 =================
 
 - `Discussion forum <https://discuss.mopidy.com/c/pi-musicbox>`_
-- `Source code <https://github.com/woutervanwijk/pi-musicbox>`_
-- `Changelog <https://github.com/woutervanwijk/Pi-MusicBox/blob/master/changes.rst>`_
-- `Issue tracker <https://github.com/woutervanwijk/pi-musicbox/issues>`_
-- `Development branch tarball <https://github.com/woutervanwijk/pi-musicbox/archive/master.tar.gz>`_
+- `Source code <https://github.com/pimusicbox/pimusicbox>`_
+- `Changelog <https://github.com/pimusicbox/pimusicbox/blob/master/changes.rst>`_
+- `Issue tracker <https://github.com/pimusicbox/pimusicbox/issues>`_
 
-* Twitter: `@PiMusicBox <https://twitter.com/pimusicbox>`_
-* Facebook: `raspberrypimusicbox <https://www.facebook.com/raspberrypimusicbox>`_
+- Twitter: `@PiMusicBox <https://twitter.com/pimusicbox>`_
+- Facebook: `raspberrypimusicbox <https://www.facebook.com/raspberrypimusicbox>`_
