@@ -1,20 +1,28 @@
 #!/bin/bash
 
 # build your own Pi MusicBox.
-# reeeeeeaaallly alpha. Also see Create Pi MusicBox.rst
 
-SYSTEM_PASSWORD='musicbox'
 MUSICBOX_BRANCH='develop'
-
-if [ "$(id -u)" -ne 0 ]; then
-    echo "You must be the superuser to run this script" >&2
-    exit 1
-fi
 
 if [ "$INSTALL_PACKAGES" -eq 1 ]; then
     
+    if [ $(id -u) -ne 0 ]; then
+        printf "You must be the superuser to run this script\n"
+        exit 1
+    fi
+    
+    # Prevent services from starting
+    cat > /usr/sbin/policy-rc.d << EOF
+#!/bin/sh
+exit 101
+EOF
+    chmod a+x /usr/sbin/policy-rc.d
+
     # Install the most basic packages we need to continue
     apt-get update && apt-get --yes install sudo wget unzip ntpdate lsb-release
+
+    # Remove big packages we don't want and save some space
+    apt-get -yes remove --purge wolfram-engine sonic-pi
 
     # Update the distribution to get latest fixes for audio and usb-issues
     apt-get dist-upgrade -y
@@ -30,9 +38,9 @@ if [ "$INSTALL_PACKAGES" -eq 1 ]; then
     fi
     wget -q -O - http://www.lesbonscomptes.com/key/jf@dockes.org.gpg.key | apt-key add -
     cat << EOF > /etc/apt/sources.list.d/upmpdcli.list
-    deb http://www.lesbonscomptes.com/upmpdcli/downloads/debian/ unstable main
-    deb-src http://www.lesbonscomptes.com/upmpdcli/downloads/debian/ unstable main
-    EOF
+deb http://www.lesbonscomptes.com/upmpdcli/downloads/debian/ unstable main
+deb-src http://www.lesbonscomptes.com/upmpdcli/downloads/debian/ unstable main
+EOF
 
     # Agree to Intel firmware license
     echo firmware-ipw2x00 firmware-ipw2x00/license/accepted boolean true | debconf-set-selections
@@ -97,6 +105,7 @@ if [ "$INSTALL_PACKAGES" -eq 1 ]; then
     # Cleanup
     apt-get -y autoremove
     apt-get -y autoclean
+    rm /usr/sbin/policy-rc.d
 
     # Set the system password
     echo "pi:musicbox" | chpasswd
@@ -106,7 +115,7 @@ if [ "$INSTALL_CONFIG" -eq 1 ]; then
     cd "${ROOTDIR}/tmp"
 
     # Download Pi MusicBox files if not already available.
-    if [ ! -d "${ROOTDIR}/tmp/Pi-MusicBox" ]; then
+    if [ ! -d "${ROOTDIR}/tmp/pimusicbox" ]; then
         wget -q https://github.com/woutervanwijk/Pi-MusicBox/archive/${MUSICBOX_BRANCH}.zip 
         unzip -- "${MUSICBOX_BRANCH}.zip"
         rm -- "${MUSICBOX_BRANCH}.zip"
@@ -116,16 +125,18 @@ if [ "$INSTALL_CONFIG" -eq 1 ]; then
     cd filechanges
     # Copy some files. Backup the old ones if you’re not sure!
     cp -- boot/config.txt "${BOOTDIR}/boot/config.txt"
-    cp -R --  boot/config "${BOOTDIR}/boot/"
-    cp -R -- opt/* "${ROOTDIR}/opt"
+    cp -R -- boot/config "${BOOTDIR}/boot/"
+    cp -R -- opt/* "${ROOTDIR}/opt/"
+    #Make the system work:
+    #cp -R -- etc/* "${ROOTDIR}/etc/"
 
     chmod +x "${ROOTDIR}/etc/network/if-up.d/iptables"
     chown root:root "${ROOTDIR}/etc/firewall/musicbox_iptables"
     chmod 600 "${ROOTDIR}/etc/firewall/musicbox_iptables"
 
     # Link the user-configurable files in /boot/config
-    ln -fsn /boot/config/streamuris.js "${ROOTDIR}/usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static/js/streamuris.js"
-    ln -fsn /boot/config/settings.ini "${ROOTDIR}/etc/mopidy/mopidy.conf"
+    ln -fsn "${BOOTDIR}/boot/config/streamuris.js" "${ROOTDIR}/usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static/js/streamuris.js"
+    ln -fsn "${BOOTDIR}/boot/config/settings.ini" "${ROOTDIR}/etc/mopidy/mopidy.conf"
 
     #Let everyone shutdown the system (to support it from the webclient):
     chmod u+s "${ROOTDIR}/sbin/shutdown"
@@ -141,7 +152,5 @@ if [ "$INSTALL_CONFIG" -eq 1 ]; then
     #It's tricky to get good sound out of the Pi. For USB Audio (sound cards, etc),
     # it is essential to disable the so called FIQ_SPLIT. Why? It seems that audio
     # at high bitrates interferes with the ethernet activity, which also runs over USB.
-    sed -i '1s/^/dwc_otg.fiq_fix_enable=1 dwc_otg.fiq_split_enable=0 smsc95xx.turbo_mode=N /' /boot/cmdline.txt
+    sed -i '1s/^/dwc_otg.fiq_fix_enable=1 dwc_otg.fiq_split_enable=0 smsc95xx.turbo_mode=N /' "${BOOTDIR}/boot/cmdline.txt"
 fi
-
-#other options to be done by hand. Won't do it automatically on a running system
