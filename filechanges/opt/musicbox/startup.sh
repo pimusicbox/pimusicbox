@@ -44,7 +44,7 @@ then
     #set resize_once=false in ini file
     sed -i -e "/^\[musicbox\]/,/^\[.*\]/ s|^\(resize_once[ \t]*=[ \t]*\).*$|\1false\r|" $CONFIG_FILE
     log_progress_msg "Initalizing resize..." "$NAME"
-    sh /opt/musicbox/resizefs.sh -y
+    `raspi-config --expand-rootfs`
     REBOOT=1
 fi
 
@@ -71,8 +71,8 @@ fi
 
 if [ "$REBOOT" == 1 ]
 then
+    sync
     reboot
-    exit
 fi
 
 log_progress_msg "MusicBox name is $CLEAN_NAME" "$NAME"
