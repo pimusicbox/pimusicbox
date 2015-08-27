@@ -3,7 +3,7 @@
 
 .. toctree::
    :caption: Usage
-   :maxdepth: 1
+   :maxdepth: 2
 
    manual-0.4
    faq
