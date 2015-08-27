@@ -79,7 +79,7 @@ You can by the way also edit this file when you boot your Pi and you login (see
 :ref:`manual-hands-dirty`). The file then is located in :file:`/boot/config/`.
 
 Basic Configuration
-===================
+-------------------
 
 The most basic configuration file looks like this::
 
