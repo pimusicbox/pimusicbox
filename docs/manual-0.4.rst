@@ -76,7 +76,7 @@ also commented out. If you want to use them, remove the # at the beginning of
 the line.
 
 You can by the way also edit this file when you boot your Pi and you login (see
-Getting your Hands Dirty). The file then is located in :file:`/boot/config/`.
+:ref:`manual-hands-dirty`). The file then is located in :file:`/boot/config/`.
 
 Basic Configuration
 ===================
@@ -94,13 +94,13 @@ account and ``spotifypassword`` is of course your own password.  This should be
 enough to run Pi MusicBox.
 
 Networking
-==========
+----------
 
 Pi MusicBox needs a network connection to operate. If you use a wired network,
 you only have to plug in the network cable in the Pi. It will be configured
 using DHCP. If you want to use a static address, you need to get into the
-console and configure it yourself (see Getting your hands dirty). Connecting
-through Wifi using a dongle is also supported (more information on that below).
+console and configure it yourself (see :ref:`manual-hands-dirty`). Connecting
+through Wifi using a dongle is also supported (see :ref:`manual-wifi`).
 
 Booting
 =======
@@ -195,8 +195,10 @@ More settings
 A lot of things can be configured on Music Box. Edit the configuration file
 according to your needs. You have to reboot the Box to see the changes.
 
+.. _manual-wifi:
+
 Wifi Network
-============
+------------
 
 If you connect a supported wifi dongle to your Pi, the MusicBox software should
 be able to detect and use it instead of a cable connection. Most dongles are
@@ -213,10 +215,10 @@ Substitute the ``mywifinetwork`` and ``mypassword`` with the correct values of
 your own network. For now, the wifi on Pi MusicBox only supports WPA(2)
 encrypted networks, configured via DHCP. As with a wired network, if you want
 to use a static address, WEP encryption or no encryption, you need to get into
-the console and configure it yourself (see Getting your hands dirty).
+the console and configure it yourself (see :ref:`manual-hands-dirty`).
 
 Better Quality
-==============
+--------------
 
 The Pi can play the music from Spotify in different types of quality. The
 better the quality, the more data needs to be downloaded from Spotify. It's
@@ -237,7 +239,7 @@ Or set the bitrate to low like this::
     SPOTIFY_BITRATE = 96
 
 Sound Configuration
-===================
+-------------------
 
 By default Pi MusicBox will send the sound to the analog headphone output on
 the Pi. This sound is good enough, but due to hardware constraints, not always
@@ -262,7 +264,7 @@ the Pi, even if you connected an USB device or an HDMI cable.
 The options are: ``analog``, ``hdmi``, ``usb``
 
 Last FM
-=======
+-------
 
 Another service supported by Pi MusicBox is Last FM. It collects the tracks you
 play, so you can discover new music. Go to http://www.last.fm/ to create an
@@ -273,7 +275,7 @@ play, fill in the credentials of this service::
     LASTFM_PASSWORD = 'lastfmpassword'
 
 SoundCloud
-==========
+----------
 
 Another service supported by Pi MusicBox is SoundCloud, the service which lets
 you “Hear the world's sounds”. To configure it, you need a special ID, a token.
@@ -290,7 +292,7 @@ Where you replace the example ``1 111 111111`` by your token. Using the
 to see in the interface.
 
 Multi Room Audio
-================
+----------------
 
 Pi MusicBox supports so called Multi Room Audio. You can have multiple
 Raspberry's on your network, for example in different rooms. The devices need
@@ -314,7 +316,7 @@ Spotify account at the same time. This is a limitation of Spotify. If you have
 multiple accounts, it of course is possible.
 
 Security
-========
+--------
 
 Pi MusicBox is not totally secure and not intended to run outside a firewall,
 only in the cosy environment of your local network. The heart of MusicBox, is
@@ -348,7 +350,7 @@ easily available in the webinterface. They are not in the playlists, you have
 to search for them to play them.
 
 Networked Music
-===============
+---------------
 
 The easiest way to play your own music files, is via the Windows Network. To do
 that, edit the configuration file, so that MusicBox knows where your files are.
@@ -371,7 +373,7 @@ the Network share using the following configuration lines::
     NETWORK_MOUNT_PASSWORD = 'password'
 
 Scan Music
-==========
+----------
 
 MusicBox will not see the files immediately. The music files needs to be
 scanned at boot, every time you add or remove files. This process can slowdown
@@ -392,7 +394,7 @@ boot. But, again, the scanning process can slowdown the booting of MusicBox
 considerably.
 
 Local Music
-===========
+-----------
 
 Pi MusicBox also has an option to store music files on the SD Card. This
 process is also a bit more complicated. Since MusicBox is created for a 1GB SD
@@ -413,7 +415,7 @@ filesystem to the maximum size of the SD Card::
     RESIZE_ONCE = 'true'
 
 Put Files on the Card
-=====================
+---------------------
 
 Putting music files on the SD Card is only recommended on cards with a size
 larger than 1GB. MusicBox needs the 1GB for caching and other storage. After
@@ -428,6 +430,9 @@ have to change it by hand in the file :file:`/etc/samba/smb.conf` (see Getting
 Your Hands Dirty). Remember to let MusicBox scan the files at boot (see Scan
 Music)
 
+
+.. _manual-hands-dirty:
+
 Getting Your Hands Dirty
 ========================
 
@@ -441,7 +446,7 @@ service. Do that by adding this line to your configuration file::
 Reboot. After that, you can connect to MusicBox via SSH.
 
 Mopidy
-======
+------
 
 The main ingredient of MusicBox is Mopidy, an open source music server
 developed by people from all over the world. It can be extended in a number of
@@ -456,7 +461,7 @@ https://groups.google.com/forum/?fromgroups=#!forum/mopidy, or via IRC Chat on
 the #mopidy channel on Freenode.
 
 rc.local
-========
+--------
 
 Another important piece of Pi MusicBox is the file :file:`/etc/rc.local`. It's
 a shell script. This is where the (sound) hardware is setup and the
@@ -465,7 +470,7 @@ from :file:`rc.local`. Edit this file is you want to add, change or remove
 features.
 
 Working at Midnight
-===================
+-------------------
 
 For Linux novices, a nice utility called Midnight Commander could be of use to
 browse the filesystem and edit files. It works like the age old DOS utility
@@ -474,7 +479,7 @@ Norton Commander and it's included in MusicBox. Start it using the command::
     mc
 
 Static Network
-==============
+--------------
 
 To use MusicBox in a network with static IP addresses, you have to edit the
 file :file:`/etc/network/interfaces`.
@@ -495,7 +500,7 @@ like this::
 Fill in the correct ip addresses for your network.
 
 Updating
-========
+--------
 
 When a new version of MusicBox is released, the only way to update it, is to do
 a new installation. You can update the kernel and other packages of the system
