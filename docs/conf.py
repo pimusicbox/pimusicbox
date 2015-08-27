@@ -15,6 +15,7 @@
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.extlinks',
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
 ]
@@ -342,5 +343,21 @@ epub_exclude_files = ['search.html']
 #epub_use_index = True
 
 
+# -- Options for intersphinx extension ----------------------------------------
+
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/': None}
+intersphinx_mapping = {
+    'https://docs.python.org/': None,
+}
+
+
+# -- Options for extlink extension --------------------------------------------
+
+extlinks = {
+    'pimusicbox': (
+        'https://github.com/pimusicbox/pimusicbox/issues/%s', 'pimusicbox#'),
+    'mopidy': (
+        'https://github.com/mopidy/mopidy/issues/%s', 'mopidy#'),
+    'discuss': (
+        'https://discuss.mopidy.com/t/%s', 'discuss.mopidy.com/t/'),
+}

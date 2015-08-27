@@ -18,7 +18,7 @@ What were the login credentials again? I forgot them...
     Username: ``root``, password: ``musicbox``
 
 Is there a way to upgrade the music box image, or is the only solution to use
-the whole new image? 
+the whole new image?
 
     For now, there is no real upgrade path, and the only way to upgrade is to
     simply download the newest image. You could copy over your
@@ -35,7 +35,7 @@ Can I use Spotify Connect?
     No, sorry. Spotify has not released the API.
 
 I upgraded my Musicbox with apt-get, now I'm having issues. Can you advise me
-on what to do? 
+on what to do?
 
     We would advise you not to upgrade your Raspbian unless it is absolutely
     necessary, as it tends to cause breakage.
@@ -67,7 +67,7 @@ Can i access the Pi via terminal/command line remotely?
 
 Where can I find the hardcore technical info in Musicbox?
 
-    https://github.com/pimusicbox/pimusicbox 
+    https://github.com/pimusicbox/pimusicbox
 
 How do i make (insert wifi dongle name here) work with the Musicbox?
 
@@ -101,11 +101,12 @@ Can I stream Spotify to several different Musicboxes at once?
     But perhaps if we get around to implementing the streaming from Musicbox to
     Musicbox, it may become possible.
 
-Can I get the Musicbox to auto-start playing a playlist or radio station upon bootup ? 
+Can I get the Musicbox to auto-start playing a playlist or radio station upon
+bootup?
 
     Yes, use the settings page!
 
 Will you add WiMP support?
 
     WiMP support in MusicBox depends on WiMP support in Mopidy. The story of
-    that can be read at https://github.com/mopidy/mopidy/issues/48. 
+    that can be read at :mopidy:`48`.
