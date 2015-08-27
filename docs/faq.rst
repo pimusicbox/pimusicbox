@@ -7,7 +7,7 @@ Frequently Asked Questions
 Where can I ask questions and get support?
 
     You can discuss features and problems on the `forum
-    <https://discuss.mopidy.com/>__. Please report bugs about MusicBox itself
+    <https://discuss.mopidy.com/>`__. Please report bugs about MusicBox itself
     at `the repo at Github <https://github.com/pimusicbox/pimusicbox>`__. You
     can also try the #mopidy channel on `Freenode
     <https://www.freenode.net/>`_, or the `Raspberry Pi forums
