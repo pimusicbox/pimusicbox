@@ -6,4 +6,5 @@ Pi MusicBox
 
    manual-0.4
    faq
+   changes
    authors
