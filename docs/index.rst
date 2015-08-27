@@ -1,10 +1,16 @@
-Pi MusicBox
-===========
+.. include:: ../README.rst
+
 
 .. toctree::
-   :maxdepth: 2
+   :caption: Usage
+   :maxdepth: 1
 
    manual-0.4
    faq
-   changes
+
+.. toctree::
+   :caption: About
+   :maxdepth: 1
+
    authors
+   changes
