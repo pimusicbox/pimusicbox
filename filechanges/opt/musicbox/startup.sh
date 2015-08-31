@@ -86,9 +86,6 @@ then
     sed -i -e "/^\[musicbox\]/,/^\[.*\]/ s|^\(root_password[ \t]*=[ \t]*\).*$|\1\r|" $CONFIG_FILE
 fi
 
-#allow shutdown for all users
-chmod u+s /sbin/shutdown
-
 if [ "$INI__network__wifi_network" != "" ]
 then
     #put wifi settings for wpa roaming
