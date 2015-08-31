@@ -45,6 +45,7 @@ do_start()
         --chuid $DAEMON_USER:$DAEMON_GROUP --background --make-pidfile \
         --startas $DAEMON -- $DAEMON_ARGS \
         || return 2
+#    renice 19 `pgrep mopidy`
 }
 
 do_stop()
