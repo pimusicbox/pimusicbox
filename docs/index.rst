@@ -7,6 +7,7 @@
 
    manual-0.4
    faq
+   upgrading
 
 .. toctree::
    :caption: About
