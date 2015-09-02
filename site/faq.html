@@ -75,15 +75,20 @@ music box image, or is the only solution to use the whole new image?
 <span style="font-weight: bold;">A</span> <span style="font-weight: bold;">:</span> For now, there is
 no real upgrade path, and the only way to upgrade is to simply download
 the newest image.<br/>
-You could save your .ini and copy/paste settings to the new image.
+You could copy over your settings.ini and streamuris.js config files to the new image.
 <br>
 <div class="fadedline"></div>
 <span style="font-weight: bold;">Q</span> <span style="font-weight: bold;">:</span> <span style="font-weight: bold;">
-Can i use the free version of
+Can I use the free version of
 Spotify ? </span><br/><span style="font-weight: bold;">A</span>
-<span style="font-weight: bold;">:</span> No,
-sorry. Spotify does not allow free users to stream to third
-party clients.
+<span style="font-weight: bold;">:</span> No, 
+sorry. Spotify does not allow free users to stream to third party clients.
+<br>
+<div class="fadedline"></div>
+<span style="font-weight: bold;">Q</span> <span style="font-weight: bold;">:</span> <span style="font-weight: bold;">
+Can I use Spotify Connect ?</span><br/><span style="font-weight: bold;">A</span>
+<span style="font-weight: bold;">:</span> No, 
+sorry. Spotify has not released the API.
 <br>
 <div class="fadedline"></div>
 <span style="font-weight: bold;">Q</span> <span style="font-weight: bold;">:</span><span style="font-weight: bold;"> I upgraded
@@ -92,19 +97,13 @@ Can you advise me on what to do ?
 </span><br>
 <span style="font-weight: bold;">A</span> <span style="font-weight: bold;">:</span> I would
 advise you not to upgrade your Raspbian unless it is absolutely
-necessary, as
-it tends to cause breakage.<br>
+necessary, as it tends to cause breakage.<br>
 <div class="fadedline"></div>
-<span style="font-weight: bold;">Q</span> <span style="font-weight: bold;">:</span> <span style="font-weight: bold;">Can i change
-the standard radio
-station list ?
+<span style="font-weight: bold;">Q</span> <span style="font-weight: bold;">:</span> <span style="font-weight: bold;">
+Can I change the standard radio station list ?
 </span><br>
 <span style="font-weight: bold;">A :</span> Yes. <br>
-Currently the list is stored in
-/opt/defaultwebclient/js/functionsvars.js <br>
-(or opt\flatclient\js\functionsvars.js if accessing from a windows
-box),<br>
-which you can edit by hand with with any text editor.<br>
+Currently the list is stored in /boot/config/streamuris.js which you can edit by hand with any text editor.<br>
 You can also use any of the popular MPD clients on your phone/pc/mac, most of them have the option of storing playlists and radio stations locally. See <a href="http://mpd.wikia.com/wiki/Clients">http://mpd.wikia.com/wiki/Clients</a> for a suggested client list.
 <br>
 <div class="fadedline"></div>
@@ -112,8 +111,8 @@ You can also use any of the popular MPD clients on your phone/pc/mac, most of th
 Spotify radio ?
 </span><br>
 <span style="font-weight: bold;">B :</span>
-unfortunately Spotify's current libSpotify SDK does not support that
-function, if they implement it i'll try and include it.
+Unfortunately Spotify's current libSpotify SDK does not support that
+function, if they implement it I'll try and include it.
 <br>
 <div class="fadedline"></div>
 <span style="font-weight: bold;">Q :</span> <span style="font-weight: bold;">Can I
@@ -127,17 +126,17 @@ Output through i2s.
 <span style="font-weight: bold;">Q :</span> <span style="font-weight: bold;">Can I have
 several Musicboxes stream content to one another ? </span><br>
 <span style="font-weight: bold;">A :</span> Not yet,
-but i'm hoping to get it implemented one day.
+but I'm hoping to get it implemented one day.
 <br>
 <div class="fadedline"></div>
 <span style="font-weight: bold;">Q :</span> <span style="font-weight: bold;">Can i
 access the Pi via terminal/command line remotely ?
 </span><br>
 <span style="font-weight: bold;">A :</span> Yes,
-simply allow SSH in the Pi's .ini file.
+simply allow SSH in Pi Musicbox's settings.ini file.
 <br>
 <div class="fadedline"></div>
-<span style="font-weight: bold;">Q :</span> <span style="font-weight: bold;">Where can i
+<span style="font-weight: bold;">Q :</span> <span style="font-weight: bold;">Where can I
 find the hardcore technical info in Musicbox ?
 </span><br>
 <span style="font-weight: bold;">A :</span>
@@ -164,13 +163,13 @@ I may implement this if i ever have enough
 time, as it is a complicated project to get it working.
 <br>
 <div class="fadedline"></div>
-<span style="font-weight: bold;">Q :</span> <span style="font-weight: bold;">Can i edit my Spotify playlists
+<span style="font-weight: bold;">Q :</span> <span style="font-weight: bold;">Can I edit my Spotify playlists
 from the Musicbox ?</span><br>
 <span style="font-weight: bold;">A :</span> Once it
 is implemented in Mopidy, you'll be able to.
 <br>
 <div class="fadedline"></div>
-<span style="font-weight: bold;">Q :</span> <span style="font-weight: bold;">can i run the
+<span style="font-weight: bold;">Q :</span> <span style="font-weight: bold;">can I run the
 Musicbox output to
 several devices via a
 multi-channel USB audio device ?
@@ -184,9 +183,8 @@ list, sorry.
 <span style="font-weight: bold;">Q :</span> <span style="font-weight: bold;">Is there a
 support forum where i can ask in-depth questions ?
 </span><br>
-<span style="font-weight: bold;">A :</span> No,
-sorry, just Twitter and Facebook, as i don't &nbsp;have time for
-full-time support.<br>
+<span style="font-weight: bold;">A :</span> Yes, 
+<a href="https://discuss.mopidy.com/c/pi-musicbox">https://discuss.mopidy.com/c/pi-musicbox</a><br>
 <div class="fadedline"></div>
 <span style="font-weight: bold;">Q :</span> <span style="font-weight: bold;">Can i stream Spotify to several
 different Musicboxes at once ?</span>
@@ -195,14 +193,12 @@ different Musicboxes at once ?</span>
 this
 is a Spotify limitation.
 <br>
-But perhaps if i get around to implementing the streaming from Musicbox
+But perhaps if I get around to implementing the streaming from Musicbox
 to Musicbox, it may become possible.
 <br>
 <div class="fadedline"></div>
-<span style="font-weight: bold;">Q :</span> <span style="font-weight: bold;">Can i get the
-Musicbox to
-auto-start playing a playlist or
-radiostation upon bootup ?
+<span style="font-weight: bold;">Q :</span> <span style="font-weight: bold;">Can I get the
+Musicbox to auto-start playing a playlist or radio station upon bootup ?
 </span><br>
 <span style="font-weight: bold;">A :</span> Yes, use the settings page!
 <div class="fadedline"></div>

@@ -3,12 +3,13 @@
 # This file contains the names of kernel modules that should be loaded
 # at boot time, one per line. Lines beginning with "#" are ignored.
 # Parameters can be specified after the module name.
+
 snd_bcm2835
 snd_soc_bcm2708_i2s
 bcm2708_dmaengine
-snd_soc_pcm5102a
-snd_soc_hifiberry_dac
+
 ipv6
 bcm2708_wdog
-snd_soc_hifiberry_digi
+
+#8188eu
 #8192cu
