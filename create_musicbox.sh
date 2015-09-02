@@ -153,6 +153,11 @@ cp -R -- "${PIMUSICBOX_FILES}"/boot/config /boot/
 cp -R -- "${PIMUSICBOX_FILES}"/opt/* /opt/
 cp -R -- "${PIMUSICBOX_FILES}"/etc/* /etc/
 
+# Enable our init scripts
+# TODO: Use sysv-rc-conf instead?
+update-rc.d musicbox defaults
+update-rc.d musicbox enable
+
 chmod +x /etc/network/if-up.d/iptables
 #chown root:root /etc/firewall/musicbox_iptables
 chmod 600 /etc/firewall/musicbox_iptables

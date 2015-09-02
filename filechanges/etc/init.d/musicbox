@@ -1,0 +1,62 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          musicbox-init
+# Required-Start:    $network $remote_fs
+# Required-Stop:
+# Should-Start:      $named alsa-utils samba
+# Should-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# X-Start-Before:    monit
+# Short-Description: Initialise musicbox.
+### END INIT INFO
+
+NAME="musicbox"
+DESC="PiMusicBox"
+RUNSCRIPT=/opt/$NAME/startup.sh
+
+# Gracefully exit if startup script has been removed.
+test -x $RUNSCRIPT || exit 0
+
+# Read configuration variable file if present
+[ -r /etc/default/$NAME ] && . /etc/default/$NAME
+
+. /lib/lsb/init-functions
+
+. /opt/$NAME/startup.sh
+
+musicbox_start()
+{
+    start_platform_pre
+    start_generic
+    start_platform_post
+}
+musicbox_stop()
+{
+    sync_working_config
+}
+
+case "$1" in
+    start)
+        log_daemon_msg "Initialising $DESC..." "$NAME"
+        musicbox_start
+        log_end_msg $?
+        ;;
+    reload|restart|force-reload)
+        log_daemon_msg "Reloading $DESC..." "$NAME"
+        musicbox_stop
+        musicbox_start
+        log_end_msg $?
+    stop)
+        log_daemon_msg "Stopping $DESC..." "$NAME"
+        musicbox_stop
+        log_end_msg $?
+        ;;
+    *)
+        echo 'Usage: $0 {start|stop|restart|reload|force-reload}'
+        exit 1
+        ;;
+esac
+
+:
