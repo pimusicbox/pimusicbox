@@ -52,7 +52,8 @@ apt-get update && apt-get --yes install sudo wget unzip ntpdate lsb-release
 # Update time, to prevent update problems
 ntpdate -u ntp.ubuntu.com
 
-# Remove big packages we don't want and save some space
+# Remove big packages we don't want and save some space.
+# + dhcpcd5 conflicts with our networking.
 apt-get --yes remove --purge wolfram-engine sonic-pi dhcpcd5
 
 # Update the distribution to get latest fixes for audio and usb-issues
@@ -162,14 +163,17 @@ chmod +x /etc/network/if-up.d/iptables
 #chown root:root /etc/firewall/musicbox_iptables
 chmod 600 /etc/firewall/musicbox_iptables
 
+printf "\n ** Performing raspberry pi specific fixes/optimisations...\n"
+
 # Link the user-configurable files in /boot/config
 ln -fsn /boot/config/streamuris.js /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static/js/streamuris.js
 ln -fsn /boot/config/settings.ini /etc/mopidy/mopidy.conf
 
 # Update the mount options so anyone can mount the boot partition and give everyone all permissions.
-#sed -i '/mmcblk0p1\s\+\/boot\s\+vfat/ s/defaults /defaults,user,umask=000/' "${ROOTDIR}/etc/fstab"
+sed -i '/mmcblk0p1\s\+\/boot\s\+vfat/ s/defaults /defaults,user,umask=000/' /etc/fstab
 
-printf "\n ** Enabling raspberry pi fixes/optimisations...\n"
+# Disable swap
+dphys-swapfile swapoff
 
 #For the music to play without cracks, you have to optimize your system a bit.
 #For MusicBox, these are the optimizations:
