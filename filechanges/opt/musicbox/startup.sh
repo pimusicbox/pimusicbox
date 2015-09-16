@@ -3,14 +3,10 @@
 # MusicBox startup script
 #
 
-PLATFORM_CONFIG=/var/lib/$NAME/$NAME.conf
-WORKING_CONFIG=/tmp/settings.ini
-READ_FILE=/tmp/read.ini
-
-
-start_platform_pre()
+pre_init()
 {
-    PLATFORM_CONFIG=/boot/config/settings.ini
+    # Raspberry Pi specific pre-initilisation
+    USER_CONFIG=/boot/config/settings.ini
 
     SYS_CPUFREQ_GOVERNOR=/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
     if [ -e $SYS_CPUFREQ_GOVERNOR ]; then
@@ -20,7 +16,7 @@ start_platform_pre()
 }
 
 
-start_platform_post()
+post_init()
 {
     # check and clean dirty bit of vfat partition if not safely removed
     fsck /dev/mmcblk0p1 -v -a -w -p > /dev/null 2>&1 || true
@@ -28,39 +24,35 @@ start_platform_post()
 
 
 sync_working_config() {
-    # Update platform config from working config.
-    mv $WORKING_CONFIG $PLATFORM_CONFIG || true
+    # Update user's config from current working config.
+    mv $TMP_CONFIG $USER_CONFIG || true
 }
 
-
-start_generic()
+init()
 {
+    REBOOT=0
+    TMP_CONFIG=/tmp/settings.ini
+    READ_CONFIG=/tmp/read.ini
     #log_use_fancy_output
 
-    cp $PLATFORM_CONFIG $WORKING_CONFIG 
+    cp $USER_CONFIG $TMP_CONFIG
 
     # convert windows ini to unix
-    dos2unix -n $WORKING_CONFIG $READ_FILE > /dev/null 2>&1 || true
+    dos2unix -n $TMP_CONFIG $READ_CONFIG > /dev/null 2>&1 || true
 
     # import ini parser
     . /opt/$NAME/read_ini.sh
-
     #declare $INI before reading ini https://github.com/rudimeier/bash_ini_parser/issues/2
     unset INI
     declare -A INI
-
-    # ini vars to mopidy settings
-    read_ini $READ_FILE
-    rm $READ_FILE
-
+    read_ini $READ_CONFIG
+    rm $READ_CONFIG
     INI_READ=true
-
-    REBOOT=0
 
     if [ "$INI__musicbox__resize_once" == "1" ]
     then
         #set resize_once=false in ini file
-        sed -i -e "/^\[musicbox\]/,/^\[.*\]/ s|^\(resize_once[ \t]*=[ \t]*\).*$|\1false\r|" $WORKING_CONFIG
+        sed -i -e "/^\[musicbox\]/,/^\[.*\]/ s|^\(resize_once[ \t]*=[ \t]*\).*$|\1false\r|" $TMP_CONFIG
         log_progress_msg "Resizing filesystem to full size..." "$NAME"
         raspi-config --expand-rootfs
         REBOOT=1
@@ -93,7 +85,7 @@ start_generic()
         log_progress_msg "Setting root user Password" "$NAME"
         echo "root:$INI__musicbox__root_password" | chpasswd
         #remove password
-        sed -i -e "/^\[musicbox\]/,/^\[.*\]/ s|^\(root_password[ \t]*=[ \t]*\).*$|\1\r|" $WORKING_CONFIG
+        sed -i -e "/^\[musicbox\]/,/^\[.*\]/ s|^\(root_password[ \t]*=[ \t]*\).*$|\1\r|" $TMP_CONFIG
     fi
 
     if [ "$REBOOT" == 1 ]
@@ -225,10 +217,10 @@ EOF
     fi
 
     # scan local music files once
-    if [ "$INI__musicbox__scan_once" == "1" ]
+    if [ "$INI__musicbox__scan_once" == "1" ]TMP_CONFIG
     then
         #set SCAN_ONCE = false
-        sed -i -e "/^\[musicbox\]/,/^\[.*\]/ s|^\(scan_once[ \t]*=[ \t]*\).*$|\1false\r|" $WORKING_CONFIG
+        sed -i -e "/^\[musicbox\]/,/^\[.*\]/ s|^\(scan_once[ \t]*=[ \t]*\).*$|\1false\r|" $TMP_CONFIG
     fi
 
     # scan local/networked music files if setting is true

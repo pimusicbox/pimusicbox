@@ -16,6 +16,10 @@ NAME="musicbox"
 DESC="PiMusicBox"
 RUNSCRIPT=/opt/$NAME/startup.sh
 
+USER_CONFIG=/etc/$NAME/$NAME.conf
+CURRENT_CONFIG=/opt/$NAME/current.conf
+DEFAULT_CONFIG=/opt/$NAME/default.conf
+
 # Gracefully exit if startup script has been removed.
 test -x $RUNSCRIPT || exit 0
 
@@ -26,31 +30,32 @@ test -x $RUNSCRIPT || exit 0
 
 . /opt/$NAME/startup.sh
 
-musicbox_start()
+do_start()
 {
-    start_platform_pre
-    start_generic
-    start_platform_post
+    pre_init
+    init
+    post_init
 }
-musicbox_stop()
+
+do_stop()
 {
-    sync_working_config
+    true
 }
 
 case "$1" in
     start)
-        log_daemon_msg "Initialising $DESC..." "$NAME"
-        musicbox_start
+        log_daemon_msg "Starting $DESC..."
+        do_start
         log_end_msg $?
         ;;
     reload|restart|force-reload)
-        log_daemon_msg "Reloading $DESC..." "$NAME"
-        musicbox_stop
-        musicbox_start
+        log_daemon_msg "Reloading $DESC..."
+        do_start
+        do_stop
         log_end_msg $?
     stop)
-        log_daemon_msg "Stopping $DESC..." "$NAME"
-        musicbox_stop
+        log_daemon_msg "Stopping $DESC..."
+        do_stop
         log_end_msg $?
         ;;
     *)
