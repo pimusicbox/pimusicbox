@@ -3,14 +3,9 @@
 # MusicBox Sound configuration script
 #
 
-CONFIG_FILE=/boot/config/settings.ini
+. /opt/musicbox/helpers.sh
 
-# Define LSB log_* functions.
-. /lib/lsb/init-functions
-
-log_use_fancy_output
-
-log_begin_msg "Setting sound configuration..."
+log_action_msg "Setting sound configuration.."
 rm -f /etc/asound.conf
 
 I2S_CARD=
@@ -51,9 +46,11 @@ function enumerate_alsa_cards()
         if [[ $name == "bcm2835" ]]; then
             INT_CARD=$card_num
             log_progress_msg "Found internal device: card$INT_CARD"
-            if tvservice -s | grep -q HDMI; then
-                echo "HDMI output connected"
+            if [[ $line =~ "hdmi" ]] && tvservice -s | grep -q HDMI; then
+                log_progress_msg "(HDMI)"
                 HDMI_CARD=$card_num
+            elif [[ ! $line =~ "hdmi" ]]; then
+                log_progress_msg "(analog)"
             fi
         elif [[ $i2s_NAME && $name == *"$i2s_NAME" ]]; then
             I2S_CARD=$card_num
@@ -65,25 +62,13 @@ function enumerate_alsa_cards()
             UNKNOWN_CARD=$card_num
             log_progress_msg "Found unknown device: card$UNKNOWN_CARD"
         fi
+        echo
     done < <(aplay -l | grep card)
     # No usb card found, assume anything unknown is actually a usb card.
     [[ -z $USB_CARD ]] && USB_CARD=$UNKNOWN_CARD
 }
 
-if [[ $INI_READ != true ]] 
-then
-    echo "read ini"
-    # Import ini parser
-    . /opt/musicbox/read_ini.sh
-
-    # Convert windows ini to unix
-    dos2unix -n $CONFIG_FILE /tmp/settings.ini > /dev/null 2>&1 || true
-
-    # ini vars to mopidy settings
-    read_ini /tmp/settings.ini
-
-    rm /tmp/settings.ini > /dev/null 2>&1 || true
-fi
+load_settings /boot/config/settings.ini
 
 # If output not defined, it will automatically detect USB / HDMI / Analog in given order
 # It is at this moment not possible to detect whether an i2s device is connected hence
@@ -142,12 +127,12 @@ case $OUTPUT in
         ;;
 esac
 
-echo "Card $CARD i2s $I2S_CARD output $OUTPUT usb $USB_CARD intc $INT_CARD"
+echo " Output=$OUTPUT card=$CARD (i2s=$I2S_CARD usb=$USB_CARD int=$INT_CARD)"
 
 # If preferred output not found or given fall back to auto detection
 if [[ -z $CARD ]];
 then
-echo "No output was specified/found, falling back to auto detection"
+    echo " No output was specified/found, falling back to auto detection"
     if [[ -n $USB_CARD ]]; then
         CARD=$USB_CARD
         OUTPUT="usb"
@@ -159,94 +144,90 @@ echo "No output was specified/found, falling back to auto detection"
             OUTPUT="analog"
         fi
     fi
+    echo " Output=$OUTPUT card=$CARD (i2s=$I2S_CARD usb=$USB_CARD int=$INT_CARD)"
 fi
-
-echo "Card $CARD i2s $I2S_CARD output $OUTPUT usb $USB_CARD intc $INT_CARD"
 
 if [[ -z $CARD ]];
 then
     log_failure_msg "No ouput card found"
-    exit 1
-fi
+else
+    log_success_msg "Using $OUTPUT card $CARD"
 
-log_progress_msg "Line out set to $OUTPUT card $CARD"
-
-if [ "$OUTPUT" == "usb" -a "$INI__musicbox__downsample_usb" == "1" ]
-# resamples to 44K because of problems with some usb-dacs on 48k (probably related to usb drawbacks of Pi)
-# and extra buffer for usb
-#if [ "$OUTPUT" == "usb" ]
-then
-cat << EOF > /etc/asound.conf
-pcm.!default {
-    type plug
-    slave.pcm {
-        type dmix
-        ipc_key 1024
-        slave {
-            pcm "hw:$CARD"
-            rate 44100
-#            period_time 0
-#            period_size 4096
-#            buffer_size 131072
+    if [ "$OUTPUT" == "usb" -a "$INI__musicbox__downsample_usb" == "1" ]
+    then
+    # resamples to 44K because of problems with some usb-dacs on 48k (probably related to usb drawbacks of Pi)
+    # and extra buffer for usb
+    cat << EOF > /etc/asound.conf
+    pcm.!default {
+        type plug
+        slave.pcm {
+            type dmix
+            ipc_key 1024
+            slave {
+                pcm "hw:$CARD"
+                rate 44100
+    #            period_time 0
+    #            period_size 4096
+    #            buffer_size 131072
+            }
         }
     }
-}
-ctl.!default {
-    type hw
-    card $CARD
-}
+    ctl.!default {
+        type hw
+        card $CARD
+    }
 EOF
-else
-cat << EOF > /etc/asound.conf
-pcm.!default {
-    type hw
-    card $CARD
-}
-ctl.!default {
-    type hw
-    card $CARD
-}
+    else
+    cat << EOF > /etc/asound.conf
+    pcm.!default {
+        type hw
+        card $CARD
+    }
+    ctl.!default {
+        type hw
+        card $CARD
+    }
 EOF
+    fi
+
+    # Reset mixer
+    amixer cset numid=3 0 > /dev/null 2>&1 || true
+
+    if [ "$OUTPUT" == "analog" ]
+    then
+        # Set mixer to analog output
+        amixer cset numid=3 1 > /dev/null 2>&1 || true
+    elif [ "$OUTPUT" == "hdmi" ]
+    then
+        # Set mixer to hdmi
+        amixer cset numid=3 2 > /dev/null 2>&1 || true
+    fi
+
+    for CTL in \
+            Master \
+            PCM \
+            Line \
+            "PCM,1" \
+            Wave \
+            Music \
+            AC97 \
+            "Master Digital" \
+            DAC \
+            "DAC,0" \
+            "DAC,1" \
+            Speaker \
+            Playback \
+            Digital \
+            Aux \
+            Front \
+            Center
+    do
+        # Set initial hardware volume
+        amixer set -c $CARD "$CTL" 96% unmute > /dev/null 2>&1 || true 
+        #amixer set -c $CARD "$CTL" ${VOLUME}% unmute > /dev/null 2>&1 || true 
+    done
+
+    # Set PCM of Pi higher, because it's really quiet otherwise (hardware thing)
+    amixer -c 0 set PCM playback 98% > /dev/null 2>&1 || true &
+    #amixer -c 0 set PCM playback ${VOLUME}% > /dev/null 2>&1 || true &
 fi
-
-# Reset mixer
-amixer cset numid=3 0 > /dev/null 2>&1 || true
-
-if [ "$OUTPUT" == "analog" ]
-then
-    # Set mixer to analog output
-    amixer cset numid=3 1 > /dev/null 2>&1 || true
-elif [ "$OUTPUT" == "hdmi" ]
-then
-    # Set mixer to hdmi
-    amixer cset numid=3 2 > /dev/null 2>&1 || true
-fi
-
-for CTL in \
-        Master \
-        PCM \
-        Line \
-        "PCM,1" \
-        Wave \
-        Music \
-        AC97 \
-        "Master Digital" \
-        DAC \
-        "DAC,0" \
-        "DAC,1" \
-        Speaker \
-    Playback \
-    Digital \
-    Aux \
-    Front \
-    Center
-do
-    # Set initial hardware volume
-    amixer set -c $CARD "$CTL" 96% unmute > /dev/null 2>&1 || true 
-    #amixer set -c $CARD "$CTL" ${VOLUME}% unmute > /dev/null 2>&1 || true 
-done
-
-# Set PCM of Pi higher, because it's really quiet otherwise (hardware thing)
-amixer -c 0 set PCM playback 98% > /dev/null 2>&1 || true &
-#amixer -c 0 set PCM playback ${VOLUME}% > /dev/null 2>&1 || true &
-log_end_msg

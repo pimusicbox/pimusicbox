@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 ### BEGIN INIT INFO
 # Provides:          musicbox-init
@@ -16,10 +16,6 @@ NAME="musicbox"
 DESC="PiMusicBox"
 RUNSCRIPT=/opt/$NAME/startup.sh
 
-USER_CONFIG=/etc/$NAME/$NAME.conf
-CURRENT_CONFIG=/opt/$NAME/current.conf
-DEFAULT_CONFIG=/opt/$NAME/default.conf
-
 # Gracefully exit if startup script has been removed.
 test -x $RUNSCRIPT || exit 0
 
@@ -28,7 +24,7 @@ test -x $RUNSCRIPT || exit 0
 
 . /lib/lsb/init-functions
 
-. /opt/$NAME/startup.sh
+. $RUNSCRIPT
 
 do_start()
 {
@@ -44,19 +40,17 @@ do_stop()
 
 case "$1" in
     start)
-        log_daemon_msg "Starting $DESC..."
+        log_action_msg "Starting $DESC..."
         do_start
-        log_end_msg $?
         ;;
     reload|restart|force-reload)
-        log_daemon_msg "Reloading $DESC..."
+        log_action_msg "Reloading $DESC..."
         do_start
         do_stop
-        log_end_msg $?
+        ;;
     stop)
-        log_daemon_msg "Stopping $DESC..."
+        log_action_msg "Stopping $DESC..."
         do_stop
-        log_end_msg $?
         ;;
     *)
         echo 'Usage: $0 {start|stop|restart|reload|force-reload}'
