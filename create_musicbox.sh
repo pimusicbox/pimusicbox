@@ -5,11 +5,11 @@ PIMUSICBOX_FILES='/tmp/pimusicbox/filechanges'
 
 if [ $(id -u) -ne 0 ]; then
     printf "** You must be the superuser to run this script **\n"
-    exit 1
+    return false
 fi
 if ! grep -q Raspbian /etc/*-release; then
     printf "** Error: expected raspbian **\n"
-    exit 1
+    return false
 fi
 
 printf "**********************************\n"
@@ -19,7 +19,7 @@ printf "**********************************\n"
 # Download Pi MusicBox files if not already available.
 if [ "$PIMUSICBOX_FILES" != "" ]; then
     if [ ! -d "$PIMUSICBOX_FILES" ]; then
-        printf "** Unable to find pimusicbox files at $PIMUSICBOX_FILES.\n"
+        printf "** Unable to find PiMusicBox files at $PIMUSICBOX_FILES.\n"
         printf "** Downloading $PIMUSICBOX_BRANCH branch from github...\n"
         cd /tmp
         wget -q "https://github.com/pimusicbox/pimusicbox/archive/${PIMUSICBOX_BRANCH}.zip" 
@@ -28,13 +28,13 @@ if [ "$PIMUSICBOX_FILES" != "" ]; then
         mv -- "pimusicbox-${PIMUSICBOX_BRANCH}/filechanges" "$PIMUSICBOX_FILES"
     fi
     if [ ! -d "$PIMUSICBOX_FILES" ]; then
-        printf "** Failed to find pimusicbox files at $PIMUSICBOX_FILES.\n"
-        exit 1
+        printf "** Failed to find PiMusicBox files at $PIMUSICBOX_FILES.\n"
+        return false
     fi
 
-    printf "\n ** Found pimusicbox files at $PIMUSICBOX_FILES\n"
+    printf "\n ** Found PiMusicBox files at $PIMUSICBOX_FILES\n"
 else
-    printf "\n ** Warning: No pimusicbox files specified.\n"
+    printf "\n ** Warning: No PiMusicBox files specified.\n"
 fi
 
 # Prevent unhelpful services from starting during install.
@@ -138,23 +138,23 @@ done
 chmod -R 777 /music
 chown -R mopidy:audio /music
 
-printf "\n ** Setting the system password...\n"
+printf "\n ** Setting system password...\n"
 
 echo "pi:musicbox" | chpasswd
 
 if [ "$PIMUSICBOX_FILES" == "" ]; then
-    printf "\n ** No pimusicbox files specified - setup incomplete\n"
-    exit 0
+    printf "\n ** Warning: no PiMusicBox files specified - setup is incomplete\n"
+    return 0
 fi
 
-printf "\n ** Copying pimusicbox files...\n"
+printf "\n ** Copying PiMusicBox files...\n"
 
 cp -- "${PIMUSICBOX_FILES}"/boot/config.txt /boot/config.txt
 cp -R -- "${PIMUSICBOX_FILES}"/boot/config /boot/
 cp -R -- "${PIMUSICBOX_FILES}"/opt/* /opt/
 cp -R -- "${PIMUSICBOX_FILES}"/etc/* /etc/
 
-# Enable our init scripts
+printf "\n ** Enabling PiMusicBox service...\n"
 # TODO: Use sysv-rc-conf instead?
 update-rc.d musicbox defaults
 update-rc.d musicbox enable
