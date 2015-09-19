@@ -173,7 +173,7 @@ ln -fsn /boot/config/settings.ini /etc/mopidy/mopidy.conf
 sed -i '/mmcblk0p1\s\+\/boot\s\+vfat/ s/defaults /defaults,user,umask=000/' /etc/fstab
 
 # Disable swap
-dphys-swapfile swapoff
+update-rc.d dphys-swapfile disable
 
 #For the music to play without cracks, you have to optimize your system a bit.
 #For MusicBox, these are the optimizations:
