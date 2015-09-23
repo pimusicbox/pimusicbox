@@ -1,9 +1,9 @@
-/home/mopidy/.cache/gmusicapi/log/*.log {
+/var/lib/mopidy/.cache/gmusicapi/log/*.log  {
         daily
         missingok
         rotate 2
         maxsize 1M
         compress
-        delaycompress
         notifempty
+        copytruncate
 }

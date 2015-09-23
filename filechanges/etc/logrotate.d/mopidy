@@ -4,6 +4,6 @@
         rotate 2
         maxsize 1M
         compress
-        delaycompress
         notifempty
+        copytruncate
 }
