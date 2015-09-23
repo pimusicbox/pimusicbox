@@ -122,8 +122,9 @@ pip install --upgrade --no-deps https://github.com/woutervanwijk/mopidy-websetti
 
 printf "\n ** Disabling services...\n\n"
 
-# Disable SSH as we use dropbear instead.
+# Disable SSH and enable dropbear instead.
 update-rc.d ssh disable
+sed -i 's/NO_START=1/NO_START=0/' /etc/default/dropbear
 # Disable all optional services by default. User enables desired services in settings.ini
 # Prevent package upgrade renabling services: update-rc.d mopidy stop 80 0 1 2 3 4 5 6
 update-rc.d mopidy disable

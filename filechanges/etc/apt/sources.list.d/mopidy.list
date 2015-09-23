@@ -1,3 +1,0 @@
-# Mopidy APT archive
-deb http://apt.mopidy.com/ wheezy main contrib non-free
-deb-src http://apt.mopidy.com/ wheezy main contrib non-free
