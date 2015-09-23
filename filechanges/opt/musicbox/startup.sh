@@ -60,6 +60,7 @@ init()
         log_action_begin_msg "Changing hostname to $CLEAN_NAME"
         echo "$CLEAN_NAME" > /etc/hostname
         echo "127.0.0.1       localhost $CLEAN_NAME" > /etc/hosts
+        sed -i 's/friendlyname = .*/friendlyname = $CLEAN_NAME/' /etc/upmpdcli.conf
         log_action_end_msg $?
         REBOOT=true
     fi
