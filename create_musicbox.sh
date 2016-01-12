@@ -7,10 +7,6 @@ if [ $(id -u) -ne 0 ]; then
     printf "** You must be the superuser to run this script **\n"
     return false
 fi
-if ! grep -q Raspbian /etc/*-release; then
-    printf "** Error: expected raspbian **\n"
-    return false
-fi
 
 printf "**********************************\n"
 printf "*** Build your own PiMusicBox. ***\n"
@@ -52,19 +48,12 @@ apt-get update && apt-get --yes install sudo wget unzip ntpdate lsb-release
 # Update time, to prevent update problems
 ntpdate -u ntp.ubuntu.com
 
-# Remove big packages we don't want and save some space.
-# + dhcpcd5 conflicts with our networking.
-apt-get --yes remove --purge wolfram-engine sonic-pi dhcpcd5
-
 # Update the distribution to get latest fixes for audio and usb-issues
 apt-get dist-upgrade -y
 
 # Add additional package repositories
-wget -q -O - http://apt.mopidy.com/mopidy.gpg | apt-key add -
-wget -q -O /etc/apt/sources.list.d/mopidy.list http://apt.mopidy.com/mopidy.list
-if [ "$(lsb_release -c -s)" = wheezy ]; then
-    sed -i 's/stable/wheezy/' /etc/apt/sources.list.d/mopidy.list
-fi
+wget -q -O - https://apt.mopidy.com/mopidy.gpg | apt-key add -
+wget -q -O /etc/apt/sources.list.d/mopidy.list https://apt.mopidy.com/jessie.list
 wget -q -O - http://www.lesbonscomptes.com/key/jf@dockes.org.gpg.key | apt-key add -
 cat << EOF > /etc/apt/sources.list.d/upmpdcli.list
 deb http://www.lesbonscomptes.com/upmpdcli/downloads/debian/ unstable main
@@ -112,27 +101,27 @@ pip install mopidy-internetarchive \
             mopidy-simple-webclient \
             mopidy-subsonic \
             mopidy-websettings \
-            mopidy-youtube
+            mopidy-youtube \
+            mopidy-gmusic
 
-# mopidy-gmusic package is outdated, use development version
-pip install https://github.com/hechtus/mopidy-gmusic/archive/develop.zip
-# Use development versions for now (DO_NOT_RELEASE)
+# TODO: Use latest releases.
 pip install --upgrade --no-deps https://github.com/woutervanwijk/Mopidy-MusicBox-Webclient/archive/develop.zip
 pip install --upgrade --no-deps https://github.com/woutervanwijk/mopidy-websettings/archive/develop.zip
 
-printf "\n ** Disabling services...\n\n"
+printf "\n ** Configuring system services...\n\n"
 
-# Disable SSH and enable dropbear instead.
-update-rc.d ssh disable
+# Boot to console rather than desktop.
+systemctl set-default multi-user.target
+# Use dropbear instead of SSH.
+systemctl mask ssh
 sed -i 's/NO_START=1/NO_START=0/' /etc/default/dropbear
-# Disable all optional services by default. User enables desired services in settings.ini
-# Prevent package upgrade renabling services: update-rc.d mopidy stop 80 0 1 2 3 4 5 6
-update-rc.d mopidy disable
-update-rc.d dropbear disable
-update-rc.d upmpdcli disable
-# TODO: Add shairport-sync here once we install it...
+# Optional services are disabled by default.
+systemctl disable dropbear mopidy upmpdcli
+#TODO: https://raw.githubusercontent.com/medoc92/upmpdcli/master/systemd/upmpdcli.service >> /lib/systemd/system/upmpdcli.service
+#TODO: shairport-sync
 
-# Create the directories for USB and network mounts.
+printf "\n ** Creating music directories...\n\n"
+
 for x in MusicBox Network USB USB2 USB3 USB4
     do mkdir -p /music/$x
 done
@@ -148,39 +137,36 @@ if [ "$PIMUSICBOX_FILES" == "" ]; then
     return 0
 fi
 
-printf "\n ** Copying PiMusicBox files...\n"
+printf "\n ** Installing PiMusicBox files...\n"
 
-cp -- "${PIMUSICBOX_FILES}"/boot/config.txt /boot/config.txt
-cp -R -- "${PIMUSICBOX_FILES}"/boot/config /boot/
 cp -R -- "${PIMUSICBOX_FILES}"/opt/* /opt/
 cp -R -- "${PIMUSICBOX_FILES}"/etc/* /etc/
-
-printf "\n ** Enabling PiMusicBox service...\n"
-# TODO: Use sysv-rc-conf instead?
-update-rc.d musicbox defaults
-update-rc.d musicbox enable
-
+cp -R -- "${PIMUSICBOX_FILES}"/lib/* /etc/
+[ -d /boot ] && cp -R -- "${PIMUSICBOX_FILES}"/boot/* /boot/
 chmod +x /etc/network/if-up.d/iptables
 #chown root:root /etc/firewall/musicbox_iptables
 chmod 600 /etc/firewall/musicbox_iptables
 
-printf "\n ** Performing raspberry pi specific fixes/optimisations...\n"
+printf "\n ** Enabling PiMusicBox service...\n"
 
-# Link the user-configurable files in /boot/config
-ln -fsn /boot/config/streamuris.js /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static/js/streamuris.js
-ln -fsn /boot/config/settings.ini /etc/mopidy/mopidy.conf
+systemctl enable musicbox
 
-# Update the mount options so anyone can mount the boot partition and give everyone all permissions.
-sed -i '/mmcblk0p1\s\+\/boot\s\+vfat/ s/defaults /defaults,user,umask=000/' /etc/fstab
+if grep -q Raspbian /etc/*-release; then
+    printf "\n ** Performing raspberry pi specific fixes/optimisations...\n"
 
-# Disable swap
-update-rc.d dphys-swapfile disable
+    # Disable swap
+    systemctl mask dphys-swapfile
 
-#For the music to play without cracks, you have to optimize your system a bit.
-#For MusicBox, these are the optimizations:
+    # Link the user-configurable files in /boot/config
+    ln -fsn /boot/config/streamuris.js /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static/js/streamuris.js
+    ln -fsn /boot/config/settings.ini /etc/mopidy/mopidy.conf
 
-#**USB Fix**
-#It's tricky to get good sound out of the Pi. For USB Audio (sound cards, etc),
-# it is essential to disable the so called FIQ_SPLIT. Why? It seems that audio
-# at high bitrates interferes with the ethernet activity, which also runs over USB.
-sed -i '1s/^/dwc_otg.fiq_fix_enable=1 dwc_otg.fiq_split_enable=0 smsc95xx.turbo_mode=N /' /boot/cmdline.txt
+    # Update the mount options so anyone can mount the boot partition and give everyone all permissions.
+    sed -i '/mmcblk0p1\s\+\/boot\s\+vfat/ s/defaults /defaults,user,umask=000/' /etc/fstab
+
+    #**USB Fix**
+    #It's tricky to get good sound out of the Pi. For USB Audio (sound cards, etc),
+    # it is essential to disable the so called FIQ_SPLIT. Why? It seems that audio
+    # at high bitrates interferes with the ethernet activity, which also runs over USB.
+    sed -i '1s/^/dwc_otg.fiq_fix_enable=1 dwc_otg.fiq_split_enable=0 smsc95xx.turbo_mode=N /' /boot/cmdline.txt
+fi
