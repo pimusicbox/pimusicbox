@@ -1,0 +1,18 @@
+[Unit]
+Description=Configure MusicBox
+Wants=smbd.service nmbd.service
+Wants=mopidy.service
+Wants=upmpdcli.service
+Wants=dropbear.service
+After=smbd.service nmbd.service
+Before=mopidy.service
+Before=upmpdcli.service
+Before=dropbear.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/musicbox/startup.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
