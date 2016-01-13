@@ -147,6 +147,23 @@ chmod +x /etc/network/if-up.d/iptables
 #chown root:root /etc/firewall/musicbox_iptables
 chmod 600 /etc/firewall/musicbox_iptables
 
+# Small changes to config files, eventually move these to config packages:
+# TODO: Why?
+sed -i 's/dns$/dns mdns4/' /etc/nsswitch.conf
+# Enable Watchdog
+sed -i -e 's/^#watchdog-device/watchdog-device/' \
+       -e 's/^#max-load-1/max-load-1/' /etc/watchdog.conf
+# Fix for broken watchdog.service file (https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=793309)
+sed -i '/[Install]/a WantedBy=multi-user.target' /lib/systemd/system/watchdog.service
+# Force setting time even if moves block backwards.
+sed -i 's/^#FORCE=/FORCE=/' /etc/default/fake-hwclock
+#TODO: Do we want to disable avahi when unicast dns servers that provide .local are detected?  
+sed -i 's/AVAHI_DAEMON_DETECT_LOCAL=./AVAHI_DAEMON_DETECT_LOCAL=0/' /etc/default/avahi-daemon
+sed -i -e 's/^#\?disallow-other-stacks=.*/disallow-other-stacks=yes/' \
+       -e 's/^#\?publish-a-on-ipv6=.*/publish-a-on-ipv6=yes/' /etc/avahi/avahi-daemon.conf
+# Reduce priority of upmpdcli. TODO: better done through systemd?
+sed -i '/As a last resort, sleep for some time./a renice 19 `pgrep upmpdcli`' /etc/init.d/upmpdcli
+
 printf "\n ** Enabling PiMusicBox service...\n"
 
 systemctl enable musicbox
