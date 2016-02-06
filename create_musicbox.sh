@@ -1,7 +1,81 @@
 #!/bin/bash
 
+SCRIPTPATH=$( cd $(dirname $0) ; pwd -P )
 PIMUSICBOX_BRANCH='develop'
-PIMUSICBOX_FILES='/tmp/pimusicbox/filechanges'
+PIMUSICBOX_FILES="$SCRIPTPATH/filechanges"
+
+read -d '' APT_PACKAGES << EOF
+alsa-base
+alsa-firmware-loaders
+alsa-utils
+avahi-autoipd
+avahi-utils
+build-essential
+ca-certificates
+cifs-utils
+dos2unix
+dosfstools
+dropbear
+gstreamer0.10-alsa
+gstreamer0.10-fluendo-mp3
+gstreamer0.10-plugins-bad
+gstreamer0.10-plugins-good
+gstreamer0.10-plugins-ugly
+gstreamer0.10-tools
+ifplugd
+iptables
+iw
+libffi-dev
+libnss-mdns
+libssl-dev
+logrotate
+mopidy
+mopidy-alsamixer
+mopidy-dirble
+mopidy-internetarchive
+mopidy-local-sqlite
+mopidy-podcast
+mopidy-podcast-gpodder
+mopidy-podcast-itunes
+mopidy-scrobbler
+mopidy-somafm
+mopidy-soundcloud
+mopidy-spotify
+mopidy-spotify-tunigo
+mopidy-tunein
+monit
+mpc
+ncmpcpp
+python-dev
+rpi-update
+samba
+upmpdcli
+usbmount
+watchdog
+wpasupplicant
+atmel-firmware
+firmware-atheros
+firmware-brcm80211
+firmware-ipw2x00
+firmware-iwlwifi
+firmware-libertas
+firmware-linux
+firmware-linux-nonfree
+firmware-ralink
+firmware-realtek
+zd1211-firmware
+EOF
+read -d '' PIP_PACKAGES << EOF
+mopidy-gmusic
+mopidy-mobile
+mopidy-moped
+mopidy-mopify
+mopidy-musicbox-webclient
+mopidy-simple-webclient
+mopidy-subsonic
+mopidy-websettings
+mopidy-youtube
+EOF
 
 if [ $(id -u) -ne 0 ]; then
     printf "** You must be the superuser to run this script **\n"
@@ -67,21 +141,7 @@ echo firmware-ipw2x00 firmware-ipw2x00/license/accepted boolean true | debconf-s
 
 # Install debian packages
 apt-get update
-apt-get --yes --no-install-suggests --no-install-recommends install \
-    logrotate wpasupplicant ifplugd samba dos2unix cifs-utils iptables \
-    iw atmel-firmware firmware-atheros firmware-brcm80211 firmware-ipw2x00 \
-    firmware-iwlwifi firmware-libertas firmware-ralink firmware-realtek \
-    zd1211-firmware firmware-linux firmware-linux-nonfree \
-    rpi-update dropbear libnss-mdns ca-certificates \
-    dosfstools usbmount watchdog alsa-utils alsa-base alsa-firmware-loaders \
-    avahi-utils avahi-autoipd build-essential libffi-dev libssl-dev \
-    python-dev python-gst0.10 \
-    gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gstreamer0.10-plugins-ugly \
-    gstreamer0.10-alsa gstreamer0.10-fluendo-mp3 gstreamer0.10-tools \
-    mopidy mopidy-spotify mopidy-scrobbler mopidy-soundcloud mopidy-dirble \
-    mopidy-spotify-tunigo mopidy-tunein mopidy-local-sqlite \
-    mopidy-podcast mopidy-podcast-itunes mopidy-podcast-gpodder \
-    mopidy-alsamixer mpc ncmpcpp monit upmpdcli
+apt-get --yes --no-install-suggests install $APT_PACKAGES
 
 # Quick cleanup
 apt-get -y autoremove
@@ -93,16 +153,7 @@ printf "\n ** Installing Python packages...\n\n"
 # Install pip and additional python packages
 wget -q -O - https://bootstrap.pypa.io/get-pip.py | python -
 pip install --upgrade requests[security]
-pip install mopidy-internetarchive \
-            mopidy-mobile \
-            mopidy-moped \
-            mopidy-mopify \
-            mopidy-musicbox-webclient \
-            mopidy-simple-webclient \
-            mopidy-subsonic \
-            mopidy-websettings \
-            mopidy-youtube \
-            mopidy-gmusic
+pip install $PIP_PACKAGES
 
 # TODO: Use latest releases.
 pip install --upgrade --no-deps https://github.com/woutervanwijk/Mopidy-MusicBox-Webclient/archive/develop.zip
