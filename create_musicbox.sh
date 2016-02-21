@@ -166,8 +166,9 @@ systemctl set-default multi-user.target
 # Use dropbear instead of SSH.
 systemctl mask ssh
 sed -i 's/NO_START=1/NO_START=0/' /etc/default/dropbear
-# Optional services are disabled by default.
-systemctl disable dropbear mopidy upmpdcli
+# Optional services are masked by default (masked prevents sysv scripts too).
+# TODO: Consider presets (https://www.freedesktop.org/software/systemd/man/systemd.preset.html)
+systemctl mask dropbear mopidy upmpdcli
 #TODO: https://raw.githubusercontent.com/medoc92/upmpdcli/master/systemd/upmpdcli.service >> /lib/systemd/system/upmpdcli.service
 #TODO: shairport-sync
 
