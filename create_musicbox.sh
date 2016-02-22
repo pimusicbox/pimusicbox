@@ -4,7 +4,7 @@ SCRIPTPATH=$( cd $(dirname $0) ; pwd -P )
 PIMUSICBOX_BRANCH='develop'
 PIMUSICBOX_FILES="$SCRIPTPATH/filechanges"
 
-read -d '' APT_PACKAGES << EOF
+! read -d '' APT_PACKAGES << EOF
 alsa-base
 alsa-firmware-loaders
 alsa-utils
@@ -65,7 +65,7 @@ firmware-ralink
 firmware-realtek
 zd1211-firmware
 EOF
-read -d '' PIP_PACKAGES << EOF
+! read -d '' PIP_PACKAGES << EOF
 mopidy-gmusic
 mopidy-mobile
 mopidy-moped
