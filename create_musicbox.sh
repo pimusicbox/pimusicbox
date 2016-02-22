@@ -136,8 +136,6 @@ EOF
 
 # Agree to Intel firmware license
 echo firmware-ipw2x00 firmware-ipw2x00/license/accepted boolean true | debconf-set-selections
-# Enable mopidy system service
-#echo mopidy	mopidy/daemon	boolean	false | debconf-set-selections
 
 # Install debian packages
 apt-get update
@@ -166,10 +164,8 @@ systemctl set-default multi-user.target
 # Use dropbear instead of SSH.
 systemctl mask ssh
 sed -i 's/NO_START=1/NO_START=0/' /etc/default/dropbear
-# Optional services are masked by default (masked prevents sysv scripts too).
 # TODO: Consider presets (https://www.freedesktop.org/software/systemd/man/systemd.preset.html)
-systemctl mask dropbear mopidy upmpdcli
-#TODO: https://raw.githubusercontent.com/medoc92/upmpdcli/master/systemd/upmpdcli.service >> /lib/systemd/system/upmpdcli.service
+systemctl enable dropbear upmpdcli mopidy
 #TODO: shairport-sync
 
 printf "\n ** Creating music directories...\n\n"
