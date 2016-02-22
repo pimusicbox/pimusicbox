@@ -2,7 +2,7 @@
 
 SCRIPTPATH=$( cd $(dirname $0) ; pwd -P )
 PIMUSICBOX_BRANCH='develop'
-PIMUSICBOX_FILES="$SCRIPTPATH/filechanges"
+PIMUSICBOX_FILES="${1:-$SCRIPTPATH/filechanges}"
 
 ! read -d '' APT_PACKAGES << EOF
 alsa-base
