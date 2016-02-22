@@ -21,7 +21,7 @@ gstreamer1.0-fluendo-mp3
 gstreamer1.0-plugins-bad
 gstreamer1.0-plugins-good
 gstreamer1.0-plugins-ugly
-gstreamer1.10-tools
+gstreamer1.0-tools
 ifplugd
 iptables
 iw
