@@ -193,7 +193,7 @@ printf "\n ** Installing PiMusicBox files...\n"
 
 cp -R -- "${PIMUSICBOX_FILES}"/opt/* /opt/
 cp -R -- "${PIMUSICBOX_FILES}"/etc/* /etc/
-cp -R -- "${PIMUSICBOX_FILES}"/lib/* /etc/
+cp -R -- "${PIMUSICBOX_FILES}"/lib/* /lib/
 [ -d /boot ] && cp -R -- "${PIMUSICBOX_FILES}"/boot/* /boot/
 chmod +x /etc/network/if-up.d/iptables
 #chown root:root /etc/firewall/musicbox_iptables
@@ -227,7 +227,6 @@ if grep -q Raspbian /etc/*-release; then
     systemctl mask dphys-swapfile
 
     # Link the user-configurable files in /boot/config
-    ln -fsn /boot/config/streamuris.js /usr/local/lib/python2.7/dist-packages/mopidy_musicbox_webclient/static/js/streamuris.js
     ln -fsn /boot/config/settings.ini /etc/mopidy/mopidy.conf
 
     # Update the mount options so anyone can mount the boot partition and give everyone all permissions.
