@@ -1,0 +1,16 @@
+[Unit]
+Description=UPnP Renderer front-end to MPD
+After=syslog.target
+
+[Service]
+Type=simple
+# Note: if start fails check with "systemctl status upmpdcli"
+ExecStart=/usr/bin/upmpdcli -c /etc/upmpdcli.conf
+# For some reason, the first start of libupnp fails. Probably this should
+# be started later in the start sequence, but I don't know how. Retry a bit
+# later. 
+Restart=always
+RestartSec=1min
+
+[Install]
+WantedBy=multi-user.target
