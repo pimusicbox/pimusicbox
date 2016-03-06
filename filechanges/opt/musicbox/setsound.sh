@@ -3,7 +3,7 @@
 # MusicBox Sound configuration script
 #
 
-. /opt/musicbox/helpers.sh
+. /opt/musicbox/utils.sh
 
 log_action_msg "Setting sound configuration.."
 rm -f /etc/asound.conf

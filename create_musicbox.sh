@@ -198,6 +198,9 @@ chmod 600 /etc/firewall/musicbox_iptables
 # Link the default musicbox config somewhere the Mopidy service can find it.
 ln -fsn /opt/musicbox/musicbox.conf /usr/share/mopidy/conf.d/musicbox.conf
 
+# Musicbox state data lives here.
+mkdir -p /var/opt/musicbox
+
 # Small changes to config files, eventually move these to config packages:
 # TODO: Why?
 sed -i 's/dns$/dns mdns4/' /etc/nsswitch.conf

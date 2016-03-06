@@ -1,0 +1,14 @@
+[Unit]
+Description=Musicbox local music scan
+Wants=mopidy.service
+After=mopidy.service
+ConditionPathExists=|/var/opt/musicbox/scan_once
+ConditionPathExists=|/var/opt/musicbox/scan_always
+
+[Service]
+Type=oneshot
+ExecStart=/opt/musicbox/scan.sh
+ExecStartPost=/bin/rm /var/opt/musicbox/scan_once
+
+[Install]
+WantedBy=multi-user.target

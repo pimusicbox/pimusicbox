@@ -1,0 +1,12 @@
+[Unit]
+Description=MusicBox autoplay
+Wants=mopidy.service
+After=mopidy.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/musicbox/autoplay.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

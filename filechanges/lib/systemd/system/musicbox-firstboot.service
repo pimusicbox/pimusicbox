@@ -1,0 +1,15 @@
+[Unit]
+Description=MusicBox first boot configuration
+Wants=musicbox.service
+Before=musicbox.service
+
+
+[Service]
+Type=oneshot
+ExecStart=/opt/musicbox/firstboot.sh
+# Disable this in future boots.
+ExecStartPost=/bin/systemctl --quiet mask musicbox-firstboot 2>/dev/null
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

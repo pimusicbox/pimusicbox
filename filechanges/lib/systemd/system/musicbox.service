@@ -11,7 +11,7 @@ Before=dropbear.service
 
 [Service]
 Type=oneshot
-ExecStart=/opt/musicbox/startup.sh
+ExecStart=/opt/musicbox/startup.sh start
 RemainAfterExit=yes
 
 [Install]
