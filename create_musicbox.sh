@@ -196,8 +196,9 @@ chmod +x /etc/network/if-up.d/iptables
 #chown root:root /etc/firewall/musicbox_iptables
 chmod 600 /etc/firewall/musicbox_iptables
 
-# Link the default musicbox config somewhere the Mopidy service can find it.
+# Link the default musicbox config somewhere the Mopidy service can read it.
 ln -fsn /opt/musicbox/musicbox.conf /usr/share/mopidy/conf.d/musicbox.conf
+chown -R mopidy:audio /usr/share/mopidy
 
 # Link the musicbox nginx config.
 ln -fsn /etc/nginx/sites-available/musicbox /etc/nginx/sites-enabled/default
