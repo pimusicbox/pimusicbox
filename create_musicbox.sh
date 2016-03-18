@@ -46,6 +46,7 @@ mopidy-tunein
 monit
 mpc
 ncmpcpp
+nginx
 python-dev
 rpi-update
 samba
@@ -197,6 +198,9 @@ chmod 600 /etc/firewall/musicbox_iptables
 
 # Link the default musicbox config somewhere the Mopidy service can find it.
 ln -fsn /opt/musicbox/musicbox.conf /usr/share/mopidy/conf.d/musicbox.conf
+
+# Link the musicbox nginx config.
+ln -fsn /etc/nginx/sites-available/musicbox /etc/nginx/sites-enabled/default
 
 # Musicbox state data lives here.
 mkdir -p /var/opt/musicbox

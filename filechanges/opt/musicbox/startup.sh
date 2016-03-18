@@ -46,9 +46,12 @@ configure_network()
     else
         iptables -A INPUT -p tcp --dport 22 -j DENY > /dev/null 2>&1 || true
     fi
-    # TODO: Replace this with nginx reverse proxy setup
-    #redirect 6680 to 80
-    iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 6680 > /dev/null 2>&1 || true
+
+    if [ "$INI__musicbox__webclient" != "" ]
+    then
+        echo "set \$webclient $INI__musicbox__webclient;" | tee /etc/nginx/conf.d/musicbox > /dev/null
+        systemctl --quiet reload nginx
+    fi
 
     if [ "$INI__network__workgroup" != "" ]
     then
