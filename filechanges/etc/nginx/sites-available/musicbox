@@ -7,7 +7,7 @@ server {
     listen 80 default_server;
     listen [::]:80 default_server;
 
-    root /usr/share/nginx/www;
+    root /usr/share/nginx/html;
     index index.html index.htm;
 
     # Invalid catch-all domain name
@@ -23,15 +23,25 @@ server {
         proxy_send_timeout 604800;
     }
 
-    # The $webclient variable here controls the default webclient.
-    # This should be overridden by setting the variable to a different webclient
-    # in snippets/musicbox.conf. 
+    # The $webclient variable here controls the default mopidy webclient and
+    # can be overridden by setting the variable in conf.d/musicbox.
     location = / {
         set $webclient musicbox_webclient;
         include conf.d/*musicbox;
         rewrite ^ http://$host/$webclient/;
         proxy_pass http://127.0.0.1:6680/;
         proxy_http_version 1.1;
+        proxy_intercept_errors on;
+    }
+
+    # When Mopidy is unreachable, redirect to the musicbox status page.
+    error_page 500 502 503 504 @musicbox;
+    
+    # This is just a static page for now but it could be more.
+    location @musicbox {
+        allow all;
+        internal;
+        rewrite ^(.*)$ /status.html break;
     }
 
     # Redirect requests on port 80 to port 6680
