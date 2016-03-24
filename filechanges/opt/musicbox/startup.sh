@@ -7,9 +7,10 @@
 
 configure_audio()
 {
-    # TODO: Set appropriate DTO in /boot/config.txt and move to initialise_musicbox()
-    #. /opt/musicbox/setsound.sh
-    echo "TODO: Configure audio"
+    if [ $INI__musicbox__output  != "" ]
+    then
+        . /opt/musicbox/setsound.sh
+    fi
 }
 
 mount_windows_shares()

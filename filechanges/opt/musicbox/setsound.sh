@@ -5,18 +5,10 @@
 
 . /opt/musicbox/utils.sh
 
-log_action_msg "Setting sound configuration.."
-rm -f /etc/asound.conf
-
-I2S_CARD=
-USB_CARD=
-INT_CARD=
-HDMI_CARD=
-
-function enumerate_alsa_cards()
+function enumerate_sound_cards()
 {
     # Remove unwanted characters from argument.
-    i2s_NAME=$(echo $1 | tr -d "[:punct:]")
+    [ -z $OUTPUT ] && return 1 || NAMED=$(echo $OUTPUT | tr -d "[:punct:]")
     while read -r line
     do
         ## Dac
@@ -45,119 +37,137 @@ function enumerate_alsa_cards()
         name=${dev[3]}
         if [[ $name == "bcm2835" ]]; then
             INT_CARD=$card_num
-            log_progress_msg "Found internal device: card$INT_CARD"
             if [[ $line =~ "hdmi" ]] && tvservice -s | grep -q HDMI; then
-                log_progress_msg "(HDMI)"
+                echo "  Found internal device: card$INT_CARD (HDMI)"
                 HDMI_CARD=$card_num
             elif [[ ! $line =~ "hdmi" ]]; then
-                log_progress_msg "(analog)"
+                echo "  Found internal device: card$INT_CARD (analog)"
             fi
-        elif [[ $i2s_NAME && $name == *"$i2s_NAME" ]]; then
-            I2S_CARD=$card_num
-            log_progress_msg "Found i2s device: card$I2S_CARD"
         elif [[ $line =~ "usb audio" ]]; then
             USB_CARD=$card_num
-            log_progress_msg "Found usb device: card$USB_CARD"
+            echo "  Found usb device: card$USB_CARD"
+        elif [[ $NAMED && $name == *"$NAMED" ]]; then
+            NAMED_CARD=$card_num
+            echo "  Found named device: card$NAMED_CARD ($NAMED)"
         else
-            UNKNOWN_CARD=$card_num
-            log_progress_msg "Found unknown device: card$UNKNOWN_CARD"
+            OTHER_CARD=$card_num
+            echo "  Found other device: card$OTHER_CARD"
         fi
-        echo
     done < <(aplay -l | grep card)
-    # No usb card found, assume anything unknown is actually a usb card.
-    [[ -z $USB_CARD ]] && USB_CARD=$UNKNOWN_CARD
+    # If no usb card found, assume anything unknown is actually a usb card.
+    USB_CARD=${USB_CARD:-$OTHER_CARD}
 }
 
-load_settings /boot/config/settings.ini
+function select_sound_card()
+{
+    echo "  Output=$OUTPUT card=$CARD (named=$NAMED_CARD usb=$USB_CARD int=$INT_CARD)"
+    case $OUTPUT in
+        auto)
+            [ "$USB_CARD" ] && OUTPUT=usb && return
+            [ "$HDMI_CARD" ] && OUTPUT=hdmi && return
+            OUTPUT=analog
+            ;;
+        analog)
+            DTO_LINE="dtparam=audio=on"
+            CARD=$INT_CARD
+            ;;
+        hdmi)
+            DTO_LINE="dtparam=audio=on"
+            CARD=$HDMI_CARD
+            ;;
+        usb)
+            CARD=$USB_CARD
+            ;;
+        hifiberry_dac)
+            DTO_LINE="dtoverlay=hifiberry-dac"
+            CARD=$NAMED_CARD
+            ;;
+        hifiberry_digi)
+            DTO_LINE="dtoverlay=hifiberry-digi"
+            CARD=$NAMED_CARD
+            ;;
+        hifiberry_dacplus)
+            DTO_LINE="dtoverlay=hifiberry-dacplus"
+            CARD=$NAMED_CARD
+            ;;
+        hifiberry_amp)
+            DTO_LINE="dtoverlay=hifiberry-amp"
+            CARD=$NAMED_CARD
+            ;;
+        iqaudio_dac)
+            DTO_LINE="dtoverlay=iqaudio-dacplus"
+            CARD=$NAMED_CARD
+            ;;
+        wolfson)
+            DTO_LINE="dtoverlay=wolfson"
+            CARD=$NAMED_CARD
+            ;;
+        *)
+            DTO_LINE="dtoverlay=$OUTPUT"
+            CARD=$NAMED_CARD
+            ;;
+    esac
+}
 
-# If output not defined, it will automatically detect USB / HDMI / Analog in given order
-# It is at this moment not possible to detect whether an i2s device is connected hence
-# i2s is only selected if explicitly given as output in the config file
-OUTPUT=$(echo $INI__musicbox__output | tr "[:upper:]" "[:lower:]")
-CARD=
-
-if [[ -z "$OUTPUT" ]]
-then
-    OUTPUT="auto"
-fi
-# Get alsa cards
-enumerate_alsa_cards
-
-case $OUTPUT in
-    analog)
-        CARD=$INT_CARD
-        ;;
-    hdmi)
-        CARD=$HDMI_CARD
-        ;;
-    usb)
-        CARD=$USB_CARD
-        ;;
-    hifiberry_dac)
-        modprobe snd_soc_pcm5102a
-        modprobe snd_soc_hifiberry_dac
-        enumerate_alsa_cards $OUTPUT
-        CARD=$I2S_CARD
-        ;;
-    hifiberry_digi)
-        modprobe snd_soc_wm8804
-        modprobe snd_soc_hifiberry_digi
-        enumerate_alsa_cards $OUTPUT
-        CARD=$I2S_CARD
-        ;;
-    hifiberry_dacplus)
-        modprobe snd_soc_hifiberry_dacplus
-        enumerate_alsa_cards $OUTPUT
-        CARD=$I2S_CARD
-        ;;
-    hifiberry_amp)
-        modprobe snd_soc_hifiberry_amp
-        enumerate_alsa_cards $OUTPUT
-        CARD=$I2S_CARD
-        ;;
-    iqaudio_dac)
-        modprobe snd_soc_pcm512x
-        modprobe snd_soc_iqaudio_dac
-        enumerate_alsa_cards $OUTPUT
-        CARD=$I2S_CARD
-        ;;
-    wolfson)
-        enumerate_alsa_cards wsp
-        CARD=$I2S_CARD
-        ;;
-esac
-
-echo " Output=$OUTPUT card=$CARD (i2s=$I2S_CARD usb=$USB_CARD int=$INT_CARD)"
-
-# If preferred output not found or given fall back to auto detection
-if [[ -z $CARD ]];
-then
-    echo " No output was specified/found, falling back to auto detection"
-    if [[ -n $USB_CARD ]]; then
-        CARD=$USB_CARD
-        OUTPUT="usb"
-    else
-        CARD=$INT_CARD
-        if  [[ -n $HDMI_CARD ]]; then
-            OUTPUT="hdmi"
-        else
-            OUTPUT="analog"
-        fi
-    fi
-    echo " Output=$OUTPUT card=$CARD (i2s=$I2S_CARD usb=$USB_CARD int=$INT_CARD)"
-fi
-
-if [[ -z $CARD ]];
-then
-    log_failure_msg "No ouput card found"
-else
-    log_success_msg "Using $OUTPUT card $CARD"
-
-    if [ "$OUTPUT" == "usb" -a "$INI__musicbox__downsample_usb" == "1" ]
+function enable_sound_card()
+{
+    backup_original $BOOT_CONFIG $WATERMARK
+    backup_original $ASOUND_CONFIG $WATERMARK
+    # Disable all audio cards.
+    rm -f $ASOUND_CONFIG    
+    sed -e "s/^dtparam=audio=.*/#dtparam=audio=on/" \
+        -e "s/^dtoverlay=/#dtoverlay=/g" $BOOT_CONFIG > $NEW_CONFIG
+    if [ "$DTO_LINE" ]
     then
+        sed -i "/^#$DTO_LINE$/ s/^#//" $NEW_CONFIG
+    fi
+    echo "$WATERMARK" >> $NEW_CONFIG
+    if cmp --silent $NEW_CONFIG $BOOT_CONFIG
+    then
+        # We just booted with the exact same config and didn't find the card.
+        echo "Error: Failed to enable $OUTPUT soundcard"
+        return 1
+    else
+        # Using cat ensures file permissions/flags are unchanged.
+        cat $NEW_CONFIG > $BOOT_CONFIG
+        rm -f $NEW_CONFIG
+        set_reboot_needed
+    fi
+    return 0
+}
+
+echo "Setting sound configuration..."
+
+[ -z $INI_READ ] && load_settings
+
+BOOT_CONFIG=${BOOT_CONFIG:-/boot/config.txt}
+NEW_CONFIG=${NEW_CONFIG:-/tmp/config.txt}
+ASOUND_CONFIG=${ASOUND_CONFIG:-/etc/asound.conf}
+VERSION=1.0
+WATERMARK="##Generated by musicbox setsound v$VERSION"
+OUTPUT=$(echo $INI__musicbox__output | tr "[:upper:]" "[:lower:]")
+OUTPUT=${OUTPUT:-auto}
+
+# Get alsa cards
+enumerate_sound_cards
+select_sound_card
+# Call again to resolve automatic selection.
+select_sound_card
+if [ -z $CARD ]
+then
+    # Card not found, specify new device tree overlays and reboot to load them.
+    enable_sound_card
+    return
+fi
+
+echo "Using $OUTPUT card $CARD"
+
+backup_original $ASOUND_CONFIG $WATERMARK
+if [ "$OUTPUT" == "usb" -a "$INI__musicbox__downsample_usb" == "1" ]
+then
     # resamples to 44K because of problems with some usb-dacs on 48k (probably related to usb drawbacks of Pi)
     # and extra buffer for usb
-    cat << EOF > /etc/asound.conf
+    cat > $ASOUND_CONFIG <<EOF
     pcm.!default {
         type plug
         slave.pcm {
@@ -177,8 +187,8 @@ else
         card $CARD
     }
 EOF
-    else
-    cat << EOF > /etc/asound.conf
+else
+    cat > $ASOUND_CONFIG <<EOF
     pcm.!default {
         type hw
         card $CARD
@@ -188,46 +198,45 @@ EOF
         card $CARD
     }
 EOF
-    fi
+fi
+echo "$WATERMARK" >> $ASOUND_CONFIG
 
-    # Reset mixer
-    amixer cset numid=3 0 > /dev/null 2>&1 || true
+# Reset mixer
+amixer cset numid=3 0 > /dev/null 2>&1 || true
+if [ "$OUTPUT" == "analog" ]
+then
+    # Set mixer to analog output
+    amixer cset numid=3 1 > /dev/null 2>&1 || true
+elif [ "$OUTPUT" == "hdmi" ]
+then
+    # Set mixer to hdmi
+    amixer cset numid=3 2 > /dev/null 2>&1 || true
+fi
 
-    if [ "$OUTPUT" == "analog" ]
-    then
-        # Set mixer to analog output
-        amixer cset numid=3 1 > /dev/null 2>&1 || true
-    elif [ "$OUTPUT" == "hdmi" ]
-    then
-        # Set mixer to hdmi
-        amixer cset numid=3 2 > /dev/null 2>&1 || true
-    fi
-
+VOLUME=$(echo $INI__musicbox__initial_volume | tr -cd "[:digit:]")
+if [ $VOLUME ]
+then
+    echo "Setting initial volume for card$CARD to $VOLUME%"
     for CTL in \
-            Master \
-            PCM \
-            Line \
-            "PCM,1" \
-            Wave \
-            Music \
-            AC97 \
-            "Master Digital" \
-            DAC \
-            "DAC,0" \
-            "DAC,1" \
-            Speaker \
-            Playback \
-            Digital \
-            Aux \
-            Front \
-            Center
+        Master \
+        PCM \
+        Line \
+        "PCM,1" \
+        Wave \
+        Music \
+        AC97 \
+        "Master Digital" \
+        DAC \
+        "DAC,0" \
+        "DAC,1" \
+        Speaker \
+        Playback \
+        Digital \
+        Aux \
+        Front \
+        Center
     do
         # Set initial hardware volume
-        amixer set -c $CARD "$CTL" 96% unmute > /dev/null 2>&1 || true 
-        #amixer set -c $CARD "$CTL" ${VOLUME}% unmute > /dev/null 2>&1 || true 
+        amixer set -c $CARD "$CTL" $VOLUME% unmute > /dev/null 2>&1 || true 
     done
-
-    # Set PCM of Pi higher, because it's really quiet otherwise (hardware thing)
-    amixer -c 0 set PCM playback 98% > /dev/null 2>&1 || true &
-    #amixer -c 0 set PCM playback ${VOLUME}% > /dev/null 2>&1 || true &
 fi

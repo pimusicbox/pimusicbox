@@ -51,10 +51,8 @@ gpu_mem=16
 
 force_hdmi_open=1
 
-# Disable Device Tree Overlays, for now.
-device_tree=
-
-# Uncomment one of these lines to enable an audio interface
+# Do not edit below this line - audio Device Tree Overlays managed by musicbox.
+dtparam=audio=on
 #dtoverlay=hifiberry-amp
 #dtoverlay=hifiberry-dac
 #dtoverlay=hifiberry-dacplus

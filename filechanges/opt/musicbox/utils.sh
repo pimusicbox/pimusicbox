@@ -7,7 +7,7 @@ MUSICBOX_STATE=/var/opt/musicbox
 
 load_settings()
 {
-    USER_CONFIG=$DEFAULT_USER_CONFIG
+    USER_CONFIG=${USER_CONFIG:-$DEFAULT_USER_CONFIG}
     INI_READ=false
     load_settings_from_file $USER_CONFIG
 }
@@ -50,14 +50,25 @@ save_setting_to_file()
     sed -i -e "/^\[$SECTION\]/,/^\[.*\]/ s|^\($FIELD[ \t]*=[ \t]*\).*$|\1$VALUE\r|" $FILE
 }
 
+backup_original()
+{
+    FILE=$1
+    KEY="$2"
+    if [ -f $1 ]
+    then
+        ! grep -q "$KEY" $FILE && cp $FILE $FILE.orig
+    fi
+}
+
 set_reboot_needed()
 {
+    [ -f /run/musicbox/needreboot ] || echo "A system restart is required..."
     touch /run/musicbox/needreboot
 }
 
 reboot_musicbox()
 {
-    DO_REBOOT=${1:-0}
+    DO_REBOOT=${DO_REBOOT:-0}
     if [ $DO_REBOOT = 1 ] || [ -f /run/musicbox/needreboot ]
     then
         echo "Musicbox is now restarting..."
