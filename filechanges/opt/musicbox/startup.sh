@@ -184,14 +184,12 @@ change_hostname()
 
 change_system_password()
 {
-    #TODO: Change this to system_password
-    if [ "$INI__musicbox__root_password" != "" ]
+    if [ "$INI__musicbox__system_password" != "" ]
     then
         echo "Changing password for user pi"
-        echo "pi:$INI__musicbox__root_password" | chpasswd
+        echo "pi:$INI__musicbox__system_password" | chpasswd
         # Strip password from config file.
-        save_setting_to_file $USER_CONFIG musicbox root_password
-        REBOOT=1
+        save_setting_to_file $USER_CONFIG musicbox system_password
     fi
 }
 
