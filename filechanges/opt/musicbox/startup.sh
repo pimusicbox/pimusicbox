@@ -13,21 +13,20 @@ configure_audio()
     fi
 }
 
-mount_windows_shares()
+mount_shares()
 {
     if [ "$INI__network__mount_address" != "" ]
     then
-        #mount samba share, readonly
         echo "Mounting Windows Network drive $INI__network__mount_address"
         if [ "$INI__network__mount_user" != "" ]
         then
-            SMB_CREDENTIALS=user=$INI__network__mount_user,password=$INI__network__mount_password
+            MOUNT_CREDS=user=$INI__network__mount_user,password=$INI__network__mount_password
         else
-            SMB_CREDENTIALS=guest
+            MOUNT_CREDS=guest
         fi
-        mount -t cifs -o sec=ntlm,ro,$SMB_CREDENTIALS "$INI__network__mount_address" /music/Network/
-        #mount -t cifs -o sec=ntlm,ro,rsize=2048,wsize=4096,cache=strict,user=$INI__network__mount_user,password=$INI__network__mount_password $INI__network__mount_address /music/Network/
-        #add rsize=2048,wsize=4096,cache=strict because of usb (from raspyfi)
+        MOUNT_OPTS=${INI__network__mount_options:-ro,sec=ntlm,$MOUNT_CREDS}
+        MOUNT_TYPE=${INI__network__mount_type:-cifs}
+        mount -t "$MOUNT_TYPE" -o "$MOUNT_OPTS" "$INI__network__mount_address" /music/Network/
         if mountpoint -q /music/Network/
         then
             echo "Successfully mounted '$INI__network__mount_address' at /music/Network"
@@ -262,7 +261,7 @@ do_init()
     #configure_service shairport
     configure_wifi
     configure_network
-    mount_windows_shares
+    mount_shares
     configure_scan
 
     show_system_info
