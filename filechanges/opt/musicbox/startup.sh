@@ -154,8 +154,8 @@ configure_service()
             rm -f $MUSICBOX_STATE/$SETTING_NAME
             rm -f /etc/monit/conf.d/$SERVICE_NAME
         fi
-        [ $SETTINGS_UPDATE = 1 ] && systemctl --quiet $ACTION $SERVICE_NAME
-        $SERVICE_FUNC $SETTING_ENABLED
+        [ "$SETTINGS_UPDATE" == 1 ] && systemctl --quiet $ACTION $SERVICE_NAME
+        [ -n "$SERVICE_FUNC" ] && $SERVICE_FUNC $SETTING_ENABLED
     fi
 }
 
@@ -256,7 +256,7 @@ do_init()
     configure_platform
     configure_service ssh
     configure_service upnp
-    #configure_service shairport
+    configure_service shairport
     configure_wifi
     configure_network
     mount_shares

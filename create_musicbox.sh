@@ -3,6 +3,7 @@
 SCRIPTPATH=$( cd $(dirname $0) ; pwd -P )
 PIMUSICBOX_BRANCH='develop'
 PIMUSICBOX_FILES="${1:-$SCRIPTPATH/filechanges}"
+PIMUSICBOX_PACKAGES="/opt/musicbox/packages"
 
 ! read -d '' APT_PACKAGES << EOF
 alsa-base
@@ -50,6 +51,7 @@ nginx
 python-dev
 rpi-update
 samba
+shairport-sync
 upmpdcli
 usbmount
 watchdog
@@ -104,8 +106,13 @@ if [ "$PIMUSICBOX_FILES" != "" ]; then
     fi
 
     printf "\n ** Found PiMusicBox files at $PIMUSICBOX_FILES\n"
+
+    printf "\n ** Copying PiMusicBox packages to $PIMUSICBOX_PACKAGES\n"
+    mkdir -p "$PIMUSICBOX_PACKAGES"
+    cp $PIMUSICBOX_FILES/../packages/* $PIMUSICBOX_PACKAGES/
 else
-    printf "\n ** Warning: No PiMusicBox files specified.\n"
+    printf "\n ** Error: Could not find PiMusicBox files.\n"
+    return false
 fi
 
 # Prevent unhelpful services from starting during install.
@@ -133,6 +140,10 @@ wget -q -O - http://www.lesbonscomptes.com/key/jf@dockes.org.gpg.key | apt-key a
 cat << EOF > /etc/apt/sources.list.d/upmpdcli.list
 deb http://www.lesbonscomptes.com/upmpdcli/downloads/debian/ unstable main
 deb-src http://www.lesbonscomptes.com/upmpdcli/downloads/debian/ unstable main
+EOF
+#TODO: import musicbox gpg key.
+cat << EOF > /etc/apt/sources.list.d/musicbox.list
+deb [trusted=yes] file:$PIMUSICBOX_PACKAGES ./
 EOF
 
 # Agree to Intel firmware license
@@ -166,8 +177,7 @@ systemctl set-default multi-user.target
 systemctl mask ssh
 sed -i 's/NO_START=1/NO_START=0/' /etc/default/dropbear
 # TODO: Consider presets (https://www.freedesktop.org/software/systemd/man/systemd.preset.html)
-systemctl enable dropbear upmpdcli mopidy
-#TODO: shairport-sync
+systemctl enable dropbear upmpdcli mopidy shairport-sync
 
 printf "\n ** Creating music directories...\n\n"
 
@@ -222,6 +232,8 @@ sed -i -e 's/^#\?disallow-other-stacks=.*/disallow-other-stacks=yes/' \
        -e 's/^#\?publish-a-on-ipv6=.*/publish-a-on-ipv6=yes/' /etc/avahi/avahi-daemon.conf
 # Reduce priority of upmpdcli. TODO: better done through systemd?
 sed -i '/As a last resort, sleep for some time./a renice 19 `pgrep upmpdcli`' /etc/init.d/upmpdcli
+sed -i -e 's@//\s*run_this_before_play_begins =.*$@\trun_this_before_play_begins = "/usr/bin/mpc stop";@' \
+       -e 's@//\s*wait_for_completion =.*$@\twait_for_completion = "yes";@' /etc/shairport-sync.conf
 
 printf "\n ** Enabling PiMusicBox service...\n"
 
@@ -245,3 +257,5 @@ if grep -q Raspbian /etc/*-release; then
     # at high bitrates interferes with the ethernet activity, which also runs over USB.
     sed -i '1s/^/dwc_otg.fiq_fix_enable=1 dwc_otg.fiq_split_enable=0 smsc95xx.turbo_mode=N /' /boot/cmdline.txt
 fi
+
+printf "** Install complete, please reboot. **\n"
