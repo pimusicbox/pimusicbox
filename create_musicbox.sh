@@ -237,9 +237,9 @@ sed -i '/As a last resort, sleep for some time./a renice 19 `pgrep upmpdcli`' /e
 sed -i -e 's@//\s*run_this_before_play_begins =.*$@\trun_this_before_play_begins = "/usr/bin/mpc stop";@' \
        -e 's@//\s*wait_for_completion =.*$@\twait_for_completion = "yes";@' /etc/shairport-sync.conf
 
-printf "\n ** Enabling PiMusicBox service...\n"
+printf "\n ** Enabling PiMusicBox services...\n"
 
-systemctl enable musicbox
+systemctl enable musicbox musicbox-firstboot musicbox-autoplay
 
 if grep -q Raspbian /etc/*-release; then
     printf "\n ** Performing raspberry pi specific fixes/optimisations...\n"
