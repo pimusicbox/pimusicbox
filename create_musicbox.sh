@@ -128,6 +128,8 @@ printf "\n ** Installing Debian packages...\n\n"
 apt-get update && apt-get --yes install sudo wget unzip ntpdate lsb-release
 
 # Update time, to prevent update problems
+echo "Europe/London" > /etc/timezone
+dpkg-reconfigure -f noninteractive tzdata
 ntpdate -u ntp.ubuntu.com
 
 # Update the distribution to get latest fixes for audio and usb-issues
