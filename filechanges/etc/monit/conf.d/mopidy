@@ -1,1 +1,5 @@
-/etc/monit/monitrc.d/mopidy
+check process mopidy with pidfile /var/run/mopidy.pid
+      start program = "/etc/init.d/mopidy start"
+      stop  program = "/etc/init.d/mopidy stop"
+      restart program = "/etc/init.d/mopidy restart"
+      if failed port 6680 protocol http for 2 cycles then restart

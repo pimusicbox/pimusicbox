@@ -92,15 +92,29 @@ chmod u+s /sbin/shutdown
 if [ "$INI__network__wifi_network" != "" ]
 then
     #put wifi settings for wpa roaming
-cat >/etc/wpa.conf <<EOF
-    ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-    update_config=1
-    network={
-        ssid="$INI__network__wifi_network"
-        psk="$INI__network__wifi_password"
-        scan_ssid=1
-    }
+    if [ "$INI__network__wifi_password" != "" ]
+    then
+        cat >/etc/wpa.conf <<EOF
+            ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+            update_config=1
+            network={
+                ssid="$INI__network__wifi_network"
+                psk="$INI__network__wifi_password"
+                scan_ssid=1
+            }
 EOF
+    else
+        #if no password is given, set key_mgmt to NONE
+        cat >/etc/wpa.conf <<EOF
+            ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+            update_config=1
+            network={
+                ssid="$INI__network__wifi_network"
+                key_mgmt=NONE
+                scan_ssid=1
+            }
+EOF
+    fi
 
     #enable wifi
 #    ifdown wlan0
@@ -185,7 +199,13 @@ if [ "$INI__network__mount_address" != "" ]
 then
     #mount samba share, readonly
     log_progress_msg "Mounting Windows Network drive..." "$NAME"
-    mount -t cifs -o sec=ntlm,ro,user=$INI__network__mount_user,password=$INI__network__mount_password $INI__network__mount_address /music/Network/
+    if [ "$INI__network__mount_user" != "" ]
+    then
+        SMB_CREDENTIALS=user=$INI__network__mount_user,password=$INI__network__mount_password
+    else
+        SMB_CREDENTIALS=guest
+    fi
+    mount -t cifs -o sec=ntlm,ro,$SMB_CREDENTIALS "$INI__network__mount_address" /music/Network/
 #    mount -t cifs -o sec=ntlm,ro,rsize=2048,wsize=4096,cache=strict,user=$INI__network__mount_user,password=$INI__network__mount_password $INI__network__mount_address /music/Network/
 #add rsize=2048,wsize=4096,cache=strict because of usb (from raspyfi)
 fi
@@ -224,17 +244,34 @@ fi
 # renice mopidy to 19, to have less stutter when playing tracks from spotify (at the start of a track)
 renice 19 `pgrep mopidy`
 
-if [ "$INI__musicbox__autoplay" -a "$INI__musicbox__autoplaywait" ]
+if [ "$INI__musicbox__autoplay" -a "$INI__musicbox__autoplaymaxwait" ]
 then
-    log_progress_msg "Waiting $INI__musicbox__autoplaywait seconds before autoplay." "$NAME"
-    sleep $INI__musicbox__autoplaywait
-    log_progress_msg "Playing $INI__musicbox__autoplay" "$NAME"
-    mpc add "$INI__musicbox__autoplay"
-    mpc play
+    if ! [[ $INI__musicbox__autoplaymaxwait =~ ^[0-9]*+$ ]] ; then
+        log_progress_msg "Value specified for 'autoplaymaxwait' is not a number, defaulting to 60" "$NAME"
+        INI__musicbox__autoplaymaxwait=60
+    fi
+    log_progress_msg "Waiting for Mopidy to accept connections..." "$NAME"
+    waittime=0
+    while ! nc -q 1 localhost 6600 </dev/null;
+        do
+            sleep 1;
+            waittime=$((waittime+1));
+            if [ $waittime -gt $INI__musicbox__autoplaymaxwait ]
+                then
+                    log_progress_msg "Timeout waiting for Mopidy to start, aborting" "$NAME"
+                    break;
+            fi
+        done
+    if [ $waittime -le $INI__musicbox__autoplaymaxwait ]
+        then
+            log_progress_msg "Mopidy startup complete, playing $INI__musicbox__autoplay" "$NAME"
+            mpc add "$INI__musicbox__autoplay"
+            mpc play
+    fi
 fi
 
 
-# check and clean dirty bit of vfat partition not safely removed
+# check and clean dirty bit of vfat partition if not safely removed
 fsck /dev/mmcblk0p1 -v -a -w -p > /dev/null 2>&1 || true
 
 log_end_msg 0
