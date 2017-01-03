@@ -99,6 +99,7 @@ if [ "$PIMUSICBOX_FILES" != "" ]; then
         unzip -- "${PIMUSICBOX_BRANCH}.zip"
         rm -- "${PIMUSICBOX_BRANCH}.zip"
         mv -- "pimusicbox-${PIMUSICBOX_BRANCH}/filechanges" "$PIMUSICBOX_FILES"
+        mv -- "pimusicbox-${PIMUSICBOX_BRANCH}/packages" "$PIMUSICBOX_FILES/../"
     fi
     if [ ! -d "$PIMUSICBOX_FILES" ]; then
         printf "** Failed to find PiMusicBox files at $PIMUSICBOX_FILES.\n"
