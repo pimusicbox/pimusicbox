@@ -182,32 +182,44 @@ service monit start
 
 #check networking, sleep for a while
 MYIP=$(hostname -I)
+LOOP_COUNT=0
+LOOP_LIMIT=4
 while [ "$MYIP" == "" -a "$INI__network__wait_for_network" != "0" ]
 do
-    echo "Waiting for network..."
+    LOOP_COUNT=$((LOOP_COUNT+1));
+    if [ $LOOP_COUNT -gt $LOOP_LIMIT ]
+    then
+        log_failure_msg "Timeout waiting for network to start"
+        log_failure_msg "Check your network settings"
+        break;
+    fi
+    echo "Waiting for network ($LOOP_COUNT of $LOOP_LIMIT)..."
     echo
     /etc/init.d/networking restart
     sleep 30
     MYIP=$(hostname -I)
 done
 
-# set date/time
-ntpdate ntp.ubuntu.com > /dev/null 2>&1 || true
-
-#mount windows share
-if [ "$INI__network__mount_address" != "" ]
+if [ "$MYIP" != "" ]
 then
-    #mount samba share, readonly
-    log_progress_msg "Mounting Windows Network drive..." "$NAME"
-    if [ "$INI__network__mount_user" != "" ]
+    # set date/time
+    ntpdate ntp.ubuntu.com > /dev/null 2>&1 || true
+
+    #mount windows share
+    if [ "$INI__network__mount_address" != "" ]
     then
-        SMB_CREDENTIALS=user=$INI__network__mount_user,password=$INI__network__mount_password
-    else
-        SMB_CREDENTIALS=guest
+        #mount samba share, readonly
+        log_progress_msg "Mounting Windows Network drive..." "$NAME"
+        if [ "$INI__network__mount_user" != "" ]
+        then
+            SMB_CREDENTIALS=user=$INI__network__mount_user,password=$INI__network__mount_password
+        else
+            SMB_CREDENTIALS=guest
+        fi
+        mount -t cifs -o sec=ntlm,ro,$SMB_CREDENTIALS "$INI__network__mount_address" /music/Network/
+    #    mount -t cifs -o sec=ntlm,ro,rsize=2048,wsize=4096,cache=strict,user=$INI__network__mount_user,password=$INI__network__mount_password $INI__network__mount_address /music/Network/
+    #add rsize=2048,wsize=4096,cache=strict because of usb (from raspyfi)
     fi
-    mount -t cifs -o sec=ntlm,ro,$SMB_CREDENTIALS "$INI__network__mount_address" /music/Network/
-#    mount -t cifs -o sec=ntlm,ro,rsize=2048,wsize=4096,cache=strict,user=$INI__network__mount_user,password=$INI__network__mount_password $INI__network__mount_address /music/Network/
-#add rsize=2048,wsize=4096,cache=strict because of usb (from raspyfi)
 fi
 
 # scan local music files once
