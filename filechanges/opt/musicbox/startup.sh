@@ -236,7 +236,13 @@ then
     /etc/init.d/mopidy run local scan
     #if somehow mopidy is not killed ok. kill manually
     killall -9 mopidy > /dev/null 2>&1 || true
-    /etc/init.d/mopidy start
+fi
+
+# Set the default webclient
+if [ "$INI__musicbox__webclient" != "" ]
+then
+    _URL="/${INI__musicbox__webclient}/index.html"
+    echo -e "<html><head><meta http-equiv='refresh' content='0; URL=$_URL'></head><body>Web interface moved, <a href='$_URL'>click here</a></body></html>" > /opt/musicbox/webclient/index.html
 fi
 
 #start mopidy
