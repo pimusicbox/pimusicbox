@@ -11,6 +11,7 @@ pip install mopidy-mobile==1.7.5
 pip install mopidy-tunein==0.1.3
 pip install mopidy-youtube==1.0.2
 pip install mopidy-spotify-web==0.3.0
+pip install https://github.com/pimusicbox/mopidy-websettings/zipball/develop
 
 # Reckless hack for playlists not appearing issue.
 sed -i '175s/^/#/' /usr/local/lib/python2.7/dist-packages/mopidy_spotify/session_manager.py
