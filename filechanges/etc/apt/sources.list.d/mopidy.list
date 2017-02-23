@@ -1,3 +1,4 @@
 # Mopidy APT archive
-deb http://apt.mopidy.com/ stable main contrib non-free
-deb-src http://apt.mopidy.com/ stable main contrib non-free
+# Built on Debian 7 (wheezy), compatible with Ubuntu 12.04 LTS
+deb http://apt.mopidy.com/ wheezy main contrib non-free
+deb-src http://apt.mopidy.com/ wheezy main contrib non-free

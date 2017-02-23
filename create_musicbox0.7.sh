@@ -1,5 +1,14 @@
-wget -q -O /etc/apt/sources.list.d/mopidy.list https://apt.mopidy.com/wheezy.list
-#apt-get update && apt-get dist-upgrade -y
+# dpkg: warning: unable to delete old directory '/lib/modules/3.18.7+/kernel/drivers/net/wireless': Directory not empty
+rm /lib/modules/3.18.7+/kernel/drivers/net/wireless/8188eu.ko
+# Prevent upgraded services from trying to start inside chroot
+echo exit 101 > /usr/sbin/policy-rc.d
+chmod +x /usr/sbin/policy-rc.d
+DEBIAN_FRONTEND=noninteractive
+# Remove unused and outdated Mopidy APT repo
+rm /etc/apt/sources.list.d/mopidy.list
+
+# Upgrade!
+apt-get update && apt-get dist-upgrade -y
 
 #https://github.com/pimusicbox/pimusicbox/issues/316
 apt-get remove --purge linux-wlan-ng -y
@@ -24,7 +33,8 @@ fi
 # Clean up
 apt-get clean
 apt-get autoclean
-rm -rf /var/lib/apt/lists/*
+rm -rf /var/lib/apt/lists/* /etc/apt/apt.conf.d/01proxy /usr/sbin/policy-rc.d
+rm /etc/dropbear/*key
 find /var/log -type f | xargs rm
 find /home/ -type f -name *.log | xargs rm
 find /home/ -type f -name *_history | xargs rm
