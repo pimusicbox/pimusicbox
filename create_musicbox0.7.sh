@@ -1,3 +1,7 @@
+APT_PROXY=${APT_PROXY:-localhost:3142}
+echo "Acquire::http { Proxy \"http://$APT_PROXY\"; };" > \
+    /etc/apt/apt.conf.d/01proxy
+    
 # dpkg: warning: unable to delete old directory '/lib/modules/3.18.7+/kernel/drivers/net/wireless': Directory not empty
 rm /lib/modules/3.18.7+/kernel/drivers/net/wireless/8188eu.ko
 # Prevent upgraded services from trying to start inside chroot
