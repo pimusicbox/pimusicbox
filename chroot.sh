@@ -1,9 +1,10 @@
-RUN_SCRIPT=$1
-MY_PATH=$(cd $(dirname $0) ; pwd -P)
-SRC_FILES=${2:-$MY_PATH}
-MUSICBOX_IMG=$(ls musicbox*.img)
+IMG_FILE=$1
+RUN_SCRIPT=$2
+IMG_MIN_SIZE=${IMG_MIN_SIZE:-1300000000}
+SRC_FILES=$(cd $(dirname $0) ; pwd -P)
 ROOTFS_DIR=${ROOTFS_DIR:-rootfs}
 CHROOT_CMD=/bin/bash
+SECTOR_SIZE=512
 
 if [ "$RUN_SCRIPT" != "" ]; then
     if [ ! -f "$SRC_FILES/$RUN_SCRIPT" ]; then
@@ -12,19 +13,21 @@ if [ "$RUN_SCRIPT" != "" ]; then
     fi
     CHROOT_CMD+=" -c ./tmp/${RUN_SCRIPT}"
 fi
-if [ ! -f "$MUSICBOX_IMG" ]; then
-    echo "ERROR: No musicbox disk image found"
+if [ ! -f "$IMG_FILE" ]; then
+    echo "ERROR: No musicbox image found"
     exit 1
 fi
-
 sudo echo "Info: Checking have root access to mount the disk images."
 
-IMG_SIZE=$(ls -l $MUSICBOX_IMG | cut -d" " -f5)
-if [ $IMG_SIZE -lt 1500000000  ]; then
-    echo "Enlarging image..."
-    truncate --size +1G $MUSICBOX_IMG
-    LOOP_DEV=$(sudo losetup -f --show $MUSICBOX_IMG)
-    OFFSET=$(sudo fdisk -l $MUSICBOX_IMG  | grep Linux | awk -F" "  '{ print $2 }')
+# Ensure image has enough space.
+IMG_SIZE=$(ls -l $IMG_FILE | cut -d" " -f5)
+IMG_MIN_SIZE=$(expr $IMG_MIN_SIZE / $SECTOR_SIZE \* $SECTOR_SIZE)
+if [ $IMG_SIZE -lt $IMG_MIN_SIZE ]; then
+    SIZE_INCR=$(expr $IMG_MIN_SIZE - $IMG_SIZE)
+    echo "Enlarging image by $SIZE_INCR bytes..."
+    truncate --size +${SIZE_INCR} $IMG_FILE
+    OFFSET=$(sudo fdisk -l $IMG_FILE  | grep Linux | awk -F" "  '{ print $2 }')
+    LOOP_DEV=$(sudo losetup -fP --show $IMG_FILE)
     cat <<EOF | sudo fdisk $LOOP_DEV
 d
 2
@@ -36,15 +39,13 @@ $OFFSET
 w
 EOF
 
-    sudo losetup -D $LOOP_DEV
-    LOOP_DEV=$(sudo losetup -f -o $(($OFFSET*512)) --show $MUSICBOX_IMG)
-    sudo e2fsck -f ${LOOP_DEV}
-    sudo resize2fs ${LOOP_DEV}
+    sudo e2fsck -f ${LOOP_DEV}p2
+    sudo resize2fs ${LOOP_DEV}p2
     sudo losetup -D $LOOP_DEV
 fi
 
-echo "Mounting $MUSICBOX_IMG and preparing arm chroot..."
-LOOP_DEV=$(sudo losetup -fP --show $MUSICBOX_IMG)
+echo "Mounting $IMG_FILE and preparing arm chroot..."
+LOOP_DEV=$(sudo losetup -fP --show $IMG_FILE)
 mkdir -p ${ROOTFS_DIR}
 sudo mount ${LOOP_DEV}p2 ${ROOTFS_DIR}
 sudo mount ${LOOP_DEV}p1 ${ROOTFS_DIR}/boot
@@ -73,4 +74,4 @@ do
     echo "Unmounting $m"
     sudo umount $m
 done
-sudo losetup -D $MUSICBOX_IMG
+sudo losetup -D $IMG_FILE
