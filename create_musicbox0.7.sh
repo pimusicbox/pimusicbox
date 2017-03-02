@@ -37,8 +37,7 @@ pip install requests[security] backports.ssl-match-hostname backports-abc tornad
 pip install mopidy==1.1.2
 # TODO: Update to v2.4.0 (when released)
 pip install mopidy-musicbox-webclient==2.3.0
-# TODO: Update to v0.5.0 (when released)
-pip install https://github.com/pimusicbox/mopidy-websettings/zipball/develop
+pip install mopidy-websettings==0.1.5
 pip install mopidy-mopify==1.6.0
 pip install mopidy-mobile==1.8.0
 pip install mopidy-youtube==2.0.2
