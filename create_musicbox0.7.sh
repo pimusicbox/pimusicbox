@@ -82,7 +82,7 @@ fi
 cp -R $PIMUSICBOX_FILES/* /
 
 # Clean up.
-apt-get remove --yes --purge $PYTHON_BUILD_DEPS SHAIRPORT_DEPS
+apt-get remove --yes --purge $PYTHON_BUILD_DEPS $SHAIRPORT_DEPS
 apt-get autoremove --yes
 apt-get clean
 apt-get autoclean
