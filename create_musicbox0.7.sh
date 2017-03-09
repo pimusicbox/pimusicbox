@@ -41,7 +41,7 @@ autoreconf -i -f
 ./configure --sysconfdir=/etc --with-alsa --with-avahi --with-ssl=openssl --with-metadata --with-systemv
 make && make install
 cd ../
-rm -rf shairport-sync-${SHAIRPORT_VERSION}
+rm -rf shairport-sync*
 
 # Need these to rebuild python dependencies
 PYTHON_BUILD_DEPS="build-essential python-dev libffi-dev libssl-dev"
@@ -88,8 +88,3 @@ apt-get clean
 apt-get autoclean
 
 rm -rf /etc/apt/apt.conf.d/01proxy /usr/sbin/policy-rc.d
-# TODO: Move these to makeimage.sh
-rm -rf /var/lib/apt/lists/* /var/cache/apt/* /var/lib/apt/* /etc/dropbear/*key
-find /var/log -type f | xargs rm
-find /home/ -type f -name *.log | xargs rm
-find /home/ -type f -name *_history | xargs rm
