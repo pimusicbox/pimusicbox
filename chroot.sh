@@ -74,5 +74,4 @@ do
     echo "Unmounting $m"
     sudo umount $m
 done
-sudo zerofree -v ${LOOP_DEV}p2
 sudo losetup -D $IMG_FILE

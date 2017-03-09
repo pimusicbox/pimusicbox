@@ -1,6 +1,12 @@
+PIMUSICBOX_FILES=/tmp/filechanges
+PIMUSICBOX_VERSION=0.7
+SHAIRPORT_VERSION=3.0
 #APT_PROXY=localhost:3142
+
 echo "Acquire::http { Proxy \"http://$APT_PROXY\"; };" > \
     /etc/apt/apt.conf.d/01proxy
+
+cd /tmp
 
 # Update system time to avoid SSL errors later.
 ntpdate-debian
@@ -24,6 +30,18 @@ apt-get dist-upgrade -y
 apt-get remove --yes --purge linux-wlan-ng
 # https://github.com/pimusicbox/pimusicbox/issues/371
 pip uninstall --yes mopidy-local-whoosh
+
+# Build and install latest version of shairport-sync
+SHAIRPORT_DEPS="build-essential xmltoman autoconf automake libtool libdaemon-dev libasound2-dev libpopt-dev libconfig-dev avahi-daemon libavahi-client-dev libssl-dev"
+apt-get install --yes $SHAIRPORT_DEPS
+wget https://github.com/mikebrady/shairport-sync/archive/${SHAIRPORT_VERSION}.zip
+unzip ${SHAIRPORT_VERSION}.zip && rm ${SHAIRPORT_VERSION}.zip
+cd shairport-sync-${SHAIRPORT_VERSION}
+autoreconf -i -f
+./configure --sysconfdir=/etc --with-alsa --with-avahi --with-ssl=openssl --with-metadata --with-systemv
+make && make install
+cd ../
+rm -rf shairport-sync-${SHAIRPORT_VERSION}
 
 # Need these to rebuild python dependencies
 PYTHON_BUILD_DEPS="build-essential python-dev libffi-dev libssl-dev"
@@ -56,16 +74,22 @@ mopidy deps | grep "/usr/lib" | grep -v -e "GStreamer: 0.10" -e "Python: CPython
 sed -i '182s/^/#/' /usr/local/lib/python2.7/dist-packages/mopidy_spotify/session_manager.py
 
 # Copy updated files.
-if [ -d /tmp/filechanges ]; then
-    cp -R /tmp/filechanges/* /
+if [ ! -d $PIMUSICBOX_FILES ]; then
+    wget https://github.com/pimusicbox/pimusicbox/archive/${PIMUSICBOX_VERSION}.zip
+    unzip ${PIMUSICBOX_VERSION}.zip && rm ${PIMUSICBOX_VERSION}.zip 
+    PIMUSICBOX_FILES=pimusicbox-${PIMUSICBOX_VERSION}/filechanges
 fi
+cp -R $PIMUSICBOX_FILES/* /
 
 # Clean up.
-apt-get remove --yes --purge $PYTHON_BUILD_DEPS
+apt-get remove --yes --purge $PYTHON_BUILD_DEPS SHAIRPORT_DEPS
 apt-get autoremove --yes
 apt-get clean
 apt-get autoclean
-rm -rf /var/lib/apt/lists/* /etc/apt/apt.conf.d/01proxy /usr/sbin/policy-rc.d /etc/dropbear/*key
+
+rm -rf /etc/apt/apt.conf.d/01proxy /usr/sbin/policy-rc.d
+# TODO: Move these to makeimage.sh
+rm -rf /var/lib/apt/lists/* /var/cache/apt/* /var/lib/apt/* /etc/dropbear/*key
 find /var/log -type f | xargs rm
 find /home/ -type f -name *.log | xargs rm
 find /home/ -type f -name *_history | xargs rm
