@@ -41,8 +41,9 @@ apt-get remove --yes --purge linux-wlan-ng
 pip uninstall --yes mopidy-local-whoosh
 
 # Build and install latest version of shairport-sync
-SHAIRPORT_DEPS="build-essential xmltoman autoconf automake libtool libdaemon-dev libasound2-dev libpopt-dev libconfig-dev avahi-daemon libavahi-client-dev libssl-dev"
-apt-get install --yes $SHAIRPORT_DEPS
+SHAIRPORT_BUILD_DEPS="build-essential xmltoman autoconf automake libtool libdaemon-dev libasound2-dev libpopt-dev libconfig-dev avahi-daemon libavahi-client-dev libssl-dev"
+SHAIRPORT_RUN_DEPS="libc6 libconfig9 libdaemon0 libasound2 libpopt0 libavahi-common3 avahi-daemon libavahi-client3 libssl1.0.0"
+apt-get install --yes $SHAIRPORT_BUILD_DEPS $SHAIRPORT_RUN_DEPS
 wget https://github.com/mikebrady/shairport-sync/archive/${SHAIRPORT_VERSION}.zip
 unzip ${SHAIRPORT_VERSION}.zip && rm ${SHAIRPORT_VERSION}.zip
 cd shairport-sync-${SHAIRPORT_VERSION}
@@ -97,7 +98,7 @@ do
 done
 
 # Clean up.
-apt-get remove --yes --purge $PYTHON_BUILD_DEPS $SHAIRPORT_DEPS
+apt-get remove --yes --purge $PYTHON_BUILD_DEPS $SHAIRPORT_BUILD_DEPS
 apt-get autoremove --yes
 apt-get clean
 apt-get autoclean
