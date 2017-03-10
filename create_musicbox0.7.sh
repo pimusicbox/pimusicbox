@@ -1,7 +1,7 @@
 PIMUSICBOX_FILES=/tmp/filechanges
 PIMUSICBOX_VERSION=0.7
 SHAIRPORT_VERSION=3.0
-APT_PROXY=localhost:3142
+#APT_PROXY=localhost:3142
 
 echo "Acquire::http { Proxy \"http://$APT_PROXY\"; };" > \
     /etc/apt/apt.conf.d/01proxy
@@ -17,12 +17,10 @@ rm /lib/modules/3.18.7+/kernel/drivers/net/wireless/8188eu.ko
 # Prevent upgraded services from trying to start inside chroot.
 echo exit 101 > /usr/sbin/policy-rc.d
 chmod +x /usr/sbin/policy-rc.d
-DEBIAN_FRONTEND=noninteractive
+export DEBIAN_FRONTEND=noninteractive
 # Remove Mopidy APT repo details, using pip version to avoid Wheezy induced dependency hell.
 rm /etc/apt/sources.list.d/mopidy.list
 
-# Remove custom configuration in preparation for upgrading to latest version.
-rm -f /etc/upmpdcli.conf
 wget -q -O - http://www.lesbonscomptes.com/key/jf@dockes.org.gpg.key | apt-key add -
 cat << EOF > /etc/apt/sources.list.d/upmpdcli.list
 deb http://www.lesbonscomptes.com/upmpdcli/downloads/raspbian-wheezy/ unstable main
@@ -33,7 +31,7 @@ apt-get update
 apt-get remove --yes --purge python-pykka python-pylast
 
 # Upgrade!
-apt-get dist-upgrade -y
+apt-get dist-upgrade --yes -o Dpkg::Options::="--force-confnew"
 
 # https://github.com/pimusicbox/pimusicbox/issues/316
 apt-get remove --yes --purge linux-wlan-ng
