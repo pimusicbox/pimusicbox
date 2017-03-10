@@ -2,6 +2,34 @@
 Changelog
 *********
 
+v0.7.0RC3 (UNRELEASED)
+===================
+
+- Updated upmpdcli to v1.2.11
+- Fixed Shairport-Sync support
+
+v0.7.0RC2 (2017-03-09)
+===================
+
+- Updated Shairport-Sync to v3.0
+- Fixed support for HiFiBerry Digi
+
+v0.7.0RC1 (2017-02-23)
+===================
+
+- Raspberry Pi 3 and Zero compatability (using updated kernel)
+- Compatible with Mopidy v1.1.2
+- Mopidy extensions updated
+- "Fixed" spotify playlists not appearing
+- Added mopidy-spotify-web
+- Disabled alsamixer by default
+- Implemented 2 minute timeout while waiting for network
+- Removed wireless-ng package
+- Limit overclocking settings to Raspberry Pi 1 hardware only
+- Log startup to /var/log/musicbox_startup.log
+- Add support for webapp type webclients
+- Applying settings via websettings restarts Mopidy (not system) when possible
+
 v0.6.0 (2015-04-06)
 ===================
 
