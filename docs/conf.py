@@ -36,15 +36,17 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Pi MusicBox'
-copyright = u'2015, Pi MusicBox contributors'
+copyright = u'2017, Pi MusicBox contributors'
 author = u'Pi MusicBox contributors'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
+from subprocess import Popen, PIPE
+pipe = Popen('git describe --tags --always --abbrev=0', stdout=PIPE, shell=True)
 #
 # The short X.Y version.
-version = '1.0'
+version = pipe.stdout.read().lstrip('v').rstrip() or '0.7.0'
 # The full version, including alpha/beta/rc tags.
 release = version
 
