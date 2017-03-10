@@ -2,6 +2,10 @@
 Changelog
 *********
 
+v0.7 (UNRELEASED)
+----------------------------------------
+- Add support for equalization via alsaeq
+
 v0.6.0 (2015-04-06)
 ===================
 
