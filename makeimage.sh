@@ -9,7 +9,7 @@ VERSION=${VERSION:-${SRC_VERSION_SHORT}}
 ZIP_NAME=musicbox_${VERSION}.zip
 IMG_NAME=musicbox_${VERSION}.img
 
-BUILD_DIR=${BUILD_DIR:-_build_$VERSION}
+BUILD_DIR=${BUILD_DIR:-${SRC_FILES}/_build}
 ROOTFS_DIR=${ROOTFS_DIR:-${BUILD_DIR}/rootfs}
 
 if [ ! -f "$INPUT_IMG" ]; then
@@ -31,7 +31,7 @@ ROOT_PART=${LOOP_DEV}p2
 mkdir -p ${ROOTFS_DIR}
 sudo mount ${ROOT_PART} ${ROOTFS_DIR}
 
-echo "Musicbox ${VERSION}\n${SRC_VERSION_LONG}" | sudo tee ${ROOTFS_DIR}/etc/issue
+echo "Musicbox ${SRC_VERSION_LONG}" | sudo tee ${ROOTFS_DIR}/etc/issue
 sudo rm -rf ${ROOTFS_DIR}/var/lib/apt/lists/* 
 sudo rm -rf ${ROOTFS_DIR}/var/cache/apt/*
 sudo rm -rf ${ROOTFS_DIR}/var/lib/apt/*
@@ -44,8 +44,8 @@ sudo find ${ROOTFS_DIR}/home/ -type f -name *.log | xargs rm -f
 sudo find ${ROOTFS_DIR}/home/ -type f -name *_history | xargs rm -f
 sync
 
-sudo umount ${ROOTFS_DIR}
-sudo e2fsck -fy ${ROOT_PART}
+sudo umount $ROOTFS_DIR
+sudo e2fsck -fy $ROOT_PART
 
 ###
 # TODO: Shrink image to fit on smaller SD cards? Who still uses 1G SD cards?!
@@ -62,13 +62,12 @@ sudo e2fsck -fy ${ROOT_PART}
 #w
 #EOF
 
-sudo zerofree -v ${ROOT_PART}
+sudo zerofree -v $ROOT_PART
 sudo losetup -D $IMG_NAME
 #truncate -s $IMG_SIZE $IMG_NAME
 
 rm -rf $ROOTFS_DIR
 cd $SRC_FILES/docs
-# TODO: Build and include pdf docs
 make text latexpdf
 cp _build/text/{changes,faq}.txt  $BUILD_DIR/
 cp _build/latex/PiMusicBox.pdf  $BUILD_DIR/
