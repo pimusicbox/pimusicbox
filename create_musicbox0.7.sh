@@ -1,7 +1,7 @@
 PIMUSICBOX_FILES=/tmp/filechanges
 PIMUSICBOX_VERSION=0.7
 SHAIRPORT_VERSION=3.0
-#APT_PROXY=localhost:3142
+APT_PROXY=localhost:3142
 
 echo "Acquire::http { Proxy \"http://$APT_PROXY\"; };" > \
     /etc/apt/apt.conf.d/01proxy
@@ -20,6 +20,15 @@ chmod +x /usr/sbin/policy-rc.d
 DEBIAN_FRONTEND=noninteractive
 # Remove Mopidy APT repo details, using pip version to avoid Wheezy induced dependency hell.
 rm /etc/apt/sources.list.d/mopidy.list
+
+# Remove custom configuration in preparation for upgrading to latest version.
+rm -f /etc/upmpdcli.conf
+wget -q -O - http://www.lesbonscomptes.com/key/jf@dockes.org.gpg.key | apt-key add -
+cat << EOF > /etc/apt/sources.list.d/upmpdcli.list
+deb http://www.lesbonscomptes.com/upmpdcli/downloads/raspbian-wheezy/ unstable main
+deb-src http://www.lesbonscomptes.com/upmpdcli/downloads/raspbian-wheezy/ unstable main
+EOF
+
 apt-get update
 apt-get remove --yes --purge python-pykka python-pylast
 
@@ -80,6 +89,12 @@ if [ ! -d $PIMUSICBOX_FILES ]; then
     PIMUSICBOX_FILES=pimusicbox-${PIMUSICBOX_VERSION}/filechanges
 fi
 cp -R $PIMUSICBOX_FILES/* /
+
+MUSICBOX_SERVICES="ssh dropbear upmpdcli shairport-sync"
+for service in $MUSICBOX_SERVICES
+do
+    update-rc.d $service disable
+done
 
 # Clean up.
 apt-get remove --yes --purge $PYTHON_BUILD_DEPS $SHAIRPORT_DEPS
