@@ -78,8 +78,20 @@ pip install mopidy-scrobbler==1.1.1
 mopidy --version
 mopidy deps | grep "/usr/lib" | grep -v -e "GStreamer: 0.10" -e "Python: CPython" | wc -l
 
-# Reckless hack for playlists not appearing issue.
+# A bunch of reckless hacks:
+# Force Spotify playlists to appear:
 sed -i '182s/^/#/' /usr/local/lib/python2.7/dist-packages/mopidy_spotify/session_manager.py
+# This should fix MPDroid trying to use MPD commands unsupported by Mopidy. But MPDroid still isn't working properly.
+#sed -i 's/0.19.0/0.18.0/' /usr/local/lib/python2.7/dist-packages/mopidy/mpd/protocol/__init__.py
+# Speedup MPD connections.
+sed -i '/try:/i \
+        # Horrible hack here:\
+        core.library\
+        core.history\
+        core.mixer\
+        core.playback\
+        core.playlists\
+        core.tracklist' /usr/local/lib/python2.7/dist-packages/mopidy/mpd/actor.py
 
 # Copy updated files.
 if [ ! -d $PIMUSICBOX_FILES ]; then
