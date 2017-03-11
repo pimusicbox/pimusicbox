@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+
 INPUT_IMG=$1
 
 SRC_FILES=$(cd $(dirname $0) ; pwd -P)
