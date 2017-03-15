@@ -2,11 +2,15 @@
 Changelog
 *********
 
-v0.7.0RC3 (UNRELEASED)
+v0.7.0RC3 (2017-03-15)
 ===================
 
 - Updated upmpdcli to v1.2.11
 - Fixed Shairport-Sync support
+- Updated mopidy-dirble, mopidy-soundcloud, mopidy-musicbox-webclient
+- "Fixed" mopidy-youtube preferring m4a streams
+- "Fixed" slow MPD connection creation
+- Removed streamuris. Favourite streams now stored in an m3u playlist in /music/playlists/
 
 v0.7.0RC2 (2017-03-09)
 ===================
