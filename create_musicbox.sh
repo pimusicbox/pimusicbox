@@ -117,8 +117,8 @@ ln -fsn /boot/config/settings.ini /var/lib/mopidy/.config/mopidy/mopidy.conf
 sed -i '1s/^/dwc_otg.fiq_fix_enable=1 dwc_otg.fiq_split_enable=0 smsc95xx.turbo_mode=N /' /boot/cmdline.txt
 
 #cleanup
-apt-get remove build-essential python-pip
-apt-get autoremove
+apt-get autoremove --yes
+apt-get remove --yes build-essential python-pip
 apt-get clean
 apt-get autoclean
 
