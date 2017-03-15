@@ -58,7 +58,7 @@ apt-get install --yes $PYTHON_BUILD_DEPS
 rm -rf /tmp/pip_build_root
 python -m pip install -U pip
 # Upgrade some dependencies.
-pip install requests[security] backports.ssl-match-hostname backports-abc tornado gmusicapi pykka pylast --upgrade
+pip install requests[security] backports.ssl-match-hostname backports-abc tornado gmusicapi pykka pylast pafy youtube-dl --upgrade
 # The lastest versions that are still supported in Wheezy (Gstreamer 0.10).
 pip install mopidy==1.1.2
 pip install mopidy-musicbox-webclient==2.4.0
@@ -91,6 +91,8 @@ sed -i '/try:/i \
         core.playback\
         core.playlists\
         core.tracklist' /usr/local/lib/python2.7/dist-packages/mopidy/mpd/actor.py
+# Force YouTube to favour m4a streams as gstreamer0.10's webm support is bad/non-existent:
+sed -i '/getbestaudio(/getbestaudio(preftype="m4a"/' /usr/local/lib/python2.7/dist-packages/mopidy_youtube/backend.py
 
 # Copy updated files.
 if [ ! -d $PIMUSICBOX_FILES ]; then
