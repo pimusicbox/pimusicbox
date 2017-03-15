@@ -100,6 +100,8 @@ if [ ! -d $PIMUSICBOX_FILES ]; then
 fi
 cp -R $PIMUSICBOX_FILES/* /
 
+chown -R mopidy:audio /music/playlists/
+
 MUSICBOX_SERVICES="ssh dropbear upmpdcli shairport-sync"
 for service in $MUSICBOX_SERVICES
 do

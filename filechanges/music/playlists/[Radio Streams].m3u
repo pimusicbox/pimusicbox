@@ -1,0 +1,15 @@
+#EXTM3U
+#EXTINF:-1,NPR 24
+http://www.npr.org/streams/mp3/nprlive24.pls
+#EXTINF:-1,3FM Dutch
+http://icecast.omroep.nl/3fm-bb-mp3
+#EXTINF:-1,Groove Salad - Soma FM
+http://somafm.com/groovesalad.pls
+#EXTINF:-1,Kiss FM Berlin
+http://stream.kissfm.de/kissfm/mp3-128/internetradio/
+#EXTINF:-1,Pelican - Deny The Absolute
+soundcloud:song/Pelican - Deny The Absolute.103772559
+#EXTINF:-1,Pinguin Radio
+http://pr320.pinguinradio.com/listen.pls
+#EXTINF:-1,Lescop - 'La Foret' (official video)
+yt:http://www.youtube.com/watch?v=Njpw2PVb1c0
