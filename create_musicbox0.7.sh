@@ -72,6 +72,8 @@ pip install mopidy-spotify==1.4.0
 pip install mopidy-tunein==0.4.1
 pip install mopidy-local-sqlite==1.0.0
 pip install mopidy-scrobbler==1.1.1
+pip install mopidy-soundcloud==1.2.5
+pip install mopidy-dirble==1.3.0
 
 # Check everything except python and gstreamer is coming from pip.
 mopidy --version
