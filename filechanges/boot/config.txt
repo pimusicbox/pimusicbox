@@ -1,4 +1,3 @@
-kernel=kernel.img
 # uncomment if you get no picture on HDMI for a default "safe" mode
 #hdmi_safe=1
 
@@ -34,6 +33,8 @@ hdmi_force_hotplug=1
 # uncomment to increase signal to HDMI, if you have interference, blanking, or no display
 #config_hdmi_boost=4
 
+[pi1]
+
 # Set variable arm_freq
 arm_freq=800
 
@@ -42,6 +43,8 @@ core_freq=250
 
 # Set variable sdram_freq
 sdram_freq=400
+
+[all]
 
 # Set variable over_voltage
 over_voltage=0

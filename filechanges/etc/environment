@@ -1,0 +1,4 @@
+# Setting this will cache the value and avoid stat-ing the file every time somebody calls localtime.
+# The time saved adds up on slow systems like this!
+# https://blog.packagecloud.io/eng/2017/02/21/set-environment-variable-save-thousands-of-system-calls/
+TZ=:/etc/localtime

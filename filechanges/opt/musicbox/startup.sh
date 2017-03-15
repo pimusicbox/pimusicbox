@@ -92,15 +92,29 @@ chmod u+s /sbin/shutdown
 if [ "$INI__network__wifi_network" != "" ]
 then
     #put wifi settings for wpa roaming
-cat >/etc/wpa.conf <<EOF
-    ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-    update_config=1
-    network={
-        ssid="$INI__network__wifi_network"
-        psk="$INI__network__wifi_password"
-        scan_ssid=1
-    }
+    if [ "$INI__network__wifi_password" != "" ]
+    then
+        cat >/etc/wpa.conf <<EOF
+            ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+            update_config=1
+            network={
+                ssid="$INI__network__wifi_network"
+                psk="$INI__network__wifi_password"
+                scan_ssid=1
+            }
 EOF
+    else
+        #if no password is given, set key_mgmt to NONE
+        cat >/etc/wpa.conf <<EOF
+            ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+            update_config=1
+            network={
+                ssid="$INI__network__wifi_network"
+                key_mgmt=NONE
+                scan_ssid=1
+            }
+EOF
+    fi
 
     #enable wifi
 #    ifdown wlan0
@@ -168,26 +182,44 @@ service monit start
 
 #check networking, sleep for a while
 MYIP=$(hostname -I)
+LOOP_COUNT=0
+LOOP_LIMIT=4
 while [ "$MYIP" == "" -a "$INI__network__wait_for_network" != "0" ]
 do
-    echo "Waiting for network..."
+    LOOP_COUNT=$((LOOP_COUNT+1));
+    if [ $LOOP_COUNT -gt $LOOP_LIMIT ]
+    then
+        log_failure_msg "Timeout waiting for network to start"
+        log_failure_msg "Check your network settings"
+        break;
+    fi
+    echo "Waiting for network ($LOOP_COUNT of $LOOP_LIMIT)..."
     echo
     /etc/init.d/networking restart
     sleep 30
     MYIP=$(hostname -I)
 done
 
-# set date/time
-ntpdate ntp.ubuntu.com > /dev/null 2>&1 || true
-
-#mount windows share
-if [ "$INI__network__mount_address" != "" ]
+if [ "$MYIP" != "" ]
 then
-    #mount samba share, readonly
-    log_progress_msg "Mounting Windows Network drive..." "$NAME"
-    mount -t cifs -o sec=ntlm,ro,user=$INI__network__mount_user,password=$INI__network__mount_password $INI__network__mount_address /music/Network/
-#    mount -t cifs -o sec=ntlm,ro,rsize=2048,wsize=4096,cache=strict,user=$INI__network__mount_user,password=$INI__network__mount_password $INI__network__mount_address /music/Network/
-#add rsize=2048,wsize=4096,cache=strict because of usb (from raspyfi)
+    # set date/time
+    ntpdate ntp.ubuntu.com > /dev/null 2>&1 || true
+
+    #mount windows share
+    if [ "$INI__network__mount_address" != "" ]
+    then
+        #mount samba share, readonly
+        log_progress_msg "Mounting Windows Network drive..." "$NAME"
+        if [ "$INI__network__mount_user" != "" ]
+        then
+            SMB_CREDENTIALS=user=$INI__network__mount_user,password=$INI__network__mount_password
+        else
+            SMB_CREDENTIALS=guest
+        fi
+        mount -t cifs -o sec=ntlm,ro,$SMB_CREDENTIALS "$INI__network__mount_address" /music/Network/
+    #    mount -t cifs -o sec=ntlm,ro,rsize=2048,wsize=4096,cache=strict,user=$INI__network__mount_user,password=$INI__network__mount_password $INI__network__mount_address /music/Network/
+    #add rsize=2048,wsize=4096,cache=strict because of usb (from raspyfi)
+    fi
 fi
 
 # scan local music files once
@@ -204,7 +236,13 @@ then
     /etc/init.d/mopidy run local scan
     #if somehow mopidy is not killed ok. kill manually
     killall -9 mopidy > /dev/null 2>&1 || true
-    /etc/init.d/mopidy start
+fi
+
+# Set the default webclient
+if [ "$INI__musicbox__webclient" != "" ]
+then
+    _URL="/${INI__musicbox__webclient}/index.html"
+    echo -e "<html><head><meta http-equiv='refresh' content='0; URL=$_URL'></head><body>Web interface moved, <a href='$_URL'>click here</a></body></html>" > /opt/musicbox/webclient/index.html
 fi
 
 #start mopidy
@@ -224,17 +262,34 @@ fi
 # renice mopidy to 19, to have less stutter when playing tracks from spotify (at the start of a track)
 renice 19 `pgrep mopidy`
 
-if [ "$INI__musicbox__autoplay" -a "$INI__musicbox__autoplaywait" ]
+if [ "$INI__musicbox__autoplay" -a "$INI__musicbox__autoplaymaxwait" ]
 then
-    log_progress_msg "Waiting $INI__musicbox__autoplaywait seconds before autoplay." "$NAME"
-    sleep $INI__musicbox__autoplaywait
-    log_progress_msg "Playing $INI__musicbox__autoplay" "$NAME"
-    mpc add "$INI__musicbox__autoplay"
-    mpc play
+    if ! [[ $INI__musicbox__autoplaymaxwait =~ ^[0-9]*+$ ]] ; then
+        log_progress_msg "Value specified for 'autoplaymaxwait' is not a number, defaulting to 60" "$NAME"
+        INI__musicbox__autoplaymaxwait=60
+    fi
+    log_progress_msg "Waiting for Mopidy to accept connections..." "$NAME"
+    waittime=0
+    while ! nc -q 1 localhost 6600 </dev/null;
+        do
+            sleep 1;
+            waittime=$((waittime+1));
+            if [ $waittime -gt $INI__musicbox__autoplaymaxwait ]
+                then
+                    log_progress_msg "Timeout waiting for Mopidy to start, aborting" "$NAME"
+                    break;
+            fi
+        done
+    if [ $waittime -le $INI__musicbox__autoplaymaxwait ]
+        then
+            log_progress_msg "Mopidy startup complete, playing $INI__musicbox__autoplay" "$NAME"
+            mpc add "$INI__musicbox__autoplay"
+            mpc play
+    fi
 fi
 
 
-# check and clean dirty bit of vfat partition not safely removed
+# check and clean dirty bit of vfat partition if not safely removed
 fsck /dev/mmcblk0p1 -v -a -w -p > /dev/null 2>&1 || true
 
 log_end_msg 0
