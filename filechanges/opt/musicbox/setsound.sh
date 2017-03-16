@@ -108,10 +108,10 @@ case $OUTPUT in
     usb)
         CARD=$USB_CARD
         ;;
-    hifiberry_dac)
+    hifiberry_dac|phatdac)
         modprobe snd_soc_pcm5102a
         modprobe snd_soc_hifiberry_dac
-        enumerate_alsa_cards $OUTPUT
+        enumerate_alsa_cards hifiberry_dac
         CARD=$I2S_CARD
         ;;
     hifiberry_digi)
@@ -120,9 +120,21 @@ case $OUTPUT in
         enumerate_alsa_cards $OUTPUT
         CARD=$I2S_CARD
         ;;
+    justboom_digi)
+        modprobe snd_soc_wm8804
+        modprobe snd_soc_justboom_digi
+        enumerate_alsa_cards $OUTPUT
+        CARD=$I2S_CARD
+        ;;
     hifiberry_dacplus)
         modprobe snd_soc_pcm512x
         modprobe snd_soc_hifiberry_dacplus
+        enumerate_alsa_cards $OUTPUT
+        CARD=$I2S_CARD
+        ;;
+    justboom_dac)
+        modprobe snd_soc_pcm512x
+        modprobe snd_soc_justboom_dac
         enumerate_alsa_cards $OUTPUT
         CARD=$I2S_CARD
         ;;
