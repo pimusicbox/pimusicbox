@@ -24,6 +24,8 @@ rm /boot/config/streamuris.js
 rm /etc/modules /etc/modprobe.d/*
 # * Avahi support now included in Raspbian. Revert to upstream versions.
 rm -rf /etc/avahi/*
+# * Upgraded musicbox distro files.
+rm -rf /opt/musicbox /opt/shairport-sync
 # * dpkg: warning: unable to delete old directory '/lib/modules/3.18.7+/kernel/drivers/net/wireless': Directory not empty
 rm /lib/modules/3.18.7+/kernel/drivers/net/wireless/8188eu.ko
 # Remove Mopidy APT repo details, using pip version to avoid Wheezy induced dependency hell.
@@ -62,7 +64,7 @@ autoreconf -i -f
 ./configure --sysconfdir=/etc --with-alsa --with-avahi --with-ssl=openssl --with-metadata --with-systemv
 make && make install
 cd ../
-rm -rf shairport-sync* /opt/shairport-sync
+rm -rf shairport-sync*
 
 # Need these to rebuild python dependencies
 PYTHON_BUILD_DEPS="build-essential python-dev libffi-dev libssl-dev"
