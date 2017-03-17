@@ -94,6 +94,7 @@ release() {
 
     local BUILD_DIR=${MKIMG_BUILD_DIR:-${SRC_FILES}/_build}
     local ROOTFS_DIR=${MKIMG_ROOTFS_DIR:-${BUILD_DIR}/rootfs}
+    local KERNEL=4.4.50
 
     if [ ! -f "$INPUT_IMG" ]; then
         echo "** ERROR: No musicbox image found **"
@@ -101,7 +102,7 @@ release() {
     fi
     sudo echo "Info: Checking have permission to mount the disk images."
 
-    echo "Info: Creating $ZIP_NAME release from $INPUT_IMG..."
+    echo "Info: Creating $ZIP_NAME release in $BUILD_DIR from $INPUT_IMG..."
 
     rm -rf ${BUILD_DIR}
     mkdir -p ${BUILD_DIR}
@@ -120,7 +121,8 @@ release() {
     sudo rm -rf ${ROOTFS_DIR}/var/lib/apt/*
     sudo rm -rf ${ROOTFS_DIR}/etc/dropbear/*key
     sudo rm -rf ${ROOTFS_DIR}/tmp/*
-    # TODO: Remove old kernel modules from /lib/modules
+    # Remove old kernel modules.
+    sudo find ${ROOTFS_DIR}/lib/modules -maxdepth 1 -mindepth 1 -type d \! -name ${KERNEL}* | sudo xargs rm -rf
     sudo find ${ROOTFS_DIR}/var/log -type f | sudo xargs rm -f
     local OTHER_HOMES=$(sudo ls ${ROOTFS_DIR}/home/ | grep -v mopidy)
     sudo rm -rf ${ROOTFS_DIR}/home/${OTHER_HOMES}
@@ -137,7 +139,7 @@ release() {
     ###
     # TODO: Shrink image to fit on smaller SD cards? Who still uses 1G SD cards?!
     ###
-    #smaller $INPUT_IMG $(expr 1024 \* 1024 \* 1024)
+    #smaller $IMG_NAME $(expr 1024 \* 1024 \* 1024)
 
     rm -rf $ROOTFS_DIR
     cd $SRC_FILES/docs
