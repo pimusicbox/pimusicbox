@@ -12,16 +12,22 @@ cd /tmp
 ntpdate-debian
 service fake-hwclock stop
 
-# No longer needed, Device Tree now properly handles all this stuff.
-rm /etc/modules /etc/modprobe.d/ipv6.conf /etc/modprobe.d/raspi-blacklist.conf
-# dpkg: warning: unable to delete old directory '/lib/modules/3.18.7+/kernel/drivers/net/wireless': Directory not empty
+# Things we no longer need:
+# * Favourite streams now implemented with playlists.
+rm /boot/config/streamuris.js
+# * Device Tree now properly handles all this stuff. Revert to upstream versions.
+rm /etc/modules /etc/modprobe.d/*
+# * Avahi support now included in Raspbian. Revert to upstream versions.
+rm -rf /etc/avahi/*
+# * dpkg: warning: unable to delete old directory '/lib/modules/3.18.7+/kernel/drivers/net/wireless': Directory not empty
 rm /lib/modules/3.18.7+/kernel/drivers/net/wireless/8188eu.ko
+# Remove Mopidy APT repo details, using pip version to avoid Wheezy induced dependency hell.
+rm /etc/apt/sources.list.d/mopidy.list
+
 # Prevent upgraded services from trying to start inside chroot.
 echo exit 101 > /usr/sbin/policy-rc.d
 chmod +x /usr/sbin/policy-rc.d
 export DEBIAN_FRONTEND=noninteractive
-# Remove Mopidy APT repo details, using pip version to avoid Wheezy induced dependency hell.
-rm /etc/apt/sources.list.d/mopidy.list
 
 wget -q -O - http://www.lesbonscomptes.com/key/jf@dockes.org.gpg.key | apt-key add -
 cat << EOF > /etc/apt/sources.list.d/upmpdcli.list
@@ -33,6 +39,9 @@ apt-get update
 apt-get remove --yes --purge python-pykka python-pylast
 # https://github.com/pimusicbox/pimusicbox/issues/316
 apt-get remove --yes --purge linux-wlan-ng
+
+# This seems to be be removed otherwise (no longer used dependency of something?). Ensure we get upstream config.
+apt-get install --yes -o Dpkg::Options::="--force-confmiss" --reinstall avahi-daemon
 
 # Upgrade!
 apt-get dist-upgrade --yes -o Dpkg::Options::="--force-confnew"
