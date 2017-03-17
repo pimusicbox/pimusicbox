@@ -1,10 +1,15 @@
+MIN_FREE_SPACE_KB=$(expr 1024 \* 1024)
 PIMUSICBOX_FILES=/tmp/filechanges
-PIMUSICBOX_VERSION=0.7
 SHAIRPORT_VERSION=3.0
-#APT_PROXY=localhost:3142
 
-echo "Acquire::http { Proxy \"http://$APT_PROXY\"; };" > \
-    /etc/apt/apt.conf.d/01proxy
+FREE_SPACE=$(df | awk '$NF == "/" { print $4 }')
+if [ $FREE_SPACE -lt $MIN_FREE_SPACE_KB ]; then
+    echo "************************************************"
+    echo "** ERROR: Insufficient free space to upgrade  **"
+    echo "** Use ./makeimage.sh bigger <image_file>     **"
+    echo "************************************************"
+    exit 3
+fi
 
 cd /tmp
 
@@ -107,12 +112,6 @@ sed -i '/try:/i \
 # Force YouTube to favour m4a streams as gstreamer0.10's webm support is bad/non-existent:
 sed -i '/getbestaudio(/getbestaudio(preftype="m4a"/' /usr/local/lib/python2.7/dist-packages/mopidy_youtube/backend.py
 
-# Copy updated files.
-if [ ! -d $PIMUSICBOX_FILES ]; then
-    wget https://github.com/pimusicbox/pimusicbox/archive/${PIMUSICBOX_VERSION}.zip
-    unzip ${PIMUSICBOX_VERSION}.zip && rm ${PIMUSICBOX_VERSION}.zip 
-    PIMUSICBOX_FILES=pimusicbox-${PIMUSICBOX_VERSION}/filechanges
-fi
 cp -R $PIMUSICBOX_FILES/* /
 
 chown -R mopidy:audio /music/playlists/
