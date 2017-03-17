@@ -12,6 +12,8 @@ cd /tmp
 ntpdate-debian
 service fake-hwclock stop
 
+# No longer needed, Device Tree now properly handles all this stuff.
+rm /etc/modules /etc/modprobe.d/ipv6.conf /etc/modprobe.d/raspi-blacklist.conf
 # dpkg: warning: unable to delete old directory '/lib/modules/3.18.7+/kernel/drivers/net/wireless': Directory not empty
 rm /lib/modules/3.18.7+/kernel/drivers/net/wireless/8188eu.ko
 # Prevent upgraded services from trying to start inside chroot.
@@ -29,14 +31,11 @@ EOF
 
 apt-get update
 apt-get remove --yes --purge python-pykka python-pylast
+# https://github.com/pimusicbox/pimusicbox/issues/316
+apt-get remove --yes --purge linux-wlan-ng
 
 # Upgrade!
 apt-get dist-upgrade --yes -o Dpkg::Options::="--force-confnew"
-
-# https://github.com/pimusicbox/pimusicbox/issues/316
-apt-get remove --yes --purge linux-wlan-ng
-# https://github.com/pimusicbox/pimusicbox/issues/371
-pip uninstall --yes mopidy-local-whoosh
 
 # Build and install latest version of shairport-sync
 SHAIRPORT_BUILD_DEPS="build-essential xmltoman autoconf automake libtool libdaemon-dev libasound2-dev libpopt-dev libconfig-dev avahi-daemon libavahi-client-dev libssl-dev"
@@ -49,7 +48,7 @@ autoreconf -i -f
 ./configure --sysconfdir=/etc --with-alsa --with-avahi --with-ssl=openssl --with-metadata --with-systemv
 make && make install
 cd ../
-rm -rf shairport-sync*
+rm -rf shairport-sync* /opt/shairport-sync
 
 # Need these to rebuild python dependencies
 PYTHON_BUILD_DEPS="build-essential python-dev libffi-dev libssl-dev"
@@ -74,6 +73,9 @@ pip install mopidy-local-sqlite==1.0.0
 pip install mopidy-scrobbler==1.1.1
 pip install mopidy-soundcloud==1.2.5
 pip install mopidy-dirble==1.3.0
+
+# https://github.com/pimusicbox/pimusicbox/issues/371
+pip uninstall --yes mopidy-local-whoosh
 
 # Check everything except python and gstreamer is coming from pip.
 mopidy --version
@@ -112,8 +114,12 @@ do
     update-rc.d $service disable
 done
 
+# Update kernel to latest *stable* version (4.4.50).  
+apt-get install --yes git rpi-update
+rpi-update 52241088c1da59a359110d39c1875cda56496764
+
 # Clean up.
-apt-get remove --yes --purge $PYTHON_BUILD_DEPS $SHAIRPORT_BUILD_DEPS
+apt-get remove --yes --purge $PYTHON_BUILD_DEPS $SHAIRPORT_BUILD_DEPS git rpi-update
 apt-get autoremove --yes
 apt-get clean
 apt-get autoclean

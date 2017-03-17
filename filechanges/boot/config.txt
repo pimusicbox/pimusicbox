@@ -54,13 +54,18 @@ gpu_mem=16
 
 force_hdmi_open=1
 
-# Disable Device Tree Overlays, for now.
-device_tree=
+# Uncomment some or all of these to enable the optional hardware interfaces
+#dtparam=i2c_arm=on
+#dtparam=i2s=on
+#dtparam=spi=on
 
-# Uncomment one of these lines to enable an audio interface
-#dtoverlay=hifiberry-amp
-#dtoverlay=hifiberry-dac
-#dtoverlay=hifiberry-dacplus
-#dtoverlay=hifiberry-digi
-#dtoverlay=iqaudio-dac
-#dtoverlay=iqaudio-dacplus
+# Uncomment this to enable the lirc-rpi module
+#dtoverlay=lirc-rpi
+
+# Additional overlays and parameters are documented /boot/overlays/README
+
+# Enable audio (loads snd_bcm2835)
+dtparam=audio=on
+
+# Enable hardware watchdog
+dtparam=watchdog=on
