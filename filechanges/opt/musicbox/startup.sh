@@ -39,6 +39,9 @@ INI_READ=true
 
 REBOOT=0
 
+#include code from setsound script
+. /opt/musicbox/setsound.sh
+
 if [ "$INI__musicbox__resize_once" == "1" ]
 then
     #set resize_once=false in ini file
@@ -122,9 +125,6 @@ EOF
 
     /etc/init.d/networking restart
 fi
-
-#include code from setsound script
-. /opt/musicbox/setsound.sh
 
 if [ "$INI__network__workgroup" != "" ]
 then
