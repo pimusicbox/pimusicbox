@@ -39,6 +39,7 @@ $OFFSET
 w
 EOF
 
+    sync && sleep 1
     sudo e2fsck -f ${LOOP_DEV}p2
     sudo resize2fs ${LOOP_DEV}p2
     sudo losetup -D $LOOP_DEV
