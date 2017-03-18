@@ -32,7 +32,8 @@ $OFFSET
 w
 EOF
 
-    sync && sleep 1
+    sync
+    sleep 1
 
     sudo e2fsck -f ${LOOP_DEV}p2
     sudo resize2fs ${LOOP_DEV}p2
@@ -129,7 +130,8 @@ release() {
     sudo find ${ROOTFS_DIR}/home/ -type f -name *.log | xargs rm -f
     sudo find ${ROOTFS_DIR}/home/ -type f -name *_history | xargs rm -f
 
-    sync && sleep 1
+    sync
+    sleep 1
 
     sudo umount $ROOTFS_DIR
     sudo e2fsck -fy $ROOT_PART
