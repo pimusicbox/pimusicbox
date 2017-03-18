@@ -77,7 +77,7 @@ pip install requests[security] backports.ssl-match-hostname backports-abc tornad
 # The lastest versions that are still supported in Wheezy (Gstreamer 0.10).
 pip install mopidy==1.1.2
 pip install mopidy-musicbox-webclient==2.4.0
-pip install mopidy-websettings==0.1.5
+pip install mopidy-websettings==0.1.6.1
 pip install mopidy-mopify==1.6.0
 pip install mopidy-mobile==1.8.0
 pip install mopidy-youtube==2.0.2
