@@ -241,8 +241,10 @@ fi
 # Set the default webclient
 if [ "$INI__musicbox__webclient" != "" ]
 then
-    _URL="/${INI__musicbox__webclient}/index.html"
-    echo -e "<html><head><meta http-equiv='refresh' content='0; URL=$_URL'></head><body>Web interface moved, <a href='$_URL'>click here</a></body></html>" > /opt/musicbox/webclient/index.html
+    WEBCLIENT_FILE=/opt/musicbox/webclient/index.html
+    if ! grep -q "/$INI__musicbox__webclient/" $WEBCLIENT_FILE ; then
+        sed -i "s@/.*/index.html@/$INI__musicbox__webclient/index.html@" $WEBCLIENT_FILE
+    fi
 fi
 
 #start mopidy
