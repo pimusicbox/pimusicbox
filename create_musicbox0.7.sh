@@ -54,8 +54,8 @@ apt-get install --yes -o Dpkg::Options::="--force-confmiss" --reinstall avahi-da
 apt-get dist-upgrade --yes -o Dpkg::Options::="--force-confnew"
 
 # Build and install latest version of shairport-sync
-SHAIRPORT_BUILD_DEPS="build-essential xmltoman autoconf automake libtool libdaemon-dev libasound2-dev libpopt-dev libconfig-dev avahi-daemon libavahi-client-dev libssl-dev"
-SHAIRPORT_RUN_DEPS="libc6 libconfig9 libdaemon0 libasound2 libpopt0 libavahi-common3 avahi-daemon libavahi-client3 libssl1.0.0"
+SHAIRPORT_BUILD_DEPS="build-essential xmltoman autoconf automake libdaemon-dev libasound2-dev libpopt-dev libconfig-dev libavahi-client-dev libssl-dev"
+SHAIRPORT_RUN_DEPS="libc6 libconfig9 libdaemon0 libasound2 libpopt0 libavahi-common3 avahi-daemon libavahi-client3 libssl1.0.0 libtool avahi-daemon"
 apt-get install --yes $SHAIRPORT_BUILD_DEPS $SHAIRPORT_RUN_DEPS
 wget https://github.com/mikebrady/shairport-sync/archive/${SHAIRPORT_VERSION}.zip
 unzip ${SHAIRPORT_VERSION}.zip && rm ${SHAIRPORT_VERSION}.zip
