@@ -31,17 +31,13 @@ rm /lib/modules/3.18.7+/kernel/drivers/net/wireless/8188eu.ko
 # Remove Mopidy APT repo details, using pip version to avoid Wheezy induced dependency hell.
 rm /etc/apt/sources.list.d/mopidy.list
 
-# Prevent upgraded services from trying to start inside chroot.
-echo exit 101 > /usr/sbin/policy-rc.d
-chmod +x /usr/sbin/policy-rc.d
-export DEBIAN_FRONTEND=noninteractive
-
 wget -q -O - http://www.lesbonscomptes.com/key/jf@dockes.org.gpg.key | apt-key add -
 cat << EOF > /etc/apt/sources.list.d/upmpdcli.list
 deb http://www.lesbonscomptes.com/upmpdcli/downloads/raspbian-wheezy/ unstable main
 deb-src http://www.lesbonscomptes.com/upmpdcli/downloads/raspbian-wheezy/ unstable main
 EOF
 
+export DEBIAN_FRONTEND=noninteractive
 apt-get update
 apt-get remove --yes --purge python-pykka python-pylast
 # https://github.com/pimusicbox/pimusicbox/issues/316
@@ -133,5 +129,3 @@ apt-get remove --yes --purge $PYTHON_BUILD_DEPS $SHAIRPORT_BUILD_DEPS git rpi-up
 apt-get autoremove --yes
 apt-get clean
 apt-get autoclean
-
-rm -rf /etc/apt/apt.conf.d/01proxy /usr/sbin/policy-rc.d
