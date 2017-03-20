@@ -25,7 +25,7 @@ rm /etc/modules /etc/modprobe.d/*
 # * Avahi support now included in Raspbian. Revert to upstream versions.
 rm -rf /etc/avahi/*
 # * Upgraded musicbox distro files.
-rm -rf /opt/musicbox /opt/shairport-sync
+rm -rf /opt/musicbox /opt/shairport-sync /opt/webclient /opt/defaultwebclient /opt/moped
 # * dpkg: warning: unable to delete old directory '/lib/modules/3.18.7+/kernel/drivers/net/wireless': Directory not empty
 rm /lib/modules/3.18.7+/kernel/drivers/net/wireless/8188eu.ko
 # Remove Mopidy APT repo details, using pip version to avoid Wheezy induced dependency hell.
@@ -47,7 +47,7 @@ apt-get remove --yes --purge python-pykka python-pylast
 # https://github.com/pimusicbox/pimusicbox/issues/316
 apt-get remove --yes --purge linux-wlan-ng
 
-# This seems to be be removed otherwise (no longer used dependency of something?). Ensure we get upstream config.
+# Ensure we reinstall the upstream config.
 apt-get install --yes -o Dpkg::Options::="--force-confmiss" --reinstall avahi-daemon
 
 # Upgrade!
