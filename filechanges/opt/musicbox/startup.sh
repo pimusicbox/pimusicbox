@@ -7,18 +7,14 @@
 `echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
 
 #set user vars
-MB_USER=musicbox
 CONFIG_FILE=/boot/config/settings.ini
 NAME="MusicBox"
 
 SSH_START='/etc/init.d/dropbear start'
 
-# Define LSB log_* functions.
-. /lib/lsb/init-functions
-
-log_use_fancy_output
-
-log_begin_msg "Initializing MusicBox..."
+echo "************************"
+echo "Initializing MusicBox..."
+echo "************************"
 
 # import ini parser
 . /opt/musicbox/read_ini.sh
@@ -46,7 +42,7 @@ if [ "$INI__musicbox__resize_once" == "1" ]
 then
     #set resize_once=false in ini file
     sed -i -e "/^\[musicbox\]/,/^\[.*\]/ s|^\(resize_once[ \t]*=[ \t]*\).*$|\1false\r|" $CONFIG_FILE
-    log_progress_msg "Initalizing resize..." "$NAME"
+    echo "Performing resize..."
     sh /opt/musicbox/resizefs.sh -y
     REBOOT=1
 fi
@@ -66,9 +62,9 @@ fi
 if [ "$CLEAN_NAME" != "$HOSTNM" ]
 then
     #if devicename is not the same as ini, change and reboot<-->
+    echo "Changing system name to $CLEAN_NAME..."
     echo "$CLEAN_NAME" > /etc/hostname
     echo "127.0.0.1       localhost $CLEAN_NAME" > /etc/hosts
-    log_end_msg "Name of device set..." "$NAME"
     REBOOT=1
 fi
 
@@ -78,12 +74,12 @@ then
     exit
 fi
 
-log_progress_msg "MusicBox name is $CLEAN_NAME" "$NAME"
+echo "MusicBox name is $CLEAN_NAME"
 
 # do the change password stuff
 if [ "$INI__musicbox__root_password" != "" ]
 then
-    log_progress_msg "Setting root user Password" "$NAME"
+    echo "Setting root user password..."
     echo "root:$INI__musicbox__root_password" | chpasswd
     #remove password
     sed -i -e "/^\[musicbox\]/,/^\[.*\]/ s|^\(root_password[ \t]*=[ \t]*\).*$|\1\r|" $CONFIG_FILE
@@ -189,8 +185,10 @@ do
     LOOP_COUNT=$((LOOP_COUNT+1));
     if [ $LOOP_COUNT -gt $LOOP_LIMIT ]
     then
-        log_failure_msg "Timeout waiting for network to start"
-        log_failure_msg "Check your network settings"
+        echo "********************************************"
+        echo "ERROR: Timeout waiting for network to start."
+        echo "       Check your network settings"
+        echo "********************************************"
         break;
     fi
     echo "Waiting for network ($LOOP_COUNT of $LOOP_LIMIT)..."
@@ -209,7 +207,7 @@ then
     if [ "$INI__network__mount_address" != "" ]
     then
         #mount samba share, readonly
-        log_progress_msg "Mounting Windows Network drive..." "$NAME"
+        echo "Mounting Windows Network drive: $INI__network__mount_address ..."
         if [ "$INI__network__mount_user" != "" ]
         then
             SMB_CREDENTIALS=user=$INI__network__mount_user,password=$INI__network__mount_password
@@ -232,7 +230,7 @@ fi
 # scan local/networked music files if setting is true
 if [ "$INI__musicbox__scan_always" == "1" -o "$INI__musicbox__scan_once" == "1" ]
 then
-    log_progress_msg "Scanning music-files, please wait..."
+    echo "Scanning music-files, please wait..."
     /etc/init.d/mopidy run local scan
     #if somehow mopidy is not killed ok. kill manually
     killall -9 mopidy > /dev/null 2>&1 || true
@@ -252,25 +250,28 @@ fi
 
 if [ "$INI__network__name" != "$CLEAN_NAME" -a "$INI__network__name" != "" ]
 then
-    log_warning_msg "The new name of your MusicBox, $INI__network__name, is not ok! It should be max. 9 alphanumerical characters."
+    echo "WARNING: The new name of your MusicBox, $INI__network__name, is not ok! It should be max. 9 alphanumerical characters."
 fi
 
 # Print the IP address
-_IP=$(hostname -I) || true
+_IP=$(ip route get 8.8.8.8 | awk '{print $NF; exit}') || true
 if [ "$_IP" ]; then
-    log_progress_msg "My IP address is $_IP. Connect to MusicBox in your browser via http://$CLEAN_NAME.local or http://$_IP "
+    echo "***********************************************************************************"
+    echo "My IP address is $_IP"
+    echo "Connect to me in your browser at http://$CLEAN_NAME.local or http://$_IP"
+    echo "***********************************************************************************"
 fi
 
 # renice mopidy to 19, to have less stutter when playing tracks from spotify (at the start of a track)
-renice 19 `pgrep mopidy`
+renice 19 $(pgrep mopidy) > /dev/null
 
 if [ "$INI__musicbox__autoplay" -a "$INI__musicbox__autoplaymaxwait" ]
 then
     if ! [[ $INI__musicbox__autoplaymaxwait =~ ^[0-9]*+$ ]] ; then
-        log_progress_msg "Value specified for 'autoplaymaxwait' is not a number, defaulting to 60" "$NAME"
+        echo "WARNING: Value specified for 'autoplaymaxwait' is not a number, defaulting to 60"
         INI__musicbox__autoplaymaxwait=60
     fi
-    log_progress_msg "Waiting for Mopidy to accept connections..." "$NAME"
+    echo "Waiting for Mopidy to accept connections..."
     waittime=0
     while ! nc -q 1 localhost 6600 </dev/null;
         do
@@ -278,20 +279,17 @@ then
             waittime=$((waittime+1));
             if [ $waittime -gt $INI__musicbox__autoplaymaxwait ]
                 then
-                    log_progress_msg "Timeout waiting for Mopidy to start, aborting" "$NAME"
+                    echo "WARNING: Timeout waiting for Mopidy to start, aborting"
                     break;
             fi
         done
     if [ $waittime -le $INI__musicbox__autoplaymaxwait ]
         then
-            log_progress_msg "Mopidy startup complete, playing $INI__musicbox__autoplay" "$NAME"
+            echo "Mopidy startup complete, playing $INI__musicbox__autoplay"
             mpc add "$INI__musicbox__autoplay"
             mpc play
     fi
 fi
 
-
 # check and clean dirty bit of vfat partition if not safely removed
 fsck /dev/mmcblk0p1 -v -a -w -p > /dev/null 2>&1 || true
-
-log_end_msg 0

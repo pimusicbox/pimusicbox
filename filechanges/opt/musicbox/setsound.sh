@@ -162,9 +162,9 @@ echo "Card=$CARD  i2s=$I2S_CARD  output=$OUTPUT  usb=$USB_CARD  intc=$INT_CARD"
 
 if [[ -z $CARD ]];
 then
-    echo "******"
-    echo "No audio card found"
-    echo "******"
+    echo "****************************"
+    echo "WARNING: No audio card found"
+    echo "****************************"
     exit 1
 else
     echo "Using audio card$CARD ($OUTPUT)"
