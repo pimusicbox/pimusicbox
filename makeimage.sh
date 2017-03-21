@@ -122,8 +122,6 @@ release() {
     sudo rm -rf ${ROOTFS_DIR}/var/lib/apt/*
     sudo rm -rf ${ROOTFS_DIR}/etc/dropbear/*key
     sudo rm -rf ${ROOTFS_DIR}/tmp/*
-    # Remove old kernel modules.
-    sudo find ${ROOTFS_DIR}/lib/modules -maxdepth 1 -mindepth 1 -type d \! -name ${KERNEL}* | sudo xargs rm -rf
     sudo find ${ROOTFS_DIR}/var/log -type f | sudo xargs rm -f
     local OTHER_HOMES=$(sudo ls ${ROOTFS_DIR}/home/ | grep -v mopidy)
     sudo rm -rf ${ROOTFS_DIR}/home/${OTHER_HOMES}

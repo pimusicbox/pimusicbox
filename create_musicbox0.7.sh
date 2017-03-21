@@ -123,9 +123,9 @@ do
     update-rc.d $service disable
 done
 
-# Update kernel to latest *stable* version (4.4.50).  
+# Update kernel to latest version (4.9.16).
 apt-get install --yes git rpi-update
-rpi-update 52241088c1da59a359110d39c1875cda56496764
+PRUNE_MODULES=1 SKIP_WARNING=1 rpi-update 70d0e67030661cffbf863f66d71c59dff28fd20c
 
 # Clean up.
 apt-get remove --yes --purge $PYTHON_BUILD_DEPS $SHAIRPORT_BUILD_DEPS git rpi-update

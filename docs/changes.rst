@@ -5,7 +5,7 @@ Changelog
 v0.7.0RC4 (UNRELEASED)
 ===================
 
-- Updated Linux kernel to v4.4.50 and support Device Tree module loading
+- Updated Linux kernel to v4.9.16 and support Device Tree module loading
 - Full support for Pi3 and Pi0W on-board WiFi
 - Support JustBoom audio cards
 - Fixed mDNS support (broken in v0.7.0RC3)
