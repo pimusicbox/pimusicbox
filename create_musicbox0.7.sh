@@ -24,6 +24,8 @@ rm /boot/config/streamuris.js
 rm /etc/modules /etc/modprobe.d/*
 # * Avahi support now included in Raspbian. Revert to upstream versions.
 rm -rf /etc/avahi/*
+# * Revert to upstream shairport-sync systemV script.
+rm -f /etc/init.d/shairport-sync
 # * Upgraded musicbox distro files.
 rm -rf /opt/musicbox /opt/shairport-sync /opt/webclient /opt/defaultwebclient /opt/moped
 # * dpkg: warning: unable to delete old directory '/lib/modules/3.18.7+/kernel/drivers/net/wireless': Directory not empty
