@@ -2,7 +2,7 @@
 Changelog
 *********
 
-v0.7.0RC4 (UNRELEASED)
+v0.7.0RC4 (2017-03-21)
 ===================
 
 - Updated Linux kernel to v4.9.16 and support Device Tree module loading
