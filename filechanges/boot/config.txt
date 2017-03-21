@@ -35,14 +35,10 @@ hdmi_force_hotplug=1
 
 [pi1]
 
-# Set variable arm_freq
-arm_freq=800
-
-# Set variable core_freq
-core_freq=250
-
-# Set variable sdram_freq
-sdram_freq=400
+# Pi Zero also matches this filter and we don't want to underclock.
+#arm_freq=800
+#core_freq=250
+#sdram_freq=400
 
 [all]
 
