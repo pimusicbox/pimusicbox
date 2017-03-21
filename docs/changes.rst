@@ -2,6 +2,16 @@
 Changelog
 *********
 
+v0.7.0RC4 (UNRELEASED)
+===================
+
+- Updated Linux kernel to v4.4.50 and support Device Tree module loading
+- Full support for Pi3 and Pi0W on-board WiFi
+- Support JustBoom audio cards
+- Fixed mDNS support (broken in v0.7.0RC3)
+- Fixed default webclient redirect for Firefox (broken in v0.7.0RC3)
+- Improve startup script output
+
 v0.7.0RC3 (2017-03-15)
 ===================
 
