@@ -198,6 +198,15 @@ do
     MYIP=$(hostname -I)
 done
 
+if [ "$INI__network__disable_firewall" == "1" ]
+then
+    iptables -P INPUT ACCEPT
+    iptables -P OUTPUT ACCEPT
+    iptables -P FORWARD ACCEPT
+    iptables -F
+    iptables -X
+fi
+
 if [ "$MYIP" != "" ]
 then
     # set date/time
