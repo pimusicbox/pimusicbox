@@ -5,8 +5,8 @@
 :OUTPUT ACCEPT [15:2194]
 -A INPUT -i lo -j ACCEPT
 -A INPUT -p icmp -j ACCEPT
--A INPUT -p tcp -m multiport --dports 22,6600,6680,80,139,443,445,554,49152 -j ACCEPT
--A INPUT -p udp -m multiport --dports 137,138,5353,554,49152 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 22,6600,6680,80,139,443,445,554,5000,49152 -j ACCEPT
+-A INPUT -p udp -m multiport --dports 137,138,5353,554,6001:6003,49152 -j ACCEPT
 -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 
 #avahi/bonjour: 5353 UDP
@@ -16,7 +16,7 @@
 #webserver 80, 6680
 #mpd 6600
 # 554 rtsp, airplay
-# 5000-5005 tcp, 6000-6005 udp: shairport
+# 5000 tcp, 6001-6003 udp: shairport
 # 49152 udp: DLNA 
 
 
