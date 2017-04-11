@@ -5,10 +5,11 @@
 :OUTPUT ACCEPT [15:2194]
 -A INPUT -i lo -j ACCEPT
 -A INPUT -p icmp -j ACCEPT
--A INPUT -p tcp -m multiport --dports 22,6600,6680,80,139,443,445,554,5000,49152 -j ACCEPT
--A INPUT -p udp -m multiport --dports 137,138,5353,554,6001:6003,49152 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 22,80,139,443,445,554 -j ACCEPT
+-A INPUT -p udp -m multiport --dports 137,138,554 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 5000:5005,6600,3689,38888,6680,49014,45962,49152,56278 -j ACCEPT
+-A INPUT -p udp -m multiport --dports 6000:6005,5353,49152,60458 -j ACCEPT
 -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-
 #avahi/bonjour: 5353 UDP
 # ssh 22
 #daap: 3689 TCP
@@ -16,8 +17,7 @@
 #webserver 80, 6680
 #mpd 6600
 # 554 rtsp, airplay
-# 5000 tcp, 6001-6003 udp: shairport
-# 49152 udp: DLNA 
-
+# 5000-5005 tcp, 6000-6005 udp: shairport
+# 49152 udp: DLNA
 
 COMMIT
