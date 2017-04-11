@@ -133,6 +133,28 @@ fi
 #redirect 6680 to 80
 iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 6680 > /dev/null 2>&1 || true
 
+#check networking, sleep for a while
+MYIP=$(hostname -I)
+LOOP_COUNT=0
+LOOP_LIMIT=4
+while [ "$MYIP" == "" -a "$INI__network__wait_for_network" != "0" ]
+do
+    LOOP_COUNT=$((LOOP_COUNT+1));
+    if [ $LOOP_COUNT -gt $LOOP_LIMIT ]
+    then
+        echo "********************************************"
+        echo "ERROR: Timeout waiting for network to start."
+        echo "       Check your network settings"
+        echo "********************************************"
+        break;
+    fi
+    echo "Waiting for network ($LOOP_COUNT of $LOOP_LIMIT)..."
+    echo
+    /etc/init.d/networking restart
+    sleep 30
+    MYIP=$(hostname -I)
+done
+
 # start SSH if enabled
 if [ "$INI__network__enable_ssh" == "1" ]
 then
@@ -175,28 +197,6 @@ else
 fi
 
 service monit start
-
-#check networking, sleep for a while
-MYIP=$(hostname -I)
-LOOP_COUNT=0
-LOOP_LIMIT=4
-while [ "$MYIP" == "" -a "$INI__network__wait_for_network" != "0" ]
-do
-    LOOP_COUNT=$((LOOP_COUNT+1));
-    if [ $LOOP_COUNT -gt $LOOP_LIMIT ]
-    then
-        echo "********************************************"
-        echo "ERROR: Timeout waiting for network to start."
-        echo "       Check your network settings"
-        echo "********************************************"
-        break;
-    fi
-    echo "Waiting for network ($LOOP_COUNT of $LOOP_LIMIT)..."
-    echo
-    /etc/init.d/networking restart
-    sleep 30
-    MYIP=$(hostname -I)
-done
 
 if [ "$INI__network__disable_firewall" == "1" ]
 then
