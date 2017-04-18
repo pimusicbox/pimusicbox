@@ -6,24 +6,26 @@
 -A INPUT -i lo -j ACCEPT
 -A INPUT -p icmp -j ACCEPT
 #
--A INPUT -p tcp -m multiport --dports 22,80,139,443,445,554 -j ACCEPT
--A INPUT -p udp -m multiport --dports 67,137,138,554,5678,51689,36996,1900 -j ACCEPT
+# samba 137, 138 UDP (netbios-ns), 139 (TCP, smb) 445 (TCP, microsoft domainservice)
+# HTTP(s): 80, 443
+# DNS: 67, 68
+# zeroconf: 5353
+-A INPUT -p tcp -m multiport --dports 80,139,443,445 -j ACCEPT
+-A INPUT -p udp -m multiport --dports 67,68,137,138,5353 -j ACCEPT
 #
--A INPUT -p tcp -m multiport --dports 5000:5005,6600,3689,38888,6680,49014,45962,49152,56278 -j ACCEPT
--A INPUT -p udp -m multiport --dports 6000:6005,5353,49152,60458 -j ACCEPT
+# Mopidy: 6600 (MPD), 6680 (HTTP)
+# DAAP: 3689
+# RTSP: 554
+-A INPUT -p tcp -m multiport --dports 554,6600,6680,3689 -j ACCEPT
+-A INPUT -p udp -m multiport --dports 554 -j ACCEPT
+#
+# shairport-sync
+-A INPUT -p tcp -m multiport --dports 5000 -j ACCEPT
+-A INPUT -p udp -m multiport --dports 6000:6101 -j ACCEPT
+#
+# upmpdcli
+-A INPUT -p tcp -m multiport --dports 49152 -j ACCEPT
+-A INPUT -p udp -m multiport --dports 1900 -j ACCEPT
 #
 -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-#
--A INPUT -m limit --limit 2/min -j LOG --log-prefix "DROP: " --log-level 4
-#
-#avahi/bonjour: 5353 UDP
-# ssh 22
-#daap: 3689 TCP
-#samba 137, 138 UDP (netbios-ns), 139 (TCP, smb) 445 (TCP, microsoft domainservice)
-#webserver 80, 6680
-#mpd 6600
-# 554 rtsp, airplay
-# 5000-5005 tcp, 6000-6005 udp: shairport
-# 49152 udp: DLNA
-
 COMMIT
