@@ -198,7 +198,7 @@ fi
 
 service monit start
 
-if [ "$INI__network__disable_firewall" == "1" ]
+if [ "$INI__network__enable_firewall" != "1" ]
 then
     iptables -P INPUT ACCEPT
     iptables -P OUTPUT ACCEPT
