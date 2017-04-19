@@ -51,8 +51,8 @@ function enumerate_alsa_cards()
         if [[ $name == "bcm2835" ]]; then
             INT_CARD=$card_num
             echo "* Found internal device: card$INT_CARD"
-            if tvservice -s | grep -q HDMI; then
-                echo "    HDMI output connected"
+            if tvservice -n 2>&1 | grep -v -q "No device present"; then
+                echo "    HDMI output detected"
                 HDMI_CARD=$card_num
             fi
         elif [[ $i2s_NAME && $name == *"$i2s_NAME" ]]; then
@@ -114,11 +114,8 @@ enumerate_alsa_cards
 case $OUTPUT in
     auto)
         ;;
-    analog)
+    analog|hdmi)
         CARD=$INT_CARD
-        ;;
-    hdmi)
-        CARD=$HDMI_CARD
         ;;
     usb)
         CARD=$USB_CARD
