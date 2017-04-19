@@ -32,6 +32,7 @@ rm -rf /opt/musicbox /opt/shairport-sync /opt/webclient /opt/defaultwebclient /o
 rm /lib/modules/3.18.7+/kernel/drivers/net/wireless/8188eu.ko
 # Remove Mopidy APT repo details, using pip version to avoid Wheezy induced dependency hell.
 rm /etc/apt/sources.list.d/mopidy.list
+rm -rf /etc/mopidy/extensions.d
 
 wget -q -O - http://www.lesbonscomptes.com/key/jf@dockes.org.gpg.key | apt-key add -
 cat << EOF > /etc/apt/sources.list.d/upmpdcli.list
@@ -115,7 +116,12 @@ sed -i '/getbestaudio(/getbestaudio(preftype="m4a"/' /usr/local/lib/python2.7/di
 
 cp -R $PIMUSICBOX_FILES/* /
 
-chown -R mopidy:audio /music/playlists/
+deluser --remove-home mopidy
+adduser --quiet --system --no-create-home --home /var/lib/mopidy --ingroup audio mopidy
+chown -R mopidy:audio /var/cache/mopidy
+chown -R mopidy:audio /var/lib/mopidy
+chown -R mopidy:audio /var/log/mopidy
+chown -R mopidy:audio /music/playlists
 
 MUSICBOX_SERVICES="ssh dropbear upmpdcli shairport-sync"
 for service in $MUSICBOX_SERVICES
