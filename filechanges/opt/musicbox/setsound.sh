@@ -18,10 +18,22 @@ USB_CARD=
 INT_CARD=
 HDMI_CARD=
 
+function get_overlay()
+{
+    local overlay=$(echo $1 | tr "_" "-")
+    case $overlay in
+        iqaudio-dacplus)
+            overlay+=",unmute_amp"
+            ;;
+        *)
+            ;;
+    esac
+    eval "$2='$overlay'"
+}
+
 function enumerate_alsa_cards()
 {
-    i2s_NAME=$(echo $1 | tr -d "[:punct:]")
-    dto_NAME=$(echo $1 | tr "_" "-")
+    local i2s_NAME=$(echo $1 | tr -d "[:punct:]")
     while read -r line
     do
         ## Dac
@@ -69,8 +81,10 @@ function enumerate_alsa_cards()
     # No usb card found, assume anything unknown is actually a usb card.
     [[ -z $USB_CARD ]] && USB_CARD=$UNKNOWN_CARD
     # Check if we need to make any changes to config.txt
-    if [ -n "$dto_NAME" ]; then
+    if [ -n "$i2s_NAME" ]; then
         if [ -z "$I2S_CARD" ] ; then
+        local dto_NAME=''
+        get_overlay $1 dto_NAME
         #if ! grep -q "^dtoverlay=${dto_NAME}$" $BOOT_CONFIG_TXT ; then
             echo "# Musicbox audio: (DO NOT EDIT BELOW THIS LINE)" >> $TMP_CONFIG_TXT
             echo "dtoverlay=${dto_NAME}" >> $TMP_CONFIG_TXT
@@ -125,6 +139,7 @@ case $OUTPUT in
         CARD=$I2S_CARD
         ;;
     phatdac)
+        echo "phatdac option is deprecated, use hifiberry_dac instead"
         enumerate_alsa_cards hifiberry_dac
         CARD=$I2S_CARD
         ;;
