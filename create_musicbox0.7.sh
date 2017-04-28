@@ -82,7 +82,7 @@ pip install mopidy-mobile==1.8.0
 pip install mopidy-youtube==2.0.2
 pip install mopidy-gmusic==2.0.0
 pip install mopidy-spotify-web==0.3.0
-pip install --no-deps https://github.com/pimusicbox/mopidy-spotify/archive/pimusicbox/v1.4.x.zip
+pip install --no-deps --upgrade https://github.com/pimusicbox/mopidy-spotify/archive/pimusicbox/v1.4.x.zip
 pip install mopidy-tunein==0.4.1
 pip install mopidy-local-sqlite==1.0.0
 pip install mopidy-scrobbler==1.1.1
