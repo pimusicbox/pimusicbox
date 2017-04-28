@@ -1,3 +1,5 @@
+#!/bin/bash
+
 IMG_FILE=$1
 RUN_SCRIPT=$2
 SRC_FILES=$(cd $(dirname $0) ; pwd -P)
