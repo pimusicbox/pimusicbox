@@ -93,12 +93,19 @@ then
     #put wifi settings for wpa roaming
     if [ "$INI__network__wifi_password" != "" ]
     then
+        password_length=${#INI__network__wifi_password}
+        if [ $password_length -gt 63 ]
+        then
+            PSK="$INI__network__wifi_password"
+        else
+            PSK="\"$INI__network__wifi_password\""
+        fi
         cat >/etc/wpa.conf <<EOF
             ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
             update_config=1
             network={
                 ssid="$INI__network__wifi_network"
-                psk="$INI__network__wifi_password"
+                psk=$PSK
                 scan_ssid=1
             }
 EOF
