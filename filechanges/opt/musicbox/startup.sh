@@ -91,6 +91,14 @@ chmod u+s /sbin/shutdown
 if [ "$INI__network__wifi_network" != "" ]
 then
     #put wifi settings for wpa roaming
+	#
+	# If wifi_country is set then include a country=XX line
+    if [ "$INI__network__wifi_country" != "" ]
+    then
+        WIFICOUNTRY="country=$INI__network__wifi_country"
+    else
+        WIFICOUNTRY=""
+    fi
     if [ "$INI__network__wifi_password" != "" ]
     then
         password_length=${#INI__network__wifi_password}
@@ -103,6 +111,7 @@ then
         cat >/etc/wpa.conf <<EOF
             ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
             update_config=1
+            $WIFICOUNTRY
             network={
                 ssid="$INI__network__wifi_network"
                 psk=$PSK
@@ -114,6 +123,7 @@ EOF
         cat >/etc/wpa.conf <<EOF
             ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
             update_config=1
+            $WIFICOUNTRY
             network={
                 ssid="$INI__network__wifi_network"
                 key_mgmt=NONE

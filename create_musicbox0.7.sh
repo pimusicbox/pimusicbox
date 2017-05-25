@@ -49,6 +49,9 @@ apt-get remove --yes --purge linux-wlan-ng
 # Ensure we reinstall the upstream config.
 apt-get install --yes -o Dpkg::Options::="--force-confmiss" --reinstall avahi-daemon
 
+# Get the packages required for setting wifi region
+apt-get install --yes wireless-regdb crda
+
 # Upgrade!
 apt-get dist-upgrade --yes -o Dpkg::Options::="--force-confnew"
 
