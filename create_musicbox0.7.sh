@@ -77,6 +77,10 @@ unzip librespot-linux-armhf-raspberry_pi.zip
 rm librespot-linux-armhf-raspberry_pi.zip
 chmod +x librespot
 
+# Install mpd-watchdog (#224)
+wget https://github.com/pimusicbox/mpd-watchdog/releases/download/v0.3.0/mpd-watchdog_0.3.0-0tkem2_all.deb
+dpkg -i mpd-watchdog_0.3.0-0tkem2_all.deb
+
 # Need these to rebuild python dependencies
 PYTHON_BUILD_DEPS="build-essential python-dev libffi-dev libssl-dev"
 apt-get install --yes $PYTHON_BUILD_DEPS
@@ -139,7 +143,7 @@ chown -R mopidy:audio /var/lib/mopidy
 chown -R mopidy:audio /var/log/mopidy
 chown -R mopidy:audio /music/playlists
 
-MUSICBOX_SERVICES="ssh dropbear upmpdcli shairport-sync"
+MUSICBOX_SERVICES="ssh dropbear upmpdcli shairport-sync mpd-watchdog"
 for service in $MUSICBOX_SERVICES
 do
     update-rc.d $service disable

@@ -333,5 +333,11 @@ then
     fi
 fi
 
+# start mpd-watchdog if enabled
+if [ "$INI__musicbox__enable_mpd_watchdog" == "1" ]
+then
+    /etc/init.d/mpd-watchdog start
+fi
+
 # check and clean dirty bit of vfat partition if not safely removed
 fsck /dev/mmcblk0p1 -v -a -w -p > /dev/null 2>&1 || true
