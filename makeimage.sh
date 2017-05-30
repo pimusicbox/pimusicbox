@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 SECTOR_SIZE=512
 
