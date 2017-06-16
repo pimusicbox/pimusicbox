@@ -90,10 +90,11 @@ pip install mopidy-tunein==0.4.1
 pip install mopidy-local-sqlite==1.0.0
 pip install mopidy-scrobbler==1.1.1
 # Unreleased mopidy-soundcloud has some useful fixes.
-pip install --no-deps https://github.com/mopidy/mopidy-soundcloud/archive/bd682c305c260296f87c607bba0f50a51bf71201.zip
+pip install --no-deps https://github.com/mopidy/mopidy-soundcloud/archive/faeb6710980f12b50b03bf78c1878be751b8e21a.zip
 pip install mopidy-dirble==1.3.0
 pip install mopidy-podcast==2.0.1
 pip install mopidy-podcast-itunes==2.0.0
+pip install mopidy-internetarchive==2.0.3
 
 # https://github.com/pimusicbox/pimusicbox/issues/371
 pip uninstall --yes mopidy-local-whoosh
