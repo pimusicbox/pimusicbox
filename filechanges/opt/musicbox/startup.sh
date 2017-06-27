@@ -213,6 +213,22 @@ else
     rm /etc/monit/conf.d/shairport > /dev/null 2>&1 || true
 fi
 
+# start spotify connect if enabled
+if [ "$INI__musicbox__enable_connect" == "1" ]
+then
+    if [ "$INI__spotify__username" != "" -a "$INI__spotify__password" != "" ]
+    then
+        USER="-u $INI__spotify__username"
+        PASS="-p $INI__spotify__password"
+    fi
+    if [ "$INI__spotify__bitrate" != "" ]
+    then
+        BITRATE="-b $INI__spotify__bitrate"
+    fi
+    /opt/librespot/librespot -n "$CLEAN_NAME" $USER $PASS $BITRATE --onstart "/usr/bin/mpc stop" &
+fi
+
+
 service monit start
 
 if [ "$INI__network__enable_firewall" != "1" ]

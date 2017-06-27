@@ -1,6 +1,7 @@
 MIN_FREE_SPACE_KB=$(expr 1024 \* 1024)
 PIMUSICBOX_FILES=/tmp/filechanges
 SHAIRPORT_VERSION=3.0
+LIBRESPOT_VERSION=v20170605-39012ba
 
 FREE_SPACE=$(df | awk '$NF == "/" { print $4 }')
 if [ $FREE_SPACE -lt $MIN_FREE_SPACE_KB ]; then
@@ -67,6 +68,14 @@ autoreconf -i -f
 make && make install
 cd ../
 rm -rf shairport-sync*
+
+# Download and install Raspberry Pi Compatible ARMHF
+mkdir /opt/librespot
+cd /opt/librespot
+wget https://github.com/herrernst/librespot/releases/download/${LIBRESPOT_VERSION}/librespot-linux-armhf-raspberry_pi.zip
+unzip librespot-linux-armhf-raspberry_pi.zip
+rm librespot-linux-armhf-raspberry_pi.zip
+chmod +x librespot
 
 # Need these to rebuild python dependencies
 PYTHON_BUILD_DEPS="build-essential python-dev libffi-dev libssl-dev"
