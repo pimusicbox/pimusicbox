@@ -94,7 +94,6 @@ release() {
 
     local BUILD_DIR=${MKIMG_BUILD_DIR:-${SRC_FILES}/_build}
     local ROOTFS_DIR=${MKIMG_ROOTFS_DIR:-${BUILD_DIR}/rootfs}
-    local KERNEL=4.4.50
 
     if [ ! -f "$INPUT_IMG" ]; then
         echo "** ERROR: No musicbox image found **"
@@ -141,14 +140,18 @@ release() {
     #smaller $IMG_NAME $(expr 1024 \* 1024 \* 1024)
 
     rm -rf $ROOTFS_DIR
-    cd $SRC_FILES/docs
-    make text latexpdf
-    cp _build/text/{changes,faq}.txt  $BUILD_DIR/
-    cp _build/latex/PiMusicBox.pdf  $BUILD_DIR/
-    cd $BUILD_DIR
-    md5sum * > MD5SUMS
-    zip -9 $ZIP_NAME *
 
+    if [ ! -n "$IMAGE_ONLY" ]; then
+        cd $SRC_FILES/docs
+        make text latexpdf
+        cp _build/text/{changes,faq}.txt  $BUILD_DIR/
+        cp _build/latex/PiMusicBox.pdf  $BUILD_DIR/
+        cd $BUILD_DIR
+        md5sum * > MD5SUMS
+        zip -9 $ZIP_NAME *
+    fi
+
+    echo "Info: Created $ZIP_NAME release in $BUILD_DIR"
     echo "** Success **"
 }
 
