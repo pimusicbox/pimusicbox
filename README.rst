@@ -27,6 +27,23 @@ Features
 - Last.fm scrobbling.
 
 
+Building an image
+=================
+
+The current v0.7 image is an incremental update and can be generated with the
+following steps::
+
+    sudo apt-get install git coreutils e2fsprogs zerofree util-linux qemu-arm-static
+    wget https://dl.mopidy.com/pimusicbox/pimusicbox-0.6.0.zip
+    unzip pimusicbox-0.6.0.zip
+    git clone https://github.com/pimusicbox/pimusicbox
+    cd pimusicbox
+    IMG=../pimusicbox-0.6.0/musicbox0.6.img
+    ./makeimage.sh bigger $IMG
+    ./chroot.sh $IMG create_musicbox0.7.sh
+    IMAGE_ONLY=yes ./makeimage.sh release $IMG
+
+
 Project resources
 =================
 
