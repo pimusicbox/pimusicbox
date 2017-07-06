@@ -53,6 +53,16 @@ apt-get install --yes -o Dpkg::Options::="--force-confmiss" --reinstall avahi-da
 # Get the packages required for setting wifi region
 apt-get install --yes wireless-regdb crda
 
+# Fix locale
+apt-get install --yes locales
+echo "Europe/London" > /etc/timezone
+dpkg-reconfigure -f noninteractive tzdata
+sed -i -e 's/en_US.UTF-8 UTF-8/# en_US.UTF-8 UTF-8/' /etc/locale.gen
+sed -i -e 's/# en_GB.UTF-8 UTF-8/en_GB.UTF-8 UTF-8/' /etc/locale.gen
+echo -e 'LANG="en_GB.UTF-8"\nLANGUAGE="en_GB:en"' > /etc/default/locale
+dpkg-reconfigure --frontend=noninteractive locales
+update-locale LANG=en_GB.UTF-8
+
 # Upgrade!
 apt-get dist-upgrade --yes -o Dpkg::Options::="--force-confnew"
 
