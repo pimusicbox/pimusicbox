@@ -1,7 +1,7 @@
 MIN_FREE_SPACE_KB=$(expr 1024 \* 1024)
 PIMUSICBOX_FILES=/tmp/filechanges
 SHAIRPORT_VERSION=3.0.2
-LIBRESPOT_VERSION=v20170605-39012ba
+LIBRESPOT_VERSION=v20170709-aa86ebf
 
 FREE_SPACE=$(df | awk '$NF == "/" { print $4 }')
 if [ $FREE_SPACE -lt $MIN_FREE_SPACE_KB ]; then
@@ -72,24 +72,25 @@ SHAIRPORT_RUN_DEPS="libc6 libconfig9 libdaemon0 libasound2 libpopt0 libavahi-com
 apt-get install --yes $SHAIRPORT_BUILD_DEPS $SHAIRPORT_RUN_DEPS
 wget https://github.com/mikebrady/shairport-sync/archive/${SHAIRPORT_VERSION}.zip
 unzip ${SHAIRPORT_VERSION}.zip && rm ${SHAIRPORT_VERSION}.zip
-cd shairport-sync-${SHAIRPORT_VERSION}
+pushd shairport-sync-${SHAIRPORT_VERSION}
 autoreconf -i -f
 ./configure --sysconfdir=/etc --with-alsa --with-avahi --with-ssl=openssl --with-metadata --with-systemv
 make && make install
-cd ../
+popd
 rm -rf shairport-sync*
 
 # Download and install Raspberry Pi Compatible ARMHF
-mkdir /opt/librespot
-cd /opt/librespot
+mkdir -p /opt/librespot
+pushd /opt/librespot
 wget https://github.com/herrernst/librespot/releases/download/${LIBRESPOT_VERSION}/librespot-linux-armhf-raspberry_pi.zip
 unzip librespot-linux-armhf-raspberry_pi.zip
 rm librespot-linux-armhf-raspberry_pi.zip
-chmod +x librespot
+popd
 
 # Install mpd-watchdog (#224)
 wget https://github.com/pimusicbox/mpd-watchdog/releases/download/v0.3.0/mpd-watchdog_0.3.0-0tkem2_all.deb
 dpkg -i mpd-watchdog_0.3.0-0tkem2_all.deb
+rm mpd-watchdog_0.3.0-0tkem2_all.deb
 
 # Need these to rebuild python dependencies
 PYTHON_BUILD_DEPS="build-essential python-dev libffi-dev libssl-dev"
