@@ -99,7 +99,7 @@ apt-get install --yes $PYTHON_BUILD_DEPS
 rm -rf /tmp/pip_build_root
 python -m pip install -U pip
 # Upgrade some dependencies.
-pip install requests[security] backports.ssl-match-hostname backports-abc tornado gmusicapi pykka pylast pafy youtube-dl --upgrade
+pip install --upgrade requests[security] backports.ssl-match-hostname backports-abc tornado gmusicapi pykka pylast pafy youtube-dl
 # The lastest versions that are still supported in Wheezy (Gstreamer 0.10).
 pip install mopidy==1.1.2
 pip install mopidy-musicbox-webclient==2.4.0
@@ -164,8 +164,14 @@ done
 apt-get install --yes git rpi-update
 PRUNE_MODULES=1 SKIP_WARNING=1 rpi-update 70d0e67030661cffbf863f66d71c59dff28fd20c
 
+# Remove unrequired packages (#426)
+apt-get remove --purge --yes xserver-common x11-xkb-utils xkb-data libxkbfile1 \
+    dpkg-dev groff-base libaspell15 libhunspell-1.3-0 man-db debian-reference-en \
+    debian-reference-common libicu48 binutils cpp cpp-4.6 gcc-4.6-base gcc-4.7-base \
+    libc-dev-bin libc6-dev make m4 autotools-dev git rpi-update
+
 # Clean up.
-apt-get remove --yes --purge $PYTHON_BUILD_DEPS $SHAIRPORT_BUILD_DEPS git rpi-update
+apt-get remove --yes --purge $PYTHON_BUILD_DEPS $SHAIRPORT_BUILD_DEPS
 apt-get autoremove --yes
 apt-get clean
 apt-get autoclean
