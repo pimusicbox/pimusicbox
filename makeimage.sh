@@ -177,17 +177,17 @@ if [ "${BASH_SOURCE[0]}" == "${0}" ]; then
     # Not sourced
     case "$2" in
         bigger)
-            bigger "$@"
+            bigger "$1"
             ;;
         smaller)
-            smaller "$@"
+            smaller "$1"
             ;;
         finalise)
-            finalise "$@"
+            finalise "$1"
             ;;
         release)
-            finalise "$@"
-            release "$@"
+            finalise "$1"
+            release "$1"
             ;;
         *)
             echo "Usage: $0 <image> bigger|smaller|finalise|release <args>"
