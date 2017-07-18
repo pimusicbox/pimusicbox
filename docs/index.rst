@@ -5,9 +5,9 @@
    :caption: Usage
    :maxdepth: 2
 
-   manual-0.4
+   manual
    faq
-   upgrading
+   troubleshooting
 
 .. toctree::
    :caption: About

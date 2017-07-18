@@ -25,6 +25,7 @@ Features
 - Support for all kinds of USB, HifiBerry and IQ Audio soundcards.
 - Wi-Fi support (WPA, Raspbian supported Wi-Fi adapters only)
 - Last.fm scrobbling.
+- Spotify Connect support.
 
 
 Creating an image

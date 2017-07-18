@@ -2,8 +2,20 @@
 Changelog
 *********
 
-v0.7.0RC4 (2017-03-21)
+v0.7.0 (2017-07-??)
 ===================
+- Firewall is now optional and is DISABLED by default
+- Added Spotify Connect functionality (librespot v20170717-910974e)
+- Includes mpd-watchdog for restoring stream playback following connectivity loss
+- Ability to configure the WiFi country and use region specific channels
+- Updated Shairport-Sync to v3.0.2
+- Support for 64 character hex keys
+- Fixed blocked Airplay ports (broken in v0.7.0RC4)
+- OPML podcast file now available in /boot/config/
+- Support for SD card friendly Mopidy debug logging
+
+v0.7.0RC4 (2017-03-21)
+======================
 
 - Updated Linux kernel to v4.9.16 and support Device Tree module loading
 - Full support for Pi3 and Pi0W on-board WiFi
@@ -13,7 +25,7 @@ v0.7.0RC4 (2017-03-21)
 - Improve startup script output
 
 v0.7.0RC3 (2017-03-15)
-===================
+======================
 
 - Updated upmpdcli to v1.2.11
 - Fixed Shairport-Sync support
@@ -23,13 +35,13 @@ v0.7.0RC3 (2017-03-15)
 - Removed streamuris. Favourite streams now stored in an m3u playlist in /music/playlists/
 
 v0.7.0RC2 (2017-03-09)
-===================
+======================
 
 - Updated Shairport-Sync to v3.0
 - Fixed support for HiFiBerry Digi
 
 v0.7.0RC1 (2017-02-23)
-===================
+======================
 
 - Raspberry Pi 3 and Zero compatability (using updated kernel)
 - Compatible with Mopidy v1.1.2

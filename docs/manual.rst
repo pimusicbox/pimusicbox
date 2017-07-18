@@ -1,54 +1,45 @@
 **********************
-Pi MusicBox 0.4 manual
+Pi MusicBox 0.7 manual
 **********************
-
-.. warning::
-
-   This is the manual for Pi MusicBox 0.4. It was last updated in December
-   2013. As the rest of the Pi MusicBox documentation gets up to speed, this
-   manual will be removed.
 
 What is it?
 ===========
 
-So you have this huge library of 20+ million songs on Spotify, just waiting for
-you to play them on your computer. Spotify is great. But how to play these
-songs on your audio set? Using a headphone cable? Hmmm. Not great with your
-notebook. Bluetooth? Hmmm. Unreliable.
-
-Enter Pi MusicBox. It turns you Pi into a music player, supporting Spotify,
-Apple Airplay and Web Radio. A music player which you can operate from your
+Pi MusicBox lets you play all your music through your HiFi. 
+Supporting Spotify, Google Music, Soundcloud, YouTube, Podcasts, 
+Apple Airplay, UPnP/DLNA, Internet Radio, not to mention your vast mp3 collection. 
+A music player which you can operate from your
 couch using a tablet, smartphone, notebook or desktop computer. Connect your
-Raspberry Pi to an audio set, install the software and welcome to a new way of
+Raspberry Pi to speaker system, install the software and welcome to a new way of
 listening to music!
 
 Requirements
 ============
 
 For this hack, you'll not only need a working Pi, but also a Spotify Premium
-account and an audio set, headphones or a set of (USB) speakers. A monitor or
-television is not required, but might come in handy.
+account and either a HiFi set, pair of headphones or set of USB speakers. A monitor or
+television is not required, but might come in handy if you need to troubleshoot startup.
 
 Getting the Software
 ====================
 
-Download the "ready to eat" image from http://www.pimusicbox.com/. It just
+Download the latest "ready to eat" image from http://www.pimusicbox.com/. It just
 works, you only have to edit some options. For this guide, we used Pi MusicBox
-version 0.4. New versions should generally work about the same, though options
-could change.
+version 0.7. New versions should generally work about the same, though specific 
+options may have changed.
 
 Installing Pi MusicBox
 ======================
 
 Extract the zip file. Put the resulting image on your SD Card by following the
-instructions in chapter [XX]. The image is tested on a 1GB SD card, but you can
-put it on a larger one.
+instructions in chapter [XX]. The image is tested on a 1GB SD card but a larger 
+card will leave you with more free space and is preferable.
 
 Possibilities
 =============
 
-Pi MusicBox is designed to be operated not from the Pi itself, but from another
-computer like a notebook, desktop, tablet or smartphone. You can use almost any
+Pi MusicBox is designed to be operated not locally from the Pi itself, although
+if you connect a keyboard you could, but over the network from another computer like a notebook, desktop, tablet or smartphone. You can use almost any
 device with a modern web browser to operate it (Chrome 14+, Safari 6+, Firefox
 11+, Internet Explorer 10+).
 

@@ -4,109 +4,140 @@
 Frequently Asked Questions
 **************************
 
-Where can I ask questions and get support?
+Where can I ask my own questions and get further support?
 
-    You can discuss features and problems on the `forum
-    <https://discuss.mopidy.com/>`__. Please report bugs about MusicBox itself
-    at `the repo at Github <https://github.com/pimusicbox/pimusicbox>`__. You
-    can also try the #mopidy channel on `Freenode
-    <https://www.freenode.net/>`_, or the `Raspberry Pi forums
-    <https://www.raspberrypi.org/forums/>`_.
+    You can discuss features and problems on the 
+    `forum <https://discuss.mopidy.com/c/pi-musicbox>`_. Please search before
+    creating a new topic as your question may have already been answered.
+    You can also try the #mopidy channel on `Freenode <https://www.freenode.net/>`_.
+    For more general Raspberry Pi questions you may find better answers on the 
+    `official Raspberry Pi forum <https://www.raspberrypi.org/forums/>`_.
 
-What were the login credentials again? I forgot them...
+What hardware is supported?
+
+    All Raspberry Pi models are supported but you'll find the system is noticeably
+    faster and more responsive on a Raspberry Pi 2 or 3.
+
+What are the default login credentials?
 
     Username: ``root``, password: ``musicbox``
-
-Is there a way to upgrade the music box image, or is the only solution to use
-the whole new image?
-
-    For now, there is no real upgrade path, and the only way to upgrade is to
-    simply download the newest image. You could copy over your
-    :file:`settings.ini` and :file:`streamuris.js` config files to the new
-    image.
-
+    You should change this password as soon as possible.
+    
 Can I use the free version of Spotify?
 
-    No, sorry. Spotify does not allow free users to stream to third party
-    clients.
+    No, you must have a Spotify Premium account. 
+    Spotify does not allow free users to stream using third party clients.
 
 Can I use Spotify Connect?
 
-    No, sorry. Spotify has not released the API.
-
-I upgraded my Musicbox with apt-get, now I'm having issues. Can you advise me
-on what to do?
-
-    We would advise you not to upgrade your Raspbian unless it is absolutely
-    necessary, as it tends to cause breakage.
-
-Can I change the standard radio station list?
-
-    Yes. Currently the list is stored in :file:`/boot/config/streamuris.js` which you
-    can edit by hand with any text editor. You can also use any of the popular
-    MPD clients on your phone/pc/mac, most of them have the option of storing
-    playlists and radio stations locally. See http://mpd.wikia.com/wiki/Clients
-    for a suggested client list.
+    YES! There is support for Spotify Connect in the latest release provided by the
+    brilliant `librespot <https://github.com/plietar/librespot/>`_ software. This
+    reverse engineered implementation provides most Connect functionality but should
+    still be considered experimental.
+    Please direct any frustrations regarding the state of affairs at Spotify as they
+    are responsible for not making the Connect API available.
 
 Can I use Spotify radio?
 
-    Unfortunately Spotify's current libspotify SDK does not support that
-    function, if they implement it I'll try and include it.
+    Unfortunately Spotify's current libspotify SDK does not support this functionality.
 
-Can I use HiFiBerry?
+Is there a way to upgrade the system?
 
-    Yes, use the latest version of Musicbox. Output through i2s.
+    There is currently no real upgrade path. The only way to upgrade is to
+    download the latest image and copy over your :file:`settings.ini` file.
 
-Can I have several Musicboxes stream content to one another?
+I tried to upgrade my installation with apt-get/pip and now I'm having issues. what should I do?
+
+    This is not supported (see above) and it's not advisable unless you know what
+    you are doing. If you don't know what you are doing then reinstall the
+    latest version and then try to ask for support on the
+    `forum <https://discuss.mopidy.com/c/pi-musicbox>`_ where someone may be
+    able and willing to help you.
+
+What happened to streamuris.js? How do I change the saved stream list?
+
+    Radio stations are now stored in :file:`/music/playlists/[Radio Streams].m3u`
+    and will appear in a playlist called 'Musicbox Favourites'. You can modify this 
+    playlist using the webclient's Streams page or by editing the underlying
+    playlist file. Any modifications you make will be visible to all clients.
+    
+Can I edit my playlists from Pi Musicbox?
+
+    You can save the current track queue as a 'local' playlist but note it will
+    only be available on your Pi Musicbox system. Some webclients, such as
+    mopidy-mobile, also provide an interface to edit these local playlists. For
+    now, Spotify playlists can only be modified using the official Spotify
+    apps/website.
+
+Can I use my HiFiBerry/IQAudio/PhatDAC/USB/JustBoom soundcard?
+
+    Yes, but you must specify the particular soundcard in :file:`settings.ini`
+    or the settings webpage. Most soundcards are supported but if you find yours
+    isn't then please request it on the
+    `forum <https://discuss.mopidy.com/c/pi-musicbox>`_.
+
+Can I use my Bluetooth speaker?
+
+    No, unfortunately we don't support this (yet). If you are able to get it working please
+    share your findings on the `forum <https://discuss.mopidy.com/c/pi-musicbox>`_.
+
+How do I make my random USB device work with Pi Musicbox?
+
+    Pi Musicbox is based on Raspbian Wheezy but includes all drivers from the very
+    latest Raspbian Jessie release. Any USB device that works with a regular Raspbian
+    installation should also work with Pi Musicbox. If you encounter any problems then
+    search the `forum <https://discuss.mopidy.com/c/pi-musicbox>`_ for help.
+
+Can I use a different user interface?
+
+    Yes, you can use your favourite MPD client or choose from any of the available
+    webclients. Note that webclients generally perform better than MPD clients and
+    provide a richer user experience. A list of installed webclients can be found
+    at http://musicbox/mopidy/ and the default webclient can be specified on the 
+    settings webpage.
+
+Can I have several Pi Musicbox systems streaming content to one another?
 
     Not yet, but I'm hoping to get it implemented one day.
 
-Can i access the Pi via terminal/command line remotely?
+Can I access the Pi remotely via terminal/command line?
 
-    Yes, simply allow SSH in Pi Musicbox's settings.ini file.
+    Yes, enable SSH access in :file:`settings.ini` or the settings webpage.
 
-Where can I find the hardcore technical info in Musicbox?
+Where can I find the source files and submit improvements to Pi Musicbox?
 
     https://github.com/pimusicbox/pimusicbox
 
-How do i make (insert wifi dongle name here) work with the Musicbox?
+Can Pi Musicbox stream *to* my Airplay device?
 
-    Musicbox is built off Raspbian, so any supported dongle will most likely
-    work, but as with all things Linux/GNU, breakage can (and usually will)
-    occur.
+    No, this functionality is not supported.
 
-Can the Musicbox stream to my airplay device?
+Can Pi Musicbox output to several devices via a multi-channel USB audio device?
 
-    Right now it can't. We may implement this if we ever have enough time, as
-    it is a complicated project to get it working.
+    No, this functionality is not supported. 
 
-Can I edit my Spotify playlists from the Musicbox?
+Can I use my Spotify account on several different Musicboxes at once?
 
-    Once it is implemented in Mopidy, you'll be able to.
+    No, this is a Spotify restriction.
 
-Can I run the Musicbox output to several devices via a multi-channel USB audio
-device?
+Can I get Pi Musicbox to play a song, playlist or radio station on startup?
 
-    To do that you would have to run multiple instances of Mopidy and make them
-    run in sync, it's not supported and it isn't on my to-do list, sorry.
+    Yes, configure the autoplay functionality in :file:`settings.ini` or the
+    settings webpage. Search the
+    `forum <https://discuss.mopidy.com/c/pi-musicbox>`_ for examples.
 
-Is there a support forum where I can ask in-depth questions?
+Will you add support for XYZ streaming service?
 
-    Yes, https://discuss.mopidy.com/c/pi-musicbox.
+    Support for additional streaming services in Pi MusicBox depends on support 
+    in Mopidy which may or may not be available yet. Please search the 
+    `forum <https://discuss.mopidy.com/c/pi-musicbox>`_ for more information
+    regarding the streaming service you're interested in.
 
-Can I stream Spotify to several different Musicboxes at once?
+Why isn't http://musicbox.local working on my Android device?
 
-    No, as this is a Spotify limitation.
-
-    But perhaps if we get around to implementing the streaming from Musicbox to
-    Musicbox, it may become possible.
-
-Can I get the Musicbox to auto-start playing a playlist or radio station upon
-bootup?
-
-    Yes, use the settings page!
-
-Will you add WiMP support?
-
-    WiMP support in MusicBox depends on WiMP support in Mopidy. The story of
-    that can be read at :mopidy:`48`.
+    Even the very latest version of Android does not have support for using
+    .local names on your home network. Most home routers should allow you to
+    access http://musicbox instead. Alternatively, you'll need to configure
+    an IP address reservation (or similar) on your router to ensure the IP
+    address of your Pi Musicbox system does not change between reboots and
+    simply bookmark that particular IP address.
