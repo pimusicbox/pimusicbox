@@ -37,6 +37,7 @@ fi
 sudo mv ${ROOTFS_DIR}/etc/ld.so.preload ${ROOTFS_DIR}/etc/ld.so.preload.bak
 sudo cp `which qemu-arm-static` ${ROOTFS_DIR}/usr/bin/
 if [ -n "$APT_PROXY" ]; then
+    echo "Using APT proxy $APT_PROXY"
     echo "Acquire::http { Proxy \"http://$APT_PROXY\"; };" | \
         sudo tee ${ROOTFS_DIR}/etc/apt/apt.conf.d/01proxy
 fi
@@ -44,19 +45,23 @@ fi
 echo "exit 101" | sudo tee ${ROOTFS_DIR}/usr/sbin/policy-rc.d
 sudo chmod +x ${ROOTFS_DIR}/usr/sbin/policy-rc.d
 
+function finish {
+    echo "Cleaning up chroot and unmounting..."
+    sudo mv ${ROOTFS_DIR}/etc/ld.so.preload.bak ${ROOTFS_DIR}/etc/ld.so.preload
+    sudo rm ${ROOTFS_DIR}/usr/bin/qemu-arm-static
+    sudo rm -f ${ROOTFS_DIR}/etc/apt/apt.conf.d/01proxy
+    sudo rm -f ${ROOTFS_DIR}/usr/sbin/policy-rc.d
+
+    CHROOT_MOUNTS=$(mount | grep "${ROOTFS_DIR}" | cut -f 3 -d ' ' | sort -r)
+    for m in $CHROOT_MOUNTS
+    do
+        echo "Unmounting $m"
+        sudo umount $m
+    done
+    sudo losetup -D $IMG_FILE
+    rm -rf ${ROOTFS_DIR}
+}
+
+trap finish EXIT
 echo "Executing 'chroot ${ROOTFS_DIR} ${CHROOT_CMD}'"
 sudo chroot ${ROOTFS_DIR} ${CHROOT_CMD}
-
-echo "Cleaning up chroot and unmounting..."
-sudo mv ${ROOTFS_DIR}/etc/ld.so.preload.bak ${ROOTFS_DIR}/etc/ld.so.preload
-sudo rm ${ROOTFS_DIR}/usr/bin/qemu-arm-static
-sudo rm -f ${ROOTFS_DIR}/etc/apt/apt.conf.d/01proxy
-sudo rm -f ${ROOTFS_DIR}/usr/sbin/policy-rc.d
-
-CHROOT_MOUNTS=$(mount | grep "${ROOTFS_DIR}" | cut -f 3 -d ' ' | sort -r)
-for m in $CHROOT_MOUNTS
-do
-    echo "Unmounting $m"
-    sudo umount $m
-done
-sudo losetup -D $IMG_FILE

@@ -45,6 +45,7 @@ EOF
 
     sync
     sleep 1
+    sudo partprobe
 
     sudo e2fsck -f ${LOOP_DEV}p2
     sudo resize2fs ${LOOP_DEV}p2
