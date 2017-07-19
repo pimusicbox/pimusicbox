@@ -35,7 +35,8 @@ rm /lib/modules/3.18.7+/kernel/drivers/net/wireless/8188eu.ko
 rm /etc/apt/sources.list.d/mopidy.list
 rm -rf /etc/mopidy/extensions.d
 
-wget -q -O - http://www.lesbonscomptes.com/key/jf@dockes.org.gpg.key | apt-key add -
+apt-key adv --keyserver pool.sks-keyservers.net --recv 32D9C2A835ED066C
+apt-key adv --keyserver pool.sks-keyservers.net --recv 7808CE96D38B9201
 cat << EOF > /etc/apt/sources.list.d/upmpdcli.list
 deb http://www.lesbonscomptes.com/upmpdcli/downloads/raspbian-wheezy/ unstable main
 deb-src http://www.lesbonscomptes.com/upmpdcli/downloads/raspbian-wheezy/ unstable main
