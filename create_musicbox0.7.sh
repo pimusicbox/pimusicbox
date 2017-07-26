@@ -146,6 +146,13 @@ sed -i '/try:/i \
         core.tracklist' /usr/local/lib/python2.7/dist-packages/mopidy/mpd/actor.py
 # Force YouTube to favour m4a streams as gstreamer0.10's webm support is bad/non-existent:
 sed -i '/getbestaudio(/getbestaudio(preftype="m4a"/' /usr/local/lib/python2.7/dist-packages/mopidy_youtube/backend.py
+# Hide broken Spotify Web 'Genres & Moods' and 'Featured Playlists' browsing:
+sed -i '222,+3 s/^/#/' /usr/local/lib/python2.7/dist-packages/mopidy_spotify_web/library.py
+sed -i '222i ]' /usr/local/lib/python2.7/dist-packages/mopidy_spotify_web/library.py
+# Hide broken Spotify Tunigo 'Genres & Moods', 'Featured Playlists' and 'Top Lists' browsing:
+sed -i '27,+8 s/^/#/' /usr/local/lib/python2.7/dist-packages/mopidy_spotify_tunigo/library.py
+# Hide broken Spotify browsing entirely:
+sed -i '/root_directory = / s/^/#/' /usr/local/lib/python2.7/dist-packages/mopidy_spotify/library.py
 
 cp -R $PIMUSICBOX_FILES/* /
 
