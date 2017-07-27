@@ -2,7 +2,7 @@
 Changelog
 *********
 
-v0.7.0 (2017-07-??)
+v0.7.0RC5 (2017-07-28)
 ===================
 - Firewall is now optional and is DISABLED by default
 - Added Spotify Connect functionality (librespot v20170717-910974e)
@@ -13,6 +13,8 @@ v0.7.0 (2017-07-??)
 - Fixed blocked Airplay ports (broken in v0.7.0RC4)
 - OPML podcast file now available in /boot/config/
 - Support for SD card friendly Mopidy debug logging
+- Currently broken Spotify browse features disabled/hidden
+- Updated Spotify-Tunigo to latest version
 
 v0.7.0RC4 (2017-03-21)
 ======================
