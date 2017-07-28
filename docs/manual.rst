@@ -5,28 +5,30 @@ Pi MusicBox v0.7 manual
 What is it?
 ===========
 
-Pi MusicBox lets you play all your music through your HiFi. 
-Supporting Spotify, Google Music, Soundcloud, YouTube, Podcasts, 
-Apple Airplay, UPnP/DLNA, Internet Radio, not to mention your vast mp3 collection. 
-A music player which you can operate from your
-couch using a tablet, smartphone, notebook or desktop computer. Connect your
-Raspberry Pi to speaker system, install the software and welcome to a new way of
-listening to music!
+Pi MusicBox lets you listen to your music through your HiFi.
+Supporting Spotify, Google Music, Soundcloud, YouTube, Podcasts, Apple Airplay,
+UPnP/DLNA, Internet Radio, not to mention your vast mp3 collection. A music
+player which you can operate from your couch using a tablet, smartphone,
+notebook or desktop computer. 
+
+Connect your Raspberry Pi to your speaker system, install the software and enjoy
+listening to all your music!
 
 
 Possibilities
 =============
 
-Pi MusicBox is designed to be operated not locally from the Pi itself, although
-if you connect a keyboard you could, but over the network from another computer,
-tablet or smartphone. In fact, probably any device with a modern web browser
-(Chrome 14+, Safari 6+, Firefox 11+, Internet Explorer 10+) is sufficient.
+Pi MusicBox is designed to be controlled over your home network from another
+computer, tablet or smartphone. In fact, any device with a modern web browser
+(Chrome 14+, Safari 6+, Firefox 11+, Internet Explorer 10+) can be your remote.
+You could also attach a keyboard or buttons for local operation if you wanted.
 
-Audio can be output not only to the line out jack of the Pi, but also through
-HDMI, USB soundcards and most of the available HAT soundcards.  You can connect
-via WiFi or ethernet and play your own music files from the SD Card or network
-shares. The software will detect as much of the configuration as possible at
-startup and configure the system automatically.
+Connect your speakers directly via line out, HDMI or through an external USB or
+HAT soundcard. Play music from your SD Card or USB hard drive and use
+WiFi/ethernet to access music on network shares, internet radio as well as music
+from a number of supported streaming services. The software will detect as much
+of the configuration as possible at startup and configure the system for you
+automatically.
 
 
 Requirements
@@ -45,99 +47,107 @@ troubleshoot startup problems.
 Networking
 ----------
 
-Pi MusicBox needs a network connection to operate. If you use a wired network,
-you only have to plug in the network cable and it will be configured using DHCP.
-If you want to use a static address, you need to get into the console and
-configure it yourself (see :ref:`manual-hands-dirty`). Connecting through Wifi
-using a dongle, or the onboard WiFi available with a Raspberry Pi 3 or Zero W,
-is also supported (see :ref:`manual-wifi`). Most USB WiFi dongles are supported
-but not all. If you are buying one, make sure it's supported by Raspbian.
+Pi MusicBox is designed to be controlled over your home network and needs to
+have a working network connection. If you can use an ethernet cable, you just
+need to plug it in and you're done. Connecting via WiFi using a USB dongle,
+or the Raspberry Pi 3 / Zero W onboard WiFi, is also possible
+(see :ref:`manual-wifi`). Most USB WiFi dongles are supported but not all. If
+you are buying one, make sure it works in Raspbian. You'll need to enter your
+WiFi network details before you start (see :ref:`manual-init-config`).
+
+.. note::
+    If you want to use a static IP address, you need to login and configure that
+    yourself (see :ref:`manual-hands-dirty`).
 
 
 Installation
 ============
 
-Download and unzip the latest "ready to eat" image from `here <http://www.pimusicbox.com>`_
-and use Etcher to it to your SD Card (`more information
+Download and unzip the latest "ready to eat" image `available here <http://www.pimusicbox.com>`_
+and use Etcher to easily copy it to your SD Card (`more information
 <https://www.raspberrypi.org/documentation/installation/installing-images/README.md>`_.
-The image is tested on a 1GB SD card but a larger card will leave you with more
-free space and is preferable.
+The image has been tested on a 1GB SD card but a larger card will leave you with
+more free space and is preferable.
 
 
-Configuring
-===========
+.. _manual-init-config:
 
-Once your Pi Musicbox is running and accessible on the network, the easiest way
-to configure it is through the settings web page. If you want to set some
-initial config you can do so by manually editing the :file:`settings.ini` file
-using your favourite text editor.
+Initial Config
+==============
+
+If using a WiFi connection you must enter your network details in
+:file:`settings.ini` before you boot the system. You can also set other config
+options at this point but it's generally a good idea to start with the minimum
+config required when booting for the first time. It's easy to change other
+options later via the settings web page once you are up and running.
 
 To do this, insert the SD Card into a computer (Windows, Mac, Linux),
-and open the contents of the card in the file manager. A folder called config
-will be on there and within that will be a file called :file:`settings.ini`. The
-file is structured as an ini file and should be opened in a text editor. All
-lines starting with a ``#`` are comments designed to help you and will be
-ignored by Pi Musicbox.
+and open it in the file manager. It will contain a folder called ``config`` and
+within that will be a file called :file:`settings.ini`. The file is structured
+as an ini file and should be opened in a text editor. All lines starting with a
+``#`` are comments designed to help you and will be ignored by Pi Musicbox.
+Avoid changing the order or formatting of the non-commented out lines.
 
-.. note::
-    If you want to use a wireless network connection you must enter the network
-    name and password in :file:`settings.ini` before you boot the system. See
-    :ref:`manual-wifi` for more details.
-
-Once the system is running it's also possible to manually edit
-:file:`settings.ini` on the live system (see :ref:`manual-hands-dirty`).
+For details on specifically what WiFi settings you need to set, see
+:ref:`manual-wifi`.
 
 
 Booting
 =======
 
-It's generally a good idea to set the minimum initial config required when
-booting for the first time. Usually this means only changing settings in the
-'Network' section but unless you're connecting to a wireless network you may not
-need to change anything. Insert the SD Card in the Pi and then connect your
-speaker (turn the volume right down), network, and power cables.
-You may also wish to connect a monitor/television to the HDMI connector to
-follow the boot process but it's not required. It will likely reboot a few times
-but after a couple of minutes the web interface will be ready to access.
-
-
-Web Interface Control
-=====================
-
-Point your browser to the Pi. It will hopefully be available at this address::
-
-    http://musicbox.local/
-
-Or::
-
-    http://musicbox/
-
-Most OS X/iOS and Windows devices will find it immediately. If it doesn't work,
-you could try to install Apple Bonjour/iTunes in Windows to remedy this. Linux
-should also work if Avahi or Samba is installed. You have to add the ``http://``
-part of the address, or a trailing ``/``, in some browsers as otherwise they
-will try to do a web search for 'musicbox.local'.
+Insert the SD Card in your Pi and then connect the speaker (turn the volume
+right down), network, and power cables. You may also wish to connect a
+monitor/television to the HDMI connector to follow the boot process but it's not
+required.
 
 .. note::
-    If it doesn't work, or if you are using an Android device (which do not
-    support mDNS/Avahi), you will have to access your Pi MusicBox using it's IP
-    address rather than it's network hostname. This address is different on every network, e.g. http://192.168.1.5/ or
-http://10.1.100.2/. You have to either look it up using a network utility, or
-(easier) read it from the screen when Pi MusicBox boots.
+    The system will reboot a few times during startup and, depending on which
+    model Raspberry Pi you are using and what initial config you have set, this
+    may take a few minutes. Please be patient.
 
-Play songs from Spotify
-=======================
 
-If you access the interface, most things are clear immediately. Your Spotify
-playlists will appear. Select one of the playlists to show the tracks it
-contains. Select the track you want to play and choose one of the play options
-in the popup menu that appears. Using this popup menu, you can either play the
-song, add it to the queue, or find more tracks from the same album or the same
-artist. Just play around. Literally.
+Web Interface
+=============
 
-The four buttons at the bottom of the screen, let you access the functions of
-MusicBox. You can access the playing Queue, search for tracks, albums and
-artists, or play web radio stations.
+Once the system is ready for use, the web interface will be available in your
+web browser at one (or more) of the following addresses::
+
+* http://musicbox.local/
+* http://musicbox/
+
+Most modern web browser will require you to explicity enter the ``http://`` part
+of the address or the trailing ``/`` as otherwise they will unhelpfully try to
+search the internet for what you've typed!
+
+.. note::
+    Windows computers might require the installation of Apple Bonjour/iTunes for
+    mDNS to work correctly.
+
+.. note::
+    Linux computers might require the installation of Avahi fir mDNS to work
+    correctly.
+
+.. warning::
+    Android does not support mDNS and you might have to access your Pi MusicBox
+    using it's IP address rather than it's hostname. This address is different
+    on every network but will look something like http://192.168.1.5/ or
+    http://10.1.100.2/. You will have to either look it up using a network
+    utility, find it from your router status page, or just plug in a screen and
+    you'll see it displayed after startup. You can also install one of the many
+    mDNS helper apps such as Zentri Discovery.
+
+If, after waiting a few minutes, the web interface is still not responding,
+there might have been a problem during startup. The easiest thing to do at this
+point is plug in a screen and see the error message displayed. See
+:ref:`troubleshooting` for more help.
+
+Once your Pi Musicbox is running and accessible on the network, you'll want to
+customise it and enable some music sources. The easiest way to do this is using
+the Settings web page which you'll find listed in the navigation menu on the
+left side of the main page. Below that you'll also find a link to the System
+page where you can safely shutdown and restart the system. Avoid just removing
+the power cable unless you enjoy SD card corruption.
+
 
 Web Radio
 =========
