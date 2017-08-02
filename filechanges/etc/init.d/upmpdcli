@@ -17,6 +17,7 @@
 # Author: Jean-Francois Dockes <jf@dockes.org>
 
 HOSTN=`cat /etc/hostname | tr -cd "[:alnum:]"`
+PORT=49152
 #echo $HOSTN
 #UPMPD_FRIENDLYNAME="$HOSTN"
 #export UPMPD_FRIENDLYNAME
@@ -26,7 +27,7 @@ PATH=/sbin:/usr/sbin:/bin:/usr/bin
 DESC=upmpdcli             # Introduce a short description here
 NAME=upmpdcli             # Introduce the short server's name here
 DAEMON=/usr/bin/upmpdcli # Introduce the server's location here
-DAEMON_ARGS="-D -c /etc/upmpdcli.conf -f $HOSTN"    # Arguments to run the daemon with
+DAEMON_ARGS="-D -c /etc/upmpdcli.conf -f $HOSTN -P $PORT"    # Arguments to run the daemon with
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 
@@ -60,7 +61,7 @@ do_start()
 	# Add code here, if necessary, that waits for the process to be ready
 	# to handle requests from services started subsequently which depend
 	# on this one.  As a last resort, sleep for some time.
-        renice 19 `pgrep upmpdcli`
+        renice 19 $(pgrep upmpdcli) > /dev/null
 }
 
 #

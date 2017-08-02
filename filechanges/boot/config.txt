@@ -1,4 +1,3 @@
-kernel=kernel.img
 # uncomment if you get no picture on HDMI for a default "safe" mode
 #hdmi_safe=1
 
@@ -34,14 +33,14 @@ hdmi_force_hotplug=1
 # uncomment to increase signal to HDMI, if you have interference, blanking, or no display
 #config_hdmi_boost=4
 
-# Set variable arm_freq
-arm_freq=800
+[pi1]
 
-# Set variable core_freq
-core_freq=250
+# Pi Zero also matches this filter and we don't want to underclock.
+#arm_freq=800
+#core_freq=250
+#sdram_freq=400
 
-# Set variable sdram_freq
-sdram_freq=400
+[all]
 
 # Set variable over_voltage
 over_voltage=0
@@ -51,13 +50,18 @@ gpu_mem=16
 
 force_hdmi_open=1
 
-# Disable Device Tree Overlays, for now.
-device_tree=
+# Uncomment some or all of these to enable the optional hardware interfaces
+#dtparam=i2c_arm=on
+#dtparam=i2s=on
+#dtparam=spi=on
 
-# Uncomment one of these lines to enable an audio interface
-#dtoverlay=hifiberry-amp
-#dtoverlay=hifiberry-dac
-#dtoverlay=hifiberry-dacplus
-#dtoverlay=hifiberry-digi
-#dtoverlay=iqaudio-dac
-#dtoverlay=iqaudio-dacplus
+# Uncomment this to enable the lirc-rpi module
+#dtoverlay=lirc-rpi
+
+# Additional overlays and parameters are documented /boot/overlays/README
+
+# Enable audio (loads snd_bcm2835)
+dtparam=audio=on
+
+# Enable hardware watchdog
+dtparam=watchdog=on

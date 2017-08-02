@@ -1,2 +1,3 @@
-
-cpserver.sh
+musicbox_build
+.env
+docs/_build/

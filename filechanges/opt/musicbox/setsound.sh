@@ -4,24 +4,36 @@
 #
 
 CONFIG_FILE=/boot/config/settings.ini
+BOOT_CONFIG_TXT=/boot/config.txt
+TMP_CONFIG_TXT=/tmp/config.txt
+ETC_ASOUND_CONF=/etc/asound.conf
 
-# Define LSB log_* functions.
-. /lib/lsb/init-functions
-
-log_use_fancy_output
-
-log_begin_msg "Setting sound configuration..."
-rm -f /etc/asound.conf
+echo "Setting sound configuration..."
+# Prepare to remove whatever is currently there.
+rm -f $ETC_ASOUND_CONF
+sed '/# Musicbox audio:/Q' $BOOT_CONFIG_TXT > $TMP_CONFIG_TXT
 
 I2S_CARD=
 USB_CARD=
 INT_CARD=
 HDMI_CARD=
 
+function get_overlay()
+{
+    local overlay=$(echo $1 | tr "_" "-")
+    case $overlay in
+        iqaudio-dacplus)
+            overlay+=",unmute_amp"
+            ;;
+        *)
+            ;;
+    esac
+    eval "$2='$overlay'"
+}
+
 function enumerate_alsa_cards()
 {
-    # Remove unwanted characters from argument.
-    i2s_NAME=$(echo $1 | tr -d "[:punct:]")
+    local i2s_NAME=$(echo $1 | tr -d "[:punct:]")
     while read -r line
     do
         ## Dac
@@ -50,24 +62,39 @@ function enumerate_alsa_cards()
         name=${dev[3]}
         if [[ $name == "bcm2835" ]]; then
             INT_CARD=$card_num
-            log_progress_msg "Found internal device: card$INT_CARD"
-            if tvservice -s | grep -q HDMI; then
-                echo "HDMI output connected"
+            echo "* Found internal device: card$INT_CARD"
+            if tvservice -n 2>&1 | grep -v -q "No device present"; then
+                echo "    HDMI output detected"
                 HDMI_CARD=$card_num
             fi
         elif [[ $i2s_NAME && $name == *"$i2s_NAME" ]]; then
             I2S_CARD=$card_num
-            log_progress_msg "Found i2s device: card$I2S_CARD"
+            echo "* Found i2s device: card$I2S_CARD"
         elif [[ $line =~ "usb audio" ]]; then
             USB_CARD=$card_num
-            log_progress_msg "Found usb device: card$USB_CARD"
+            echo "* Found usb device: card$USB_CARD"
         else
             UNKNOWN_CARD=$card_num
-            log_progress_msg "Found unknown device: card$UNKNOWN_CARD"
+            echo "* Found unknown device '$name' on card$UNKNOWN_CARD"
         fi
     done < <(aplay -l | grep card)
     # No usb card found, assume anything unknown is actually a usb card.
     [[ -z $USB_CARD ]] && USB_CARD=$UNKNOWN_CARD
+    # Check if we need to make any changes to config.txt
+    if [ -n "$i2s_NAME" ]; then
+        if [ -z "$I2S_CARD" ] ; then
+        local dto_NAME=''
+        get_overlay $1 dto_NAME
+        #if ! grep -q "^dtoverlay=${dto_NAME}$" $BOOT_CONFIG_TXT ; then
+            echo "# Musicbox audio: (DO NOT EDIT BELOW THIS LINE)" >> $TMP_CONFIG_TXT
+            echo "dtoverlay=${dto_NAME}" >> $TMP_CONFIG_TXT
+            echo "Enabling Device Tree Overlay '$dto_NAME' and rebooting to activate..."
+            REBOOT=1
+            return
+        else
+            rm -f $TMP_CONFIG_TXT
+        fi
+    fi
 }
 
 if [[ $INI_READ != true ]] 
@@ -99,55 +126,38 @@ fi
 enumerate_alsa_cards
 
 case $OUTPUT in
-    analog)
-        CARD=$INT_CARD
+    auto)
         ;;
-    hdmi)
-        CARD=$HDMI_CARD
+    analog|hdmi)
+        CARD=$INT_CARD
         ;;
     usb)
         CARD=$USB_CARD
-        ;;
-    hifiberry_dac)
-        modprobe snd_soc_pcm5102a
-        modprobe snd_soc_hifiberry_dac
-        enumerate_alsa_cards $OUTPUT
-        CARD=$I2S_CARD
-        ;;
-    hifiberry_digi)
-        modprobe snd_soc_wm8804
-        modprobe snd_soc_hifiberry_digi
-        enumerate_alsa_cards $OUTPUT
-        CARD=$I2S_CARD
-        ;;
-    hifiberry_dacplus)
-        modprobe snd_soc_hifiberry_dacplus
-        enumerate_alsa_cards $OUTPUT
-        CARD=$I2S_CARD
-        ;;
-    hifiberry_amp)
-        modprobe snd_soc_hifiberry_amp
-        enumerate_alsa_cards $OUTPUT
-        CARD=$I2S_CARD
-        ;;
-    iqaudio_dac)
-        modprobe snd_soc_pcm512x
-        modprobe snd_soc_iqaudio_dac
-        enumerate_alsa_cards $OUTPUT
-        CARD=$I2S_CARD
         ;;
     wolfson)
         enumerate_alsa_cards wsp
         CARD=$I2S_CARD
         ;;
+    phatdac)
+        echo "phatdac option is deprecated, use hifiberry_dac instead"
+        enumerate_alsa_cards hifiberry_dac
+        CARD=$I2S_CARD
+        ;;
+    *)
+        enumerate_alsa_cards $OUTPUT
+        CARD=$I2S_CARD
+        ;;
 esac
 
-echo "Card $CARD i2s $I2S_CARD output $OUTPUT usb $USB_CARD intc $INT_CARD"
+if [ -f $TMP_CONFIG_TXT ]; then
+    mv $TMP_CONFIG_TXT $BOOT_CONFIG_TXT
+fi
 
+echo "Card=$CARD  i2s=$I2S_CARD  output=$OUTPUT  usb=$USB_CARD  intc=$INT_CARD"
 # If preferred output not found or given fall back to auto detection
 if [[ -z $CARD ]];
 then
-echo "No output was specified/found, falling back to auto detection"
+    echo "No output was specified/found, falling back to auto detection"
     if [[ -n $USB_CARD ]]; then
         CARD=$USB_CARD
         OUTPUT="usb"
@@ -160,23 +170,24 @@ echo "No output was specified/found, falling back to auto detection"
         fi
     fi
 fi
-
-echo "Card $CARD i2s $I2S_CARD output $OUTPUT usb $USB_CARD intc $INT_CARD"
+echo "Card=$CARD  i2s=$I2S_CARD  output=$OUTPUT  usb=$USB_CARD  intc=$INT_CARD"
 
 if [[ -z $CARD ]];
 then
-    log_failure_msg "No ouput card found"
+    echo "****************************"
+    echo "WARNING: No audio card found"
+    echo "****************************"
     exit 1
+else
+    echo "Using audio card$CARD ($OUTPUT)"
 fi
-
-log_progress_msg "Line out set to $OUTPUT card $CARD"
 
 if [ "$OUTPUT" == "usb" -a "$INI__musicbox__downsample_usb" == "1" ]
 # resamples to 44K because of problems with some usb-dacs on 48k (probably related to usb drawbacks of Pi)
 # and extra buffer for usb
 #if [ "$OUTPUT" == "usb" ]
 then
-cat << EOF > /etc/asound.conf
+cat << EOF > $ETC_ASOUND_CONF
 pcm.!default {
     type plug
     slave.pcm {
@@ -197,7 +208,7 @@ ctl.!default {
 }
 EOF
 else
-cat << EOF > /etc/asound.conf
+cat << EOF > $ETC_ASOUND_CONF
 pcm.!default {
     type hw
     card $CARD
@@ -249,4 +260,3 @@ done
 # Set PCM of Pi higher, because it's really quiet otherwise (hardware thing)
 amixer -c 0 set PCM playback 98% > /dev/null 2>&1 || true &
 #amixer -c 0 set PCM playback ${VOLUME}% > /dev/null 2>&1 || true &
-log_end_msg

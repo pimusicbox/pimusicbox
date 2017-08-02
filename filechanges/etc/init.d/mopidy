@@ -2,10 +2,10 @@
 
 ### BEGIN INIT INFO
 # Provides:          mopidy
-# Required-Start:    $network $local_fs $remote_fs
-# Required-Stop:     $network $local_fs $remote_fs
-# Should-Start:      alsa-utils pulseaudio
-# Should-Stop:       alsa-utils pulseaudio
+# Required-Start:    $network $remote_fs
+# Required-Stop:     $network $remote_fs
+# Should-Start:      $named alsa-utils avahi dbus pulseaudio
+# Should-Stop:       $named alsa-utils avahi dbus pulseaudio
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: Mopidy music server
@@ -17,10 +17,7 @@ NAME=mopidy
 DAEMON=/usr/local/bin/mopidy
 DAEMON_USER=mopidy
 DAEMON_GROUP=audio
-CONFIG_FILES=$(printf ":%s" /etc/mopidy/extensions.d/*.conf /etc/mopidy/mopidy.conf)
-CONFIG_FILES=$(echo $CONFIG_FILES | awk '{ s=substr($0, 2); print s; }')
-#DAEMON_ARGS="--quiet --config $CONFIG_FILES"
-DAEMON_ARGS="--config $CONFIG_FILES"
+CONFIG_FILES="/usr/share/mopidy/conf.d:/etc/mopidy/mopidy.conf"
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 
@@ -43,9 +40,8 @@ do_start()
         || return 1
     start-stop-daemon --start --quiet --name $NAME --pidfile $PIDFILE \
         --chuid $DAEMON_USER:$DAEMON_GROUP --background --make-pidfile \
-        --startas $DAEMON -- $DAEMON_ARGS \
+        --startas $DAEMON -- --quiet --config $CONFIG_FILES \
         || return 2
-#    renice 19 `pgrep mopidy`
 }
 
 do_stop()
@@ -107,16 +103,16 @@ case "$action" in
         esac
         ;;
     run)
-        if [ "$1" = "" ]; then
-            echo "Usage: $SCRIPTNAME run [options-or-subcommands]"
-            echo "Examples:"
-            echo "  $SCRIPTNAME run --help"
-            echo "  $SCRIPTNAME run config"
-            echo "  $SCRIPTNAME run local scan"
-            exit 3
-        fi
-        CMD="$DAEMON $DAEMON_ARGS $@"
-        su -s /bin/sh -c "$CMD" -- $DAEMON_USER
+        if [ "$1" = "" ]; then      
+            echo "Usage: $SCRIPTNAME run [options-or-subcommands]"      
+            echo "Examples:"        
+            echo "  $SCRIPTNAME run --help"     
+            echo "  $SCRIPTNAME run config"     
+            echo "  $SCRIPTNAME run local scan"     
+            exit 3      
+        fi      
+        CMD="$DAEMON --config $CONFIG_FILES $@"       
+        su -s /bin/sh -c "$CMD" -- $DAEMON_USER     
         ;;
     *)
         echo "Usage: $SCRIPTNAME {start|stop|status|restart|force-reload|run}" >&2

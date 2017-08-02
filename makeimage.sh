@@ -1,256 +1,197 @@
 #!/bin/bash
-if [ $(id -u) != "0" ]; then
-    echo "You must be the superuser to run this script" >&2
-    exit 1
-fi
 
-#set initial vars
-TMPDIR='/tmp/mb'
-mkdir $TMPDIR
+SECTOR_SIZE=512
 
-#device of SD-card
-DRIVE='/dev/sdb'
+SRC_FILES=$(cd $(dirname $0) ; pwd -P)
 
-#set partitions variables
-PART1=$DRIVE'1'
-PART2=$DRIVE'2'
+SRC_VERSION_LONG=$(cd $SRC_FILES && git describe)
+SRC_VERSION_SHORT=$(cd $SRC_FILES && git describe --abbrev=0)
+VERSION=${VERSION:-${SRC_VERSION_SHORT}}
+ZIP_NAME=musicbox_${VERSION}.zip
+IMG_NAME=musicbox_${VERSION}.img
 
-#zero out root partition yes or no (this can take a while
-ZEROROOT='y'
+BUILD_DIR=${MKIMG_BUILD_DIR:-musicbox_build}
+ROOTFS_DIR=${MKIMG_ROOTFS_DIR:-${BUILD_DIR}/rootfs}
+OUTPUT_IMG=${BUILD_DIR}/${IMG_NAME}
 
-#directory to copy the resulting zip to
-DESTINATIONDIR='/media/sf_Downloads'
-
-# size 875 (900?), count 975 works...
-COUNT=975
-
-umount $PART1
-umount $PART2
-
-#ask for version. E.g. 0.5.1alpha2
-echo "Version:"
-read IMGVERSION
-
-#unmount again, sometimes first time did not work
-umount $PART1
-umount $PART2
-
-#set vars
-ZIPNAME='musicbox'$IMGVERSION'.zip'
-IMGNAME='musicbox'$IMGVERSION'.img'
-
-#clean up old stuff
-rm $ZIPNAME
-rm $IMGNAME
-rm $DESTINATIONDIR'/'$ZIPNAME
-rm $DESTINATIONDIR'/'$IMGNAME
-
-#check filesystem and repair if broken
-fsck -p $PART1
-fsck -p $PART2
-
-#echo "Zero root (y/N)?"
-#read ZEROROOT
-
-#echo "Resize size to 960 MB(y/N)?"
-#read RESIZEFS
-
-#autoresize (not used much)
-if [ "$RESIZEFS" == "y" ]
-then
-    echo "Check..."
-    e2fsck -fy $PART2
-    echo "Resize to 875MB..."
-    resize2fs $PART2 875M
-    echo "Ready"
-
-  # Get the starting offset of the root partition
-  PART_START=$(parted $DRIVE -ms unit s p | grep "^2" | cut -f 2 -d: | tr -cd "[:digit:]")
-  [ "$PART_START" ] || exit 1
-  # Return value will likely be error for fdisk as it fails to reload the 
-  # partition table because the root fs is mounted
-  fdisk $DRIVE <<EOF
-p
+bigger() {
+    local IMG_FILE=$1
+    local NEW_SIZE=${2:-2200000000}
+    local NEW_SIZE_SAFE=$(echo "$NEW_SIZE / $SECTOR_SIZE * $SECTOR_SIZE" | bc)
+    local IMG_SIZE=$(ls -l $IMG_FILE | cut -d' ' -f5)
+    if [ ! -f "$IMG_FILE" ]; then
+        echo "** ERROR: No image file found **"
+        return
+    fi
+    if [ $NEW_SIZE_SAFE -lt $IMG_SIZE ]; then
+        echo "** ERROR: Requested new size ($NEW_SIZE_SAFE) is smaller than current size ($IMG_SIZE) **"
+        return
+    fi
+    local OLD_SIZE=$(ls -lh $IMG_FILE | cut -d' ' -f5)
+    sudo echo "INFO: Enlarging $IMG_FILE..."
+    truncate --size $NEW_SIZE_SAFE $IMG_FILE
+    local OFFSET=$(fdisk -l $IMG_FILE  | grep Linux | awk -F' '  '{print $2}')
+    local LOOP_DEV=$(sudo losetup -fP --show $IMG_FILE)
+    cat <<EOF | sudo fdisk $LOOP_DEV
 d
 2
 n
 p
 2
-$PART_START
-+960M
-p
+$OFFSET
+
 w
 EOF
 
-#wait
-    echo "Ok?"
-    read TMPINPUT
+    sync
+    sleep 1
+    sudo partprobe
+
+    sudo e2fsck -f ${LOOP_DEV}p2
+    sudo resize2fs ${LOOP_DEV}p2
+    sudo losetup -D $LOOP_DEV
+
+    local NEW_SIZE=$(ls -lh $IMG_FILE | cut -d' ' -f5)
+    echo "INFO: Increased $IMG_FILE from $OLD_SIZE to $NEW_SIZE"
+    return 0
+}
+
+
+smaller() {
+    local IMG_FILE=$1
+    local OLD_SIZE=$(ls -lh $IMG_FILE | cut -d' ' -f5)
+
+    if [ ! -f "$IMG_FILE" ]; then
+        echo "** FATAL: No image file found **"
+        exit 1
+    fi
+    sudo echo "INFO: Shrinking $IMG_FILE..."
+    local LOOP_DEV=$(sudo losetup -fP --show $IMG_FILE)
+    local PART_NUM=2
+    local ROOT_PART=${LOOP_DEV}p${PART_NUM}
+    sudo e2fsck -fy $ROOT_PART
+
+    local BLOCK_SIZE=$(sudo tune2fs -l $ROOT_PART | grep 'Block size' | awk '{print $3}')
+    local MIN_BLOCKS=$(sudo resize2fs -P $ROOT_PART | awk -F': '  '{print $2}')
+    # 20MB of extra free space
+    local EXTRA_BLOCKS=$(echo "1024 * 1024 * 20 / $BLOCK_SIZE" | bc)
+    local SIZE_BLOCKS=$(echo "$MIN_BLOCKS + $EXTRA_BLOCKS" | bc)
+    sudo resize2fs $ROOT_PART $SIZE_BLOCKS
+    sync && sleep 1
+    sudo losetup -D $LOOP_DEV
+
+    local SIZE_BYTES=$(echo "$SIZE_BLOCKS * $BLOCK_SIZE" | bc)
+    local FIRST_BYTE=$(sudo parted -m $IMG_FILE unit B print | tail -1 | cut -d':' -f2 | tr -d 'B')
+    local LAST_BYTE=$(echo "$FIRST_BYTE + $SIZE_BYTES" | bc)
+
+    sudo parted $IMG_FILE rm $PART_NUM
+    sudo parted $IMG_FILE unit B mkpart primary $FIRST_BYTE $LAST_BYTE
+    local FINAL_SIZE=$(sudo parted -m $IMG_FILE unit B print free | tail -1 | cut -d':' -f2 | tr -d 'B')
+    truncate --size $FINAL_SIZE $IMG_FILE
+    sync && sleep 1
+
+    local NEW_SIZE=$(ls -lh $IMG_FILE | cut -d' ' -f5)
+    echo "INFO: Reduced $IMG_FILE from $OLD_SIZE to $NEW_SIZE"
+    return 0
+}
+
+
+finalise() {
+    local INPUT_IMG=$1
+
+    if [ -f "$OUTPUT_IMG" ]; then
+        echo "INFO: Existing image found at $OUTPUT_IMG. Nothing to do."
+        return
+    fi
+
+    if [ ! -f "$INPUT_IMG" ]; then
+        echo "** FATAL: No image found at $INPUT_IMG **"
+        exit 1
+    fi
+    sudo echo "INFO: Checking permission to mount the disk images."
+
+    echo "INFO: Creating $OUTPUT_IMG from $INPUT_IMG..."
+
+    rm -rf ${BUILD_DIR}
+    mkdir -p ${BUILD_DIR}
+    cp $INPUT_IMG $OUTPUT_IMG
+
+    if [ ! -f "$OUTPUT_IMG" ]; then
+        echo "** FATAL: Could not create output image $OUTPUT_IMG **"
+        exit 1
+    fi
+
+    local LOOP_DEV=$(sudo losetup -fP --show $OUTPUT_IMG)
+    local ROOT_PART=${LOOP_DEV}p2
+    mkdir -p ${ROOTFS_DIR}
+    sudo mount ${ROOT_PART} ${ROOTFS_DIR}
+
+    echo "Musicbox ${SRC_VERSION_LONG}" | sudo tee ${ROOTFS_DIR}/etc/issue
+
+    echo "INFO: Removing unnecessary files..."
+    sudo rm -rf ${ROOTFS_DIR}/var/lib/apt/lists/*
+    sudo rm -rf ${ROOTFS_DIR}/var/cache/apt/*
+    sudo rm -rf ${ROOTFS_DIR}/var/lib/apt/*
+    sudo rm -rf ${ROOTFS_DIR}/etc/dropbear/*key
+    sudo rm -rf ${ROOTFS_DIR}/tmp/*
+    sudo rm -rf ${ROOTFS_DIR}/usr/share/man/*
+    sudo rm -rf ${ROOTFS_DIR}/usr/share/doc
+    sudo rm -rf ${ROOTFS_DIR}/boot.bak
+    sudo find ${ROOTFS_DIR}/var/log -type f | sudo xargs rm -f
+    local OTHER_HOMES=$(sudo ls ${ROOTFS_DIR}/home/ | grep -v mopidy)
+    sudo rm -rf ${ROOTFS_DIR}/home/${OTHER_HOMES}
+    sudo find ${ROOTFS_DIR}/home/ -type f -name *.log | xargs rm -f
+    sudo find ${ROOTFS_DIR}/home/ -type f -name *_history | xargs rm -f
+
+    sync && sleep 1
+
+    sudo umount $ROOTFS_DIR
+    sudo e2fsck -fy $ROOT_PART
+    sudo zerofree -v $ROOT_PART
+    sudo losetup -D $OUTPUT_IMG
+    sleep 1
+    rm -rf $ROOTFS_DIR
+
+    smaller $OUTPUT_IMG
+    echo "** Success **"
+    return 0
+}
+
+
+release() {
+    pushd $SRC_FILES/docs
+    make text latexpdf > /dev/null
+    popd
+    cp $SRC_FILES/docs/_build/text/{changes,faq}.txt  $BUILD_DIR/
+    cp $SRC_FILES/docs/_build/latex/PiMusicBox.pdf  $BUILD_DIR/
+    pushd $BUILD_DIR
+    md5sum * > MD5SUMS
+    zip -9 $ZIP_NAME *
+
+    ZIP_SIZE=$(ls -lh $ZIP_NAME | cut -d' ' -f5)
+    echo "INFO: Release $ZIP_NAME size is $ZIP_SIZE"
+    echo "** Success **"
+    return 0
+}
+
+if [ "${BASH_SOURCE[0]}" == "${0}" ]; then
+    # Not sourced
+    case "$2" in
+        bigger)
+            bigger "$1"
+            ;;
+        smaller)
+            smaller "$1"
+            ;;
+        finalise)
+            finalise "$1"
+            ;;
+        release)
+            finalise "$1"
+            release "$1"
+            ;;
+        *)
+            echo "Usage: $0 <image> bigger|smaller|finalise|release <args>"
+            ;;
+    esac
 fi
-
-MNT=$TMPDIR'/'$IMGVERSION
-MNT2=$TMPDIR'/'$IMGVERSION'2'
-
-# mount partitions on $TMPDIR
-mkdir $MNT
-mkdir $MNT2
-mount $PART1 $MNT
-
-#start copying/removing stuff
-
-#backup and delete configuration files on FAT partition (when musicbox is started in /boot/config)
-cp -Rf $MNT/config $TMPDIR
-rm -rf $MNT/config
-
-# copy clean config to FAT partition
-cp -Rf config $MNT
-rm -rf $MNT/config/.*
-
-#remove (apple) hidden stuff
-rm -rf $MNT/.*
-rm -rf $MNT/config/.*
-
-#clean up the free space of FAT for better compression
-echo "Zero FAT"
-dd if=/dev/zero of=$MNT/zero bs=1M
-rm $MNT/zero
-
-#now do the same cleaning for the root partition
-mount $PART2 $MNT2
-
-#copy a backup or root to temp
-cp -Rf $MNT2/root $TMPDIR
-
-#remove network settings, etc
-rm $MNT2/var/lib/dhcp/*.leases
-touch $MNT2/var/lib/dhcp/dhcpd.leases
-rm $MNT2/var/lib/alsa/*
-rm $MNT2/var/lib/dbus/*
-rm $MNT2/var/lib/avahi-autoipd/*
-rm $MNT2/etc/udev/rules.d/*.rules
-
-#logs
-rm $MNT2/var/log/*
-rm $MNT2/var/log/mopidy/*.gz
-rm $MNT2/var/log/mopidy/*.1
-rm $MNT2/var/log/apt/*
-rm -rf $MNT2/var/log/samba/*
-rm -rf $MNT2/var/log/fsck/*
-echo "" > $MNT2/var/log/mopidy/mopidy.log
-
-#remove spotify/audio settings
-rm -rf $MNT2/var/lib/mopidy/*
-rm -rf $MNT2/home/mopidy/.config/mopidy/spotify
-rm -rf $MNT2/home/mopidy/.cache/*
-rm -rf $MNT2/home/mopidy/.local/*
-rm -rf $MNT2/var/lib/mopidy/.local/share/mopidy/local/*
-rm $MNT2/etc/wicd/wireless-settings.conf
-rm -rf $MNT2/var/lib/wicd/configurations/*
-rm -rf $MNT2/var/lib/mopidy/*
-rm -rf $MNT2/var/cache/mopidy/*
-
-#clear caches etc
-rm -rf $MNT2/var/cache/samba/*
-rm -rf $MNT2/var/cache/upmpdcli/*
-rm $MNT2/var/cache/apt/archives/*
-rm $MNT2/var/cache/apt/archives/partial/*
-rm -rf $MNT2/var/cache/man/*
-rm -rf $MNT2/var/backups/*.gz
-rm -rf $MNT2/var/lib/aptitude/*
-rm -rf $MNT2/tmp/*
-rm -rf $MNT2/var/tmp/*
-
-#remove dropbear keys
-cp $MNT2/etc/dropbear/dropbear_rsa_host_key $TMPDIR
-cp $MNT2/etc/dropbear/dropbear_dss_host_key $TMPDIR
-rm $MNT2/etc/dropbear/dropbear_rsa_host_key
-rm $MNT2/etc/dropbear/dropbear_dss_host_key
-
-#put version in login prompt
-echo -e 'MusicBox '$IMGVERSION"\n" > $MNT2/etc/issue
-
-#remove music files
-rm -rf $MNT2/music/MusicBox/*
-
-#bash history
-rm $MNT2/root/.bash_history
-rm $MNT2/root/.ssh/*
-
-#config
-rm -rf $MNT2/home/mopidy/*
-
-#root
-rm -rf $MNT2/root
-mkdir $MNT2/root
-chown root:root $MNT2/root
-
-#old stuff from rpi-update
-rm -rf $MNT2/boot.bk
-rm -rf $MNT2/lib/modules.bk
-
-#clean up the free space of root partition for better compression
-if [ "$ZEROROOT" = "Y" -o "$ZEROROOT" = "y" ]; then
-    echo "Zero Root FS"
-    dd if=/dev/zero of=$MNT2/zero bs=1M
-    rm $MNT2/zero
-fi
-
-#wait for files to sync
-sync
-
-umount $MNT
-umount $MNT2
-
-# copy disk using dd, sector-wise
-# $COUNT is the number of blocks to copy. It should fit on most 1G cards
-# a user reported an SD size of 988286976, which would be 942 blocks of 1M
-# $COUNT is larger, sorry
-echo "DD $COUNT * 1M"
-dd bs=1M if=$DRIVE count=$COUNT | pv -s "$COUNT"m | dd of=musicbox$IMGVERSION.img
-
-#restore old values from image
-echo "Copy Config back"
-mount $PART1 $MNT
-mount $PART2 $MNT2
-cp -Rf $TMPDIR/config $MNT
-rm -rf $TMPDIR/config
-
-#restore root
-cp -Rf $TMPDIR/root $MNT2
-rm -rf $TMPDIR/root
-chown -R root:root $MNT2/root
-
-#restore dropbear keys
-mv $TMPDIR/dropbear_rsa_host_key $MNT2/etc/dropbear
-mv $TMPDIR/dropbear_dss_host_key $MNT2/etc/dropbear
-
-#sync files
-sync
-
-#clean up
-umount $MNT
-umount $MNT2
-
-#copy the new image file to virtualbox shared folder
-#echo "copy image"
-#cp $IMGNAME $DESTINATIONDIR
-
-#zip the image
-echo "zip image"
-zip -9 $ZIPNAME $IMGNAME MusicBox_Manual_0.4.pdf
-
-#copy the zip to the virtualbox shared folder
-echo "copy zip"
-cp $ZIPNAME $DESTINATIONDIR
-
-#remove dd image (a zip is there already)
-rm $IMGNAME
-
-sync
-
-#cleanup mounts
-umount $MNT
-umount $MNT2
-rmdir $MNT2
-rmdir $MNT
-
-rmdir $TMPDIR

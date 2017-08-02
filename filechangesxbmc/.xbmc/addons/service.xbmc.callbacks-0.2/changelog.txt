@@ -1,5 +1,0 @@
-v0.2
-- Added pause / resume callbacks
-
-v0.1
-- Initial version
