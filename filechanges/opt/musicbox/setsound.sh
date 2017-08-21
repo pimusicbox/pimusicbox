@@ -17,13 +17,14 @@ I2S_CARD=
 USB_CARD=
 INT_CARD=
 HDMI_CARD=
+LOCAL_REBOOT=0
 
 function get_overlay()
 {
-    local overlay=$(echo $1 | tr "_" "-")
+    local overlay=$1
     case $overlay in
-        iqaudio-dacplus)
-            overlay+=",unmute_amp"
+        iqaudio-dac)
+            overlay="iqaudio-dacplus,unmute_amp"
             ;;
         *)
             ;;
@@ -34,6 +35,7 @@ function get_overlay()
 function enumerate_alsa_cards()
 {
     local i2s_NAME=$(echo $1 | tr -d "[:punct:]")
+    echo "Probing sound devices:"
     while read -r line
     do
         ## Dac
@@ -83,17 +85,22 @@ function enumerate_alsa_cards()
     # Check if we need to make any changes to config.txt
     if [ -n "$i2s_NAME" ]; then
         if [ -z "$I2S_CARD" ] ; then
-        local dto_NAME=''
-        get_overlay $1 dto_NAME
-        #if ! grep -q "^dtoverlay=${dto_NAME}$" $BOOT_CONFIG_TXT ; then
-            echo "# Musicbox audio: (DO NOT EDIT BELOW THIS LINE)" >> $TMP_CONFIG_TXT
-            echo "dtoverlay=${dto_NAME}" >> $TMP_CONFIG_TXT
-            echo "Enabling Device Tree Overlay '$dto_NAME' and rebooting to activate..."
-            REBOOT=1
-            return
-        else
-            rm -f $TMP_CONFIG_TXT
+            local dto_NAME=''
+            get_overlay $1 dto_NAME
+            if ! grep -q "^dtoverlay=${dto_NAME}$" $BOOT_CONFIG_TXT ; then
+                echo "# Musicbox audio: (DO NOT EDIT BELOW THIS LINE)" >> $TMP_CONFIG_TXT
+                echo "dtoverlay=${dto_NAME}" >> $TMP_CONFIG_TXT
+                echo "Enabling Device Tree Overlay '$dto_NAME' and rebooting to activate..."
+                LOCAL_REBOOT=1
+                return
+            else
+                echo "******************************************************************************************"
+                echo "ERROR: Device Tree Overlay '$dto_NAME' is already present"
+                echo "       in $BOOT_CONFIG_TXT but unable to find soundcard."
+                echo "******************************************************************************************"
+            fi
         fi
+        rm -f $TMP_CONFIG_TXT
     fi
 }
 
@@ -115,7 +122,7 @@ fi
 # If output not defined, it will automatically detect USB / HDMI / Analog in given order
 # It is at this moment not possible to detect whether an i2s device is connected hence
 # i2s is only selected if explicitly given as output in the config file
-OUTPUT=$(echo $INI__musicbox__output | tr "[:upper:]" "[:lower:]")
+OUTPUT=$(echo $INI__musicbox__output | tr "[:upper:]" "[:lower:]" | tr "_" "-")
 CARD=
 
 if [[ -z "$OUTPUT" ]]
@@ -138,9 +145,13 @@ case $OUTPUT in
         enumerate_alsa_cards wsp
         CARD=$I2S_CARD
         ;;
+    iqaudio-dacplus)
+        enumerate_alsa_cards iqaudio-dac
+        CARD=$I2S_CARD
+        ;;
     phatdac)
         echo "phatdac option is deprecated, use hifiberry_dac instead"
-        enumerate_alsa_cards hifiberry_dac
+        enumerate_alsa_cards hifiberry-dac
         CARD=$I2S_CARD
         ;;
     *)
@@ -153,7 +164,14 @@ if [ -f $TMP_CONFIG_TXT ]; then
     mv $TMP_CONFIG_TXT $BOOT_CONFIG_TXT
 fi
 
-echo "Card=$CARD  i2s=$I2S_CARD  output=$OUTPUT  usb=$USB_CARD  intc=$INT_CARD"
+if [ "$LOCAL_REBOOT" == "1" ]
+then
+    REBOOT=1
+    return
+fi
+
+
+echo "Selected card=$CARD  (i2s=$I2S_CARD  output=$OUTPUT  usb=$USB_CARD  intc=$INT_CARD)"
 # If preferred output not found or given fall back to auto detection
 if [[ -z $CARD ]];
 then
@@ -169,8 +187,8 @@ then
             OUTPUT="analog"
         fi
     fi
+    echo "Selected card=$CARD  (i2s=$I2S_CARD  output=$OUTPUT  usb=$USB_CARD  intc=$INT_CARD)"
 fi
-echo "Card=$CARD  i2s=$I2S_CARD  output=$OUTPUT  usb=$USB_CARD  intc=$INT_CARD"
 
 if [[ -z $CARD ]];
 then
