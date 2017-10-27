@@ -42,7 +42,7 @@ follows::
     unzip develop.zip && mv pimusicbox-develop src
 
     # 3. Download and unzip base v0.6 image
-    wget https://dl.mopidy.com/pimusicbox/pimusicbox-0.6.0.zip
+    wget https://github.com/pimusicbox/pimusicbox/releases/download/v0.6.0/pimusicbox-0.6.0.zip
     unzip pimusicbox-0.6.0.zip && mv pimusicbox-0.6.0/*.img musicbox.img
 
     # 4. Enlarge image so there is free space to work in 
@@ -61,7 +61,7 @@ Project resources
 =================
 
 - `Website <http://www.pimusicbox.com/>`_
-- `Discussion forum <https://discuss.mopidy.com/c/pi-musicbox>`_
+- `Discussion forum <https://discourse.mopidy.com/c/pi-musicbox>`_
 - `Source code <https://github.com/pimusicbox/pimusicbox>`_
 - `Changelog <https://github.com/pimusicbox/pimusicbox/blob/master/changes.rst>`_
 - `Issue tracker <https://github.com/pimusicbox/pimusicbox/issues>`_
