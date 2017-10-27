@@ -361,5 +361,5 @@ extlinks = {
     'mopidy': (
         'https://github.com/mopidy/mopidy/issues/%s', 'mopidy#'),
     'discuss': (
-        'https://discuss.mopidy.com/t/%s', 'discuss.mopidy.com/t/'),
+        'https://discourse.mopidy.com/t/%s', 'discourse.mopidy.com/t/'),
 }

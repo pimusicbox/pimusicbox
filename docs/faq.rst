@@ -7,7 +7,7 @@ Frequently Asked Questions
 Where can I ask my own questions and get further support?
 
     You can discuss features and problems on the 
-    `forum <https://discuss.mopidy.com/c/pi-musicbox>`_. Please search before
+    `forum <https://discourse.mopidy.com/c/pi-musicbox>`_. Please search before
     creating a new topic as your question may have already been answered.
     You can also try the #mopidy channel on `Freenode <https://www.freenode.net/>`_.
     For more general Raspberry Pi questions you may find better answers on the 
@@ -51,7 +51,7 @@ I tried to upgrade my installation with apt-get/pip and now I'm having issues. w
     This is not supported (see above) and it's not advisable unless you know what
     you are doing. If you don't know what you are doing then reinstall the
     latest version and then try to ask for support on the
-    `forum <https://discuss.mopidy.com/c/pi-musicbox>`_ where someone may be
+    `forum <https://discourse.mopidy.com/c/pi-musicbox>`_ where someone may be
     able and willing to help you.
 
 What happened to streamuris.js? How do I change the saved stream list?
@@ -74,19 +74,20 @@ Can I use my HiFiBerry/IQAudio/PhatDAC/USB/JustBoom soundcard?
     Yes, but you must specify the particular soundcard in :file:`settings.ini`
     or the settings webpage. Most soundcards are supported but if you find yours
     isn't then please request it on the
-    `forum <https://discuss.mopidy.com/c/pi-musicbox>`_.
+    `forum <https://discourse.mopidy.com/c/pi-musicbox>`_.
 
 Can I use my Bluetooth speaker?
 
-    No, unfortunately we don't support this (yet). If you are able to get it working please
-    share your findings on the `forum <https://discuss.mopidy.com/c/pi-musicbox>`_.
+    No, unfortunately we don't support this (yet). If you are able to get it
+    working please share your findings on the `forum
+    <https://discourse.mopidy.com/c/pi-musicbox>`_.
 
 How do I make my random USB device work with Pi Musicbox?
 
     Pi Musicbox is based on Raspbian Wheezy but includes all drivers from the very
     latest Raspbian Jessie release. Any USB device that works with a regular Raspbian
     installation should also work with Pi Musicbox. If you encounter any problems then
-    search the `forum <https://discuss.mopidy.com/c/pi-musicbox>`_ for help.
+    search the `forum <https://discourse.mopidy.com/c/pi-musicbox>`_ for help.
 
 Can I use a different user interface?
 
@@ -124,13 +125,13 @@ Can I get Pi Musicbox to play a song, playlist or radio station on startup?
 
     Yes, configure the autoplay functionality in :file:`settings.ini` or the
     settings webpage. Search the
-    `forum <https://discuss.mopidy.com/c/pi-musicbox>`_ for examples.
+    `forum <https://discourse.mopidy.com/c/pi-musicbox>`_ for examples.
 
 Will you add support for XYZ streaming service?
 
     Support for additional streaming services in Pi MusicBox depends on support 
     in Mopidy which may or may not be available yet. Please search the 
-    `forum <https://discuss.mopidy.com/c/pi-musicbox>`_ for more information
+    `forum <https://discourse.mopidy.com/c/pi-musicbox>`_ for more information
     regarding the streaming service you're interested in.
 
 Why isn't http://musicbox.local working on my Android device?

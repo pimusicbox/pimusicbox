@@ -61,7 +61,7 @@ Project resources
 =================
 
 - `Website <http://www.pimusicbox.com/>`_
-- `Discussion forum <https://discuss.mopidy.com/c/pi-musicbox>`_
+- `Discussion forum <https://discourse.mopidy.com/c/pi-musicbox>`_
 - `Source code <https://github.com/pimusicbox/pimusicbox>`_
 - `Changelog <https://github.com/pimusicbox/pimusicbox/blob/master/changes.rst>`_
 - `Issue tracker <https://github.com/pimusicbox/pimusicbox/issues>`_

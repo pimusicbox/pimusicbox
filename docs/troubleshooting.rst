@@ -9,7 +9,7 @@ Troubleshooting
     take even longer. Please be patient.
 
 If you experience problems with Pi Musicbox your first port of call should be
-the `discussion forum <https://discuss.mopidy.com/c/pi-musicbox>`_. Please
+the `discussion forum <https://discourse.mopidy.com/c/pi-musicbox>`_. Please
 search before creating a new topic as your question may have already been
 answered.  Otherwise feel free to ask any questions, suggest features or
 report bugs.
