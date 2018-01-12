@@ -225,7 +225,7 @@ then
     then
         BITRATE="-b $INI__spotify__bitrate"
     fi
-    /opt/librespot/librespot -n "$CLEAN_NAME" $USER $PASS $BITRATE --onstart "/usr/bin/mpc stop" &
+    /opt/librespot/librespot -n "$CLEAN_NAME" $USER $PASS $BITRATE --onstart "/usr/bin/mpc stop" --device-type "speaker" &
 fi
 
 
