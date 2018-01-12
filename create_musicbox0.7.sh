@@ -104,14 +104,15 @@ pip install --upgrade requests[security] backports.ssl-match-hostname backports-
 # The lastest versions that are still supported in Wheezy (Gstreamer 0.10).
 pip install mopidy==1.1.2
 pip install mopidy-musicbox-webclient==2.4.0
-pip install mopidy-websettings==0.2.0
+pip install mopidy-websettings==0.2.1
 pip install mopidy-mopify==1.6.0
 pip install mopidy-mobile==1.8.0
 pip install mopidy-youtube==2.0.2
 pip install mopidy-gmusic==2.0.0
 pip install mopidy-spotify-web==0.3.0
 pip install mopidy-spotify-tunigo==1.0.0
-pip install mopidy-spotify==1.4.0
+# Custom version with Web API OAuth fix backported from v3.1.0
+pip install --no-deps --upgrade https://github.com/pimusicbox/mopidy-spotify/zipball/backport-oauth
 pip install mopidy-tunein==0.4.1
 pip install mopidy-local-sqlite==1.0.0
 pip install mopidy-scrobbler==1.1.1
@@ -131,8 +132,6 @@ mopidy --version
 mopidy deps | grep "/usr/lib" | grep -v -e "GStreamer: 0.10" -e "Python: CPython" | wc -l
 
 # A bunch of reckless hacks:
-# Force Spotify playlists to appear:
-sed -i '182s/^/#/' /usr/local/lib/python2.7/dist-packages/mopidy_spotify/session_manager.py
 # This should fix MPDroid trying to use MPD commands unsupported by Mopidy. But MPDroid still isn't working properly.
 #sed -i 's/0.19.0/0.18.0/' /usr/local/lib/python2.7/dist-packages/mopidy/mpd/protocol/__init__.py
 # Speedup MPD connections.
@@ -151,8 +150,6 @@ sed -i '222,+3 s/^/#/' /usr/local/lib/python2.7/dist-packages/mopidy_spotify_web
 sed -i '222i ]' /usr/local/lib/python2.7/dist-packages/mopidy_spotify_web/library.py
 # Hide broken Spotify Tunigo 'Genres & Moods', 'Featured Playlists' and 'Top Lists' browsing:
 sed -i '27,+8 s/^/#/' /usr/local/lib/python2.7/dist-packages/mopidy_spotify_tunigo/library.py
-# Hide broken Spotify browsing entirely:
-sed -i '/root_directory = / s/^/#/' /usr/local/lib/python2.7/dist-packages/mopidy_spotify/library.py
 
 cp -R $PIMUSICBOX_FILES/* /
 
