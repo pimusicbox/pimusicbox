@@ -1,4 +1,4 @@
-check process shairport-sync with pidfile /var/run/shairport-sync.pid
+check process shairport-sync with pidfile /var/run/shairport-sync/shairport-sync.pid
       start program = "/etc/init.d/shairport-sync start"
       stop  program = "/etc/init.d/shairport-sync stop"
       restart program = "/etc/init.d/shairport-sync restart"
