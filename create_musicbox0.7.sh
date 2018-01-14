@@ -44,15 +44,6 @@ EOF
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
-apt-get remove --yes --purge python-pykka python-pylast
-# https://github.com/pimusicbox/pimusicbox/issues/316
-apt-get remove --yes --purge linux-wlan-ng
-
-# Ensure we reinstall the upstream config.
-apt-get install --yes -o Dpkg::Options::="--force-confmiss" --reinstall avahi-daemon
-
-# Get the packages required for setting wifi region
-apt-get install --yes wireless-regdb crda
 
 # Fix locale
 apt-get install --yes locales
@@ -63,6 +54,16 @@ sed -i -e 's/# en_GB.UTF-8 UTF-8/en_GB.UTF-8 UTF-8/' /etc/locale.gen
 echo -e 'LANG="en_GB.UTF-8"\nLANGUAGE="en_GB:en"' > /etc/default/locale
 dpkg-reconfigure --frontend=noninteractive locales
 update-locale LANG=en_GB.UTF-8
+
+apt-get remove --yes --purge python-pykka python-pylast
+# https://github.com/pimusicbox/pimusicbox/issues/316
+apt-get remove --yes --purge linux-wlan-ng
+
+# Ensure we reinstall the upstream config.
+apt-get install --yes -o Dpkg::Options::="--force-confmiss" --reinstall avahi-daemon
+
+# Get the packages required for setting wifi region
+apt-get install --yes wireless-regdb crda
 
 # Upgrade!
 apt-get dist-upgrade --yes -o Dpkg::Options::="--force-confnew"
@@ -94,13 +95,15 @@ dpkg -i mpd-watchdog_0.3.0-0tkem2_all.deb
 rm mpd-watchdog_0.3.0-0tkem2_all.deb
 
 # Need these to rebuild python dependencies
-PYTHON_BUILD_DEPS="build-essential python-dev libffi-dev libssl-dev"
+PYTHON_BUILD_DEPS="build-essential python-dev libffi-dev libssl-dev libxml2-dev libxmlsec1-dev"
 apt-get install --yes $PYTHON_BUILD_DEPS
 
 rm -rf /tmp/pip_build_root
-python -m pip install -U pip
+python -m pip install --upgrade pip setuptools
+# Attempted workarounds for SSL/TLS issues in old Python version.
+pip install --upgrade certifi urllib3[secure] requests[security] backports.ssl-match-hostname backports-abc
 # Upgrade some dependencies.
-pip install --upgrade requests[security] backports.ssl-match-hostname backports-abc tornado gmusicapi pykka pylast pafy youtube-dl
+pip install --upgrade tornado gmusicapi pykka pylast pafy youtube-dl
 # The lastest versions that are still supported in Wheezy (Gstreamer 0.10).
 pip install mopidy==1.1.2
 pip install mopidy-musicbox-webclient==2.4.0
@@ -166,9 +169,9 @@ do
     update-rc.d $service disable
 done
 
-# Update kernel to latest version (4.9.75).
+# Update kernel to latest version (4.9.76).
 apt-get install --yes git rpi-update
-PRUNE_MODULES=1 SKIP_WARNING=1 rpi-update 60d1dfcbe4a870af00cebdd81276dacbcde08beb
+PRUNE_MODULES=1 SKIP_WARNING=1 rpi-update d698b8d102e1a507af80385a67ff26ef021f9d18
 
 # Remove unrequired packages (#426)
 apt-get remove --purge --yes xserver-common x11-xkb-utils xkb-data libxkbfile1 \
