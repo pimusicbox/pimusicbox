@@ -7,10 +7,11 @@
 -A INPUT -p icmp -j ACCEPT
 #
 # samba 137, 138 UDP (netbios-ns), 139 (TCP, smb) 445 (TCP, microsoft domainservice)
+# SSH: 22
 # HTTP(s): 80, 443
 # DNS: 67, 68
 # zeroconf: 5353
--A INPUT -p tcp -m multiport --dports 80,139,443,445 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 22,80,139,443,445 -j ACCEPT
 -A INPUT -p udp -m multiport --dports 67,68,137,138,5353 -j ACCEPT
 #
 # Mopidy: 6600 (MPD), 6680 (HTTP)

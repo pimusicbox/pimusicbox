@@ -10,8 +10,6 @@
 CONFIG_FILE=/boot/config/settings.ini
 NAME="MusicBox"
 
-SSH_START='/etc/init.d/dropbear start'
-
 echo "************************"
 echo "Initializing MusicBox..."
 echo "************************"
@@ -186,13 +184,7 @@ then
         echo "Create rsa-key for dropbear..."
         dropbearkey -t rsa -f /etc/dropbear/dropbear_rsa_host_key
     fi
-
-    $SSH_START
-    #open ssh port
-    iptables -A INPUT -p tcp --dport 22 -j ACCEPT > /dev/null 2>&1 || true
-else
-    #close ssh port
-    iptables -A INPUT -p tcp --dport 22 -j DENY > /dev/null 2>&1 || true
+    /etc/init.d/dropbear start
 fi
 
 # start upnp if enabled
