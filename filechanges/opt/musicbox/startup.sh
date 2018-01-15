@@ -217,7 +217,10 @@ then
     then
         BITRATE="-b $INI__spotify__bitrate"
     fi
-    /opt/librespot/librespot -n "$CLEAN_NAME" $USER $PASS $BITRATE --onstart "/usr/bin/mpc stop" --device-type "speaker" &
+    ONSTART="--onstart /opt/musicbox/mpc_stop.sh"
+    DEVICE_TYPE="--device-type speaker"
+    echo DAEMON_ARGS=\"-n $CLEAN_NAME $USER $PASS $BITRATE $ONSTART $DEVICE_TYPE\" > /etc/default/librespot
+    /etc/init.d/librespot start
 fi
 
 
