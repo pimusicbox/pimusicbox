@@ -1,0 +1,4 @@
+check process librespot with pidfile /var/run/librespot.pid
+      start program = "/etc/init.d/librespot start"
+      stop  program = "/etc/init.d/librespot stop"
+      restart program = "/etc/init.d/librespot restart"
