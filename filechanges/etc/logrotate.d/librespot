@@ -1,0 +1,9 @@
+/var/log/librespot.log {
+        daily
+        missingok
+        rotate 2
+        maxsize 1M
+        compress
+        delaycompress
+        notifempty
+}

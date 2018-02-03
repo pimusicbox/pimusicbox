@@ -1,2 +1,2 @@
 #!/bin/sh
-/usr/bin/mpc stop
+/usr/bin/mpc -q stop
