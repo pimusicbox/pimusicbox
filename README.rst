@@ -13,7 +13,7 @@ Features
 - Headless audio player based on `Mopidy <https://www.mopidy.com/>`_. Just
   connect your speakers or headphones - no need for a monitor.
 - Quick and easy setup with no Linux knowledge required.
-- Stream music from Spotify, SoundCloud, Google Music, YouTube and Subsonic.
+- Stream music from Spotify, SoundCloud, Google Music and YouTube.
 - Listen to podcasts (with iTunes and Podder directories) as well as online
   radio (TuneIn, Dirble and Soma FM).
 - Play MP3/OGG/FLAC/AAC music from your SD card, USB drives and network shares.
