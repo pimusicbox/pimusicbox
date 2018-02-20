@@ -23,6 +23,12 @@ function get_overlay()
 {
     local overlay=$1
     case $overlay in
+        audioinjector-pi-soundcard)
+            overlay="audioinjector-wm8731-audio"
+            ;;
+        audioinjector-octo-soundcard)
+            overlay="audioinjector-addons"
+            ;;
         iqaudio-dac)
             overlay="iqaudio-dacplus,unmute_amp"
             ;;
@@ -49,6 +55,9 @@ function enumerate_alsa_cards()
         #card 1: IQaudIODAC [IQaudIODAC], device 0: IQaudIO DAC HiFi pcm512x-hifi-0 []
         ## Wolfson
         #Card 0: sndrpiwsp [snd_rpi_wsp], device 0: WM5102 AiFi wm5102-aif1-0 []
+        ## AudioInjector stereo and octo
+        #card 0: audioinjectorpi [audioinjector-pi-soundcard], device 0: AudioInjector audio wm8731-hifi-0 []
+        #card 0: audioinjectoroc [audioinjector-octo-soundcard], device 0: AudioInject-HIFI cs42448-0 []
         ## Onboard
         #card 0: ALSA [bcm2835 ALSA], device 0: bcm2835 ALSA [bcm2835 ALSA]
         #card 0: ALSA [bcm2835 ALSA], device 1: bcm2835 ALSA [bcm2835 IEC958/HDMI]
@@ -143,6 +152,14 @@ case $OUTPUT in
         ;;
     wolfson)
         enumerate_alsa_cards wsp
+        CARD=$I2S_CARD
+        ;;
+    audioinjector-wm8731-audio)
+        enumerate_alsa_cards audioinjector-pi-soundcard
+        CARD=$I2S_CARD
+        ;;
+    audioinjector-addons)
+        enumerate_alsa_cards audioinjector-octo-soundcard
         CARD=$I2S_CARD
         ;;
     iqaudio-dacplus)
