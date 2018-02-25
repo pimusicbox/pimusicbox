@@ -129,6 +129,7 @@ pip install mopidy-internetarchive==2.0.3
 # https://github.com/pimusicbox/pimusicbox/issues/371
 pip uninstall --yes mopidy-local-whoosh
 pip uninstall --yes mopidy-podcast-gpodder.net
+pip uninstall --yes mopidy-subsonic
 
 # Check everything except python and gstreamer is coming from pip.
 mopidy --version
