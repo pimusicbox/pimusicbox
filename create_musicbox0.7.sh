@@ -107,7 +107,7 @@ pip install --upgrade tornado gmusicapi pykka pylast pafy youtube-dl
 # The lastest versions that are still supported in Wheezy (Gstreamer 0.10).
 pip install mopidy==1.1.2
 pip install mopidy-musicbox-webclient==2.4.0
-pip install mopidy-websettings==0.2.1
+pip install mopidy-websettings==0.2.3
 pip install mopidy-mopify==1.6.0
 pip install mopidy-mobile==1.8.0
 pip install mopidy-youtube==2.0.2
