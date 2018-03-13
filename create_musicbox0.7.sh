@@ -1,7 +1,7 @@
 MIN_FREE_SPACE_KB=$(expr 1024 \* 1024)
 PIMUSICBOX_FILES=/tmp/filechanges
 SHAIRPORT_VERSION=3.1.7
-LIBRESPOT_VERSION=v20170717-910974e
+LIBRESPOT_VERSION=v20180313-9d9c311
 
 FREE_SPACE=$(df | awk '$NF == "/" { print $4 }')
 if [ $FREE_SPACE -lt $MIN_FREE_SPACE_KB ]; then
@@ -84,7 +84,7 @@ rm -rf shairport-sync*
 # Download and install Raspberry Pi Compatible ARMHF
 mkdir -p /opt/librespot
 pushd /opt/librespot
-wget https://github.com/herrernst/librespot/releases/download/${LIBRESPOT_VERSION}/librespot-linux-armhf-raspberry_pi.zip
+wget https://github.com/pimusicbox/librespot/releases/download/${LIBRESPOT_VERSION}/librespot-linux-armhf-raspberry_pi.zip
 unzip librespot-linux-armhf-raspberry_pi.zip
 rm librespot-linux-armhf-raspberry_pi.zip
 popd
