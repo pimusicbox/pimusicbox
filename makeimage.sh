@@ -5,6 +5,7 @@ SECTOR_SIZE=512
 SRC_FILES=$(cd $(dirname $0) ; pwd -P)
 
 SRC_VERSION_LONG=$(cd $SRC_FILES && git describe)
+TIMESTAMP=$(date)
 SRC_VERSION_SHORT=$(cd $SRC_FILES && git describe --abbrev=0)
 VERSION=${VERSION:-${SRC_VERSION_SHORT}}
 ZIP_NAME=musicbox_${VERSION}.zip
@@ -126,7 +127,7 @@ finalise() {
     mkdir -p ${ROOTFS_DIR}
     sudo mount ${ROOT_PART} ${ROOTFS_DIR}
 
-    echo "Musicbox ${SRC_VERSION_LONG}" | sudo tee ${ROOTFS_DIR}/etc/issue
+    echo "Musicbox ${SRC_VERSION_LONG} built on ${TIMESTAMP}" | sudo tee ${ROOTFS_DIR}/etc/issue
 
     echo "INFO: Removing unnecessary files..."
     sudo rm -rf ${ROOTFS_DIR}/var/lib/apt/lists/*
