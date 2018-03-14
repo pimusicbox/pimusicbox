@@ -170,9 +170,9 @@ do
     update-rc.d $service disable
 done
 
-# Update kernel to latest version (4.14.20).
+# Update kernel to latest version (4.14.26).
 apt-get install --yes git rpi-update
-PRUNE_MODULES=1 SKIP_WARNING=1 rpi-update e696d287001a06bea42b11992671f6c337e1385b
+PRUNE_MODULES=1 SKIP_WARNING=1 rpi-update f1791cacb3e711a523d46de37faa4bbfcca8ab6a
 
 # Remove unrequired packages (#426)
 apt-get remove --purge --yes xserver-common x11-xkb-utils xkb-data libxkbfile1 \
