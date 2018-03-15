@@ -103,8 +103,9 @@ python -m pip install --upgrade pip setuptools
 # Attempted workarounds for SSL/TLS issues in old Python version.
 pip install --upgrade certifi urllib3[secure] requests[security] backports.ssl-match-hostname backports-abc
 # Upgrade some dependencies.
-pip install --upgrade tornado gmusicapi pykka pylast pafy youtube-dl
+pip install --upgrade gmusicapi pykka pylast pafy youtube-dl
 # The lastest versions that are still supported in Wheezy (Gstreamer 0.10).
+pip install tornado==4.2.1
 pip install mopidy==1.1.2
 pip install mopidy-musicbox-webclient==2.4.0
 pip install mopidy-websettings==0.2.3
