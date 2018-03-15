@@ -175,6 +175,10 @@ done
 apt-get install --yes git rpi-update
 PRUNE_MODULES=1 SKIP_WARNING=1 rpi-update f1791cacb3e711a523d46de37faa4bbfcca8ab6a
 
+# Very latest brcm wireless firmware
+wget http://archive.raspberrypi.org/debian/pool/main/f/firmware-nonfree/firmware-brcm80211_20161130-3+rpt3_all.deb
+dpkg -i firmware-brcm80211_20161130-3+rpt3_all.deb
+
 # Remove unrequired packages (#426)
 apt-get remove --purge --yes xserver-common x11-xkb-utils xkb-data libxkbfile1 \
     dpkg-dev groff-base libaspell15 libhunspell-1.3-0 man-db debian-reference-en \
