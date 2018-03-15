@@ -2,6 +2,12 @@
 Changelog
 *********
 
+v0.7.0RC6 (2017-??-??)
+======================
+- Updated Linux kernel to v4.9.52
+- Fixed missing Allo Boss DAC firmware files
+- Fixed boot loop when soundcard not found
+
 v0.7.0RC5 (2017-07-28)
 ===================
 - Firewall is now optional and is DISABLED by default
