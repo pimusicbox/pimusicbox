@@ -33,8 +33,9 @@ Installation
 
 1. Download the `latest release <https://github.com/pimusicbox/pimusicbox/releases>`_.
 2. Write the image to your SD card. See `here <https://www.raspberrypi.org/documentation/installation/installing-images/README.md>`_ for details.
-3. Customise the /boot/config/settings.ini file as required from your computer.
-4. Boot your Raspberry Pi and wait for PiMusicbox to start. 
+3. Customise the /boot/config/settings.ini file.
+4. Boot your Raspberry Pi and wait for PiMusicbox to start.
+5. Finish configuring the system using the web settings.  
 
 
 Creating an image
