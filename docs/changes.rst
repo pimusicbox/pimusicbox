@@ -2,7 +2,7 @@
 Changelog
 *********
 
-v0.7.0RC6 (2017-03-20)
+v0.7.0RC6 (2018-03-20)
 ======================
 - Raspberry Pi 3 B+ support
 - Librespot updated up v20180313-9d9c311 and added logging
@@ -14,7 +14,7 @@ v0.7.0RC6 (2017-03-20)
 - Backported OAuth functionality for Mopidy-Spotify to fix search
 
 v0.7.0RC5 (2017-07-28)
-===================
+======================
 - Firewall is now optional and is DISABLED by default
 - Added Spotify Connect functionality (librespot v20170717-910974e)
 - Includes mpd-watchdog for restoring stream playback following connectivity loss
