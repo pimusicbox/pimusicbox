@@ -2,11 +2,16 @@
 Changelog
 *********
 
-v0.7.0RC6 (2017-??-??)
+v0.7.0RC6 (2017-03-20)
 ======================
-- Updated Linux kernel to v4.9.52
+- Raspberry Pi 3 B+ support
+- Librespot updated up v20180313-9d9c311 and added logging
+- Updated Linux kernel to v4.14.26
 - Fixed missing Allo Boss DAC firmware files
+- Added support for Audioinjector soundcards
 - Fixed boot loop when soundcard not found
+- Removed Mopidy-Subsonic
+- Backported OAuth functionality for Mopidy-Spotify to fix search
 
 v0.7.0RC5 (2017-07-28)
 ===================
