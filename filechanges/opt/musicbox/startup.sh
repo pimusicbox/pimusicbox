@@ -254,9 +254,13 @@ then
         else
             SMB_CREDENTIALS=guest
         fi
-        mount -t cifs -o sec=ntlm,ro,$SMB_CREDENTIALS "$INI__network__mount_address" /music/Network/
-    #    mount -t cifs -o sec=ntlm,ro,rsize=2048,wsize=4096,cache=strict,user=$INI__network__mount_user,password=$INI__network__mount_password $INI__network__mount_address /music/Network/
-    #add rsize=2048,wsize=4096,cache=strict because of usb (from raspyfi)
+        if [ "$INI__network__mount_options" != "" ]
+        then
+            SMB_OPTIONS=,$INI__network__mount_options
+        else
+            SMB_OPTIONS=
+        fi
+        mount -t cifs -o ro,${SMB_CREDENTIALS}${SMB_OPTIONS} "$INI__network__mount_address" /music/Network/
     fi
 fi
 
