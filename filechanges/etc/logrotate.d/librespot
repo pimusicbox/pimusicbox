@@ -1,9 +1,11 @@
 /var/log/librespot.log {
-        daily
+        weekly
         missingok
         rotate 2
         maxsize 1M
         compress
         delaycompress
         notifempty
+        postrotate
+            /usr/sbin/service librespot restart
 }
