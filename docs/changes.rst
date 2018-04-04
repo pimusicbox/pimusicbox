@@ -2,7 +2,7 @@
 Changelog
 *********
 
-v0.7.0RC6 (2017-03-20)
+v0.7.0RC6 (2018-03-20)
 ======================
 - Raspberry Pi 3 B+ support
 - Librespot updated up v20180313-9d9c311 and added logging
