@@ -9,6 +9,7 @@
 #set user vars
 CONFIG_FILE=/boot/config/settings.ini
 NAME="MusicBox"
+DEFAULT_ROOT_PASSWORD="musicbox"
 
 echo "************************"
 echo "Initializing MusicBox..."
@@ -75,7 +76,7 @@ fi
 echo "MusicBox name is $CLEAN_NAME"
 
 # do the change password stuff
-if [ "$INI__musicbox__root_password" != "" ]
+if [ "$INI__musicbox__root_password" != "" -a "$INI__musicbox__root_password" != "$DEFAULT_ROOT_PASSWORD" ]
 then
     echo "Setting root user password..."
     echo "root:$INI__musicbox__root_password" | chpasswd
