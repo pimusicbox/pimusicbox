@@ -65,6 +65,8 @@ apt-get install --yes -o Dpkg::Options::="--force-confmiss" --reinstall avahi-da
 # Get the packages required for setting wifi region
 apt-get install --yes wireless-regdb crda
 
+apt-get install exfat-fuse
+
 # Upgrade!
 apt-get dist-upgrade --yes -o Dpkg::Options::="--force-confnew"
 
