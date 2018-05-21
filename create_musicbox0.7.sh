@@ -1,7 +1,7 @@
 MIN_FREE_SPACE_KB=$(expr 1024 \* 1024)
 PIMUSICBOX_FILES=/tmp/filechanges
 SHAIRPORT_VERSION=3.1.7
-LIBRESPOT_VERSION=v20180322-aeb205d
+LIBRESPOT_VERSION=v20180521-1e69138
 
 FREE_SPACE=$(df | awk '$NF == "/" { print $4 }')
 if [ $FREE_SPACE -lt $MIN_FREE_SPACE_KB ]; then
@@ -107,11 +107,12 @@ pip install --upgrade certifi urllib3[secure] requests[security] backports.ssl-m
 # Upgrade some dependencies.
 pip install --upgrade gmusicapi pykka pylast pafy youtube-dl
 # The lastest versions that are still supported in Wheezy (Gstreamer 0.10).
-pip install tornado==4.2.1
+pip install tornado==4.4
 pip install mopidy==1.1.2
-pip install mopidy-musicbox-webclient==2.4.0
+pip install mopidy-musicbox-webclient==2.5.0
+pip install --no-deps --upgrade https://github.com/pimusicbox/mopidy-websettings/zipball/develop
 pip install mopidy-websettings==0.2.3
-pip install mopidy-mopify==1.6.0
+pip install mopidy-mopify==1.6.1
 pip install mopidy-mobile==1.8.0
 pip install mopidy-youtube==2.0.2
 pip install mopidy-gmusic==2.0.0
@@ -123,7 +124,7 @@ pip install mopidy-tunein==0.4.1
 pip install mopidy-local-sqlite==1.0.0
 pip install mopidy-scrobbler==1.2.0
 # Unreleased mopidy-soundcloud has some useful fixes.
-pip install --no-deps https://github.com/mopidy/mopidy-soundcloud/archive/faeb6710980f12b50b03bf78c1878be751b8e21a.zip
+pip install --no-deps --upgrade https://github.com/mopidy/mopidy-soundcloud/archive/faeb6710980f12b50b03bf78c1878be751b8e21a.zip
 pip install mopidy-dirble==1.3.0
 pip install mopidy-podcast==2.0.1
 pip install mopidy-podcast-itunes==2.0.0
@@ -174,9 +175,9 @@ do
     update-rc.d $service disable
 done
 
-# Update kernel to latest version (4.14.26).
+# Update kernel as of 6/4/18.
 apt-get install --yes git rpi-update
-PRUNE_MODULES=1 SKIP_WARNING=1 rpi-update f1791cacb3e711a523d46de37faa4bbfcca8ab6a
+PRUNE_MODULES=1 SKIP_WARNING=1 rpi-update 064219e329252abd8532b7fa8030ed9a9f391dd3
 
 # Very latest brcm wireless firmware
 wget http://archive.raspberrypi.org/debian/pool/main/f/firmware-nonfree/firmware-brcm80211_20161130-3+rpt3_all.deb
