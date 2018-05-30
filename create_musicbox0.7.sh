@@ -123,10 +123,9 @@ pip install --no-deps --upgrade https://github.com/pimusicbox/mopidy-spotify/zip
 pip install mopidy-tunein==0.4.1
 pip install mopidy-local-sqlite==1.0.0
 pip install mopidy-scrobbler==1.2.0
-# Unreleased mopidy-soundcloud has some useful fixes.
-pip install --no-deps --upgrade https://github.com/mopidy/mopidy-soundcloud/archive/faeb6710980f12b50b03bf78c1878be751b8e21a.zip
+pip install mopidy-soundcloud==2.1.0
 pip install mopidy-dirble==1.3.0
-pip install mopidy-podcast==2.0.1
+pip install mopidy-podcast==2.0.2
 pip install mopidy-podcast-itunes==2.0.0
 pip install mopidy-internetarchive==2.0.3
 pip install mopidy-tidal==0.2.2
