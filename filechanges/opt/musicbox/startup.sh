@@ -273,7 +273,7 @@ then
 fi
 
 # scan local/networked music files if setting is true
-if [ "$INI__musicbox__scan_always" == "1"] || ["$INI__musicbox__scan_once" == "1" ]
+if [ "$INI__musicbox__scan_always" == "1" ] || ["$INI__musicbox__scan_once" == "1" ]
 then
     echo "Scanning music-files, please wait..."
     /etc/init.d/mopidy run local scan
