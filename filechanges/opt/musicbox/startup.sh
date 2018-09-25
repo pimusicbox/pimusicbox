@@ -11,9 +11,9 @@ CONFIG_FILE=/boot/config/settings.ini
 NAME="MusicBox"
 DEFAULT_ROOT_PASSWORD="musicbox"
 
-echo "************************"
-echo "Initializing MusicBox..."
-echo "************************"
+echo "****************************"
+echo "♪ Initializing MusicBox... ♪"
+echo "****************************"
 
 # import ini parser
 . /opt/musicbox/read_ini.sh
@@ -295,7 +295,7 @@ fi
 
 if [ "$INI__network__name" != "$CLEAN_NAME" -a "$INI__network__name" != "" ]
 then
-    echo "WARNING: The new name of your MusicBox, $INI__network__name, is not ok! It should be max. 9 alphanumerical characters."
+    echo "WARNING: The new name of your MusicBox, $INI__network__name, is not ok! It should be the max of: 1-9 alphanumerical characters"
 fi
 
 # Print the IP address
@@ -324,13 +324,13 @@ then
             waittime=$((waittime+1));
             if [ $waittime -gt $INI__musicbox__autoplaymaxwait ]
                 then
-                    echo "WARNING: Timeout waiting for Mopidy to start, aborting"
+                    echo "WARNING: Timeout waiting for Mopidy to start, aborting!"
                     break;
             fi
         done
     if [ $waittime -le $INI__musicbox__autoplaymaxwait ]
         then
-            echo "Mopidy startup complete, playing $INI__musicbox__autoplay"
+            echo "Mopidy startup complete, playing $INI__musicbox__autoplay ♪"
             mpc add "$INI__musicbox__autoplay"
             mpc play
     fi
