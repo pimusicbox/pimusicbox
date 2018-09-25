@@ -36,7 +36,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Pi MusicBox'
-copyright = u'2017, Pi MusicBox contributors'
+CopyR = u'2018, Pi MusicBox contributors'
 author = u'Pi MusicBox contributors'
 
 # The version info for the project you're documenting, acts as replacement for
