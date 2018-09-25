@@ -7,8 +7,8 @@ then
   mpc stop
 fi
 
-AIRPLAY=`netstat -atunp | grep ESTABLISHED | grep 5002`
-UPNP=`netstat -atunp | grep gmediarender | grep "CLOSE_WAIT\|ESTABLISHED"`
+AIRPLAY=$(netstat -atunp | grep ESTABLISHED | grep 5002)
+UPNP=$(netstat -atunp | grep gmediarender | grep "CLOSE_WAIT\|ESTABLISHED")
 
 if [ "$1" != "gm" ]
 then
