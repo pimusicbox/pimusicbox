@@ -4,7 +4,7 @@
 #
 # This script is executed by /etc/rc.local
 #
-`echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
+$(echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)
 
 #set user vars
 CONFIG_FILE=/boot/config/settings.ini
@@ -47,7 +47,7 @@ then
 fi
 
 #get name of device and trim
-HOSTNM=`< file /etc/hostname | tr -cd "[:alnum:]"`
+HOSTNM=$(< file /etc/hostname | tr -cd "[:alnum:]")
 #get name in ini and trim
 CLEAN_NAME=$(echo $INI__network__name | tr -cd "[:alnum:]")
 #max 9 characters (max netbios length = 15, + '.local')
