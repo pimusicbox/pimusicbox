@@ -186,7 +186,7 @@ function read_ini()
 	((LINE_NUM++))
 
 	# Skip blank lines and comments
-	if [ -z "$line" -o "${line:0:1}" = ";" -o "${line:0:1}" = "#" ]
+	if [ -z "$line" ] || ["${line:0:1}" = ";" ] || ["${line:0:1}" = "#" ]
 	then
 	    continue
 	fi
@@ -231,7 +231,7 @@ function read_ini()
 	# delete spaces around the equal sign (using extglob)
 	VAR="${VAR%%+([[:space:]])}"
 	VAL="${VAL##+([[:space:]])}"
-	VAR=$(echo $VAR)
+	VAR="$VAR"
 
 
 	# Construct variable name:
