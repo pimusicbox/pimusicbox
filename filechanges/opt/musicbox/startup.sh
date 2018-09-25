@@ -47,7 +47,7 @@ then
 fi
 
 #get name of device and trim
-HOSTNM=`cat /etc/hostname | tr -cd "[:alnum:]"`
+HOSTNM=`< file /etc/hostname | tr -cd "[:alnum:]"`
 #get name in ini and trim
 CLEAN_NAME=$(echo $INI__network__name | tr -cd "[:alnum:]")
 #max 9 characters (max netbios length = 15, + '.local')
