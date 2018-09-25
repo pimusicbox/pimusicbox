@@ -4,7 +4,7 @@
 #
 # This script is executed by /etc/rc.local
 #
-$(echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)
+$("performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)
 
 #set user vars
 CONFIG_FILE=/boot/config/settings.ini
