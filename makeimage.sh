@@ -140,8 +140,8 @@ finalise() {
     sudo find ${ROOTFS_DIR}/var/log -type f | sudo xargs rm -f
     local OTHER_HOMES=$(sudo ls ${ROOTFS_DIR}/home/ | grep -v mopidy)
     sudo rm -rf ${ROOTFS_DIR}/home/${OTHER_HOMES}
-    sudo find ${ROOTFS_DIR}/home/ -type f -name *.log | xargs rm -f
-    sudo find ${ROOTFS_DIR}/home/ -type f -name *_history | xargs rm -f
+    sudo find ${ROOTFS_DIR}/home/ -type f -name "*.log" | xargs rm -f
+    sudo find ${ROOTFS_DIR}/home/ -type f -name "*_history" | xargs rm -f
 
     sync && sleep 1
 
@@ -165,8 +165,8 @@ release() {
     cp $SRC_FILES/docs/_build/text/{changes,faq}.txt  $BUILD_DIR/
     cp $SRC_FILES/docs/_build/latex/PiMusicBox.pdf  $BUILD_DIR/
     pushd $BUILD_DIR
-    md5sum * > MD5SUMS
-    zip -9 $ZIP_NAME *
+    md5sum -- * > MD5SUMS
+    zip -9 $ZIP_NAME -- *
 
     ZIP_SIZE=$(ls -lh $ZIP_NAME | cut -d' ' -f5)
     echo "INFO: Release $ZIP_NAME size is $ZIP_SIZE"
