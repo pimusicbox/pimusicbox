@@ -153,7 +153,7 @@ iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 6680 > /de
 MYIP=$(hostname -I)
 LOOP_COUNT=0
 LOOP_LIMIT=4
-while [ "$MYIP" == ""] && ["$INI__network__wait_for_network" != "0" ]
+while [ "$MYIP" == "" ] && ["$INI__network__wait_for_network" != "0" ]
 do
     LOOP_COUNT=$((LOOP_COUNT+1));
     if [ $LOOP_COUNT -gt $LOOP_LIMIT ]
@@ -209,7 +209,7 @@ fi
 # start spotify connect if enabled
 if [ "$INI__musicbox__enable_connect" == "1" ]
 then
-    if [ "$INI__spotify__username" != ""] && ["$INI__spotify__password" != "" ]
+    if [ "$INI__spotify__username" != "" ] && ["$INI__spotify__password" != "" ]
     then
         USER="-u $INI__spotify__username"
         PASS="-p $INI__spotify__password"
@@ -293,7 +293,7 @@ fi
 #start mopidy
 /etc/init.d/mopidy start
 
-if [ "$INI__network__name" != "$CLEAN_NAME"] && ["$INI__network__name" != "" ]
+if [ "$INI__network__name" != "$CLEAN_NAME" ] && ["$INI__network__name" != "" ]
 then
     echo "WARNING: The new name of your MusicBox, $INI__network__name, is not ok! It should be the max of: 1-9 alphanumerical characters"
 fi
@@ -310,7 +310,7 @@ fi
 # renice mopidy to 19, to have less stutter when playing tracks from spotify (at the start of a track)
 renice 19 $(pgrep mopidy) > /dev/null
 
-if [ "$INI__musicbox__autoplay"] && ["$INI__musicbox__autoplaymaxwait" ]
+if [ "$INI__musicbox__autoplay" ] && ["$INI__musicbox__autoplaymaxwait" ]
 then
     if ! [[ $INI__musicbox__autoplaymaxwait =~ ^[0-9]*+$ ]] ; then
         echo "WARNING: Value specified for 'autoplaymaxwait' is not a number, defaulting to 60"
