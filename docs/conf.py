@@ -43,7 +43,7 @@ author = u'Pi MusicBox contributors'
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 from subprocess import Popen, PIPE
-pipe = Popen('git describe --tags --always --abbrev=0', stdout=PIPE, shell=False)
+pipe = Popen('/bin/git describe --tags --always --abbrev=0', stdout=PIPE, shell=False)
 #
 # The short X.Y version.
 version = pipe.stdout.read().lstrip('v').rstrip() or '0.7.0'
