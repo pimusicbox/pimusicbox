@@ -9,7 +9,7 @@ if [ "$1" != "-y" ]
 then
   echo "Do you want to resize the filesystem? A reboot is required. Use at your own risk! (y/N)"
   read -r ASK
-  if [ "$ASK" != "y" -a "$ASK" != "Y" ]
+  if [ "$ASK" != "y" ] && [ "$ASK" != "Y" ]
   then
     exit 1
   fi
