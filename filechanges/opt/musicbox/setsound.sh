@@ -85,7 +85,7 @@ function enumerate_alsa_cards()
 
         # Remove unwanted characters, make lowercase and split on whitespace.
         line=$(echo $line | tr "[:upper:]" "[:lower:]" | tr -d "[:punct:]")
-        dev="$(echo "$line")"
+        dev="$line"
         card_num=${dev[1]}
         name=${dev[3]}
         if [[ $name == "bcm2835" ]]; then
@@ -234,7 +234,7 @@ else
     echo "Using audio card$CARD ($OUTPUT)"
 fi
 
-if [ "$OUTPUT" == "usb" -a "$INI__musicbox__downsample_usb" == "1" ]
+if [ "$OUTPUT" == "usb" ] && ["$INI__musicbox__downsample_usb" == "1" ]
 # resamples to 44K because of problems with some usb-dacs on 48k (probably related to usb drawbacks of Pi)
 # and extra buffer for usb
 #if [ "$OUTPUT" == "usb" ]
