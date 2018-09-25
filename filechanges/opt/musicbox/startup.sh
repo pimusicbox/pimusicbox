@@ -76,7 +76,7 @@ fi
 echo "MusicBox name is $CLEAN_NAME"
 
 # do the change password stuff
-if [ "$INI__musicbox__root_password" != ""] && ["$INI__musicbox__root_password" != "$DEFAULT_ROOT_PASSWORD" ]
+if [ "$INI__musicbox__root_password" != "" ] && ["$INI__musicbox__root_password" != "$DEFAULT_ROOT_PASSWORD" ]
 then
     echo "Setting root user password..."
     echo "root:$INI__musicbox__root_password" | chpasswd
