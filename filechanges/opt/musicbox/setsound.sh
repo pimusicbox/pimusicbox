@@ -85,7 +85,7 @@ function enumerate_alsa_cards()
 
         # Remove unwanted characters, make lowercase and split on whitespace.
         line=$(echo $line | tr "[:upper:]" "[:lower:]" | tr -d "[:punct:]")
-        dev=($(echo $line))
+        dev="$(echo "$line")"
         card_num=${dev[1]}
         name=${dev[3]}
         if [[ $name == "bcm2835" ]]; then
