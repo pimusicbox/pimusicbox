@@ -101,7 +101,10 @@ PYTHON_BUILD_DEPS="build-essential python-dev libffi-dev libssl-dev libxml2-dev 
 apt-get install --yes $PYTHON_BUILD_DEPS
 
 rm -rf /tmp/pip_build_root
-python -m pip install --upgrade pip setuptools
+# Actually update pip from sources
+curl https://bootstrap.pypa.io/get-pip.py | python
+# upgrade the rest
+python -m pip install --upgrade setuptools
 # Attempted workarounds for SSL/TLS issues in old Python version.
 pip install --upgrade certifi urllib3[secure] requests[security] backports.ssl-match-hostname backports-abc
 # Upgrade some dependencies.
