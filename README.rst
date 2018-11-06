@@ -53,7 +53,7 @@ incremental update of v0.6 and can be generated as follows::
 
     # 3. Download and unzip base v0.6 image
     wget https://github.com/pimusicbox/pimusicbox/releases/download/v0.6.0/pimusicbox-0.6.0.zip
-    unzip pimusicbox-0.6.0.zip && mv pimusicbox-0.6.0/*.img musicbox.img
+    unzip pimusicbox-0.6.0.zip && mv musicbox0.6.img musicbox.img
 
     # 4. Enlarge image so there is free space to work in 
     ./src/makeimage.sh musicbox.img bigger

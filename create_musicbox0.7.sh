@@ -20,9 +20,9 @@ service fake-hwclock stop
 
 # Things we no longer need:
 # * Favourite streams now implemented with playlists.
-rm /boot/config/streamuris.js
+rm -f /boot/config/streamuris.js
 # * Device Tree now properly handles all this stuff. Revert to upstream versions.
-rm /etc/modules /etc/modprobe.d/*
+rm -f /etc/modules /etc/modprobe.d/*
 # * Avahi support now included in Raspbian. Revert to upstream versions.
 rm -rf /etc/avahi/*
 # * Revert to upstream shairport-sync systemV script.
@@ -30,9 +30,9 @@ rm -f /etc/init.d/shairport-sync
 # * Upgraded musicbox distro files.
 rm -rf /opt/musicbox /opt/shairport-sync /opt/webclient /opt/defaultwebclient /opt/moped
 # * dpkg: warning: unable to delete old directory '/lib/modules/3.18.7+/kernel/drivers/net/wireless': Directory not empty
-rm /lib/modules/3.18.7+/kernel/drivers/net/wireless/8188eu.ko
+rm -f /lib/modules/3.18.7+/kernel/drivers/net/wireless/8188eu.ko
 # Remove Mopidy APT repo details, using pip version to avoid Wheezy induced dependency hell.
-rm /etc/apt/sources.list.d/mopidy.list
+rm -f /etc/apt/sources.list.d/mopidy.list
 rm -rf /etc/mopidy/extensions.d
 
 apt-key adv --keyserver pool.sks-keyservers.net --recv 32D9C2A835ED066C
