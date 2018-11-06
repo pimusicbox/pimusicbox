@@ -220,7 +220,8 @@ then
     fi
     ONSTART="--onevent  /opt/musicbox/mpc_stop.sh"
     DEVICE_TYPE="--device-type speaker"
-    echo DAEMON_ARGS=\"-n $CLEAN_NAME $USER $PASS $BITRATE $ONSTART $DEVICE_TYPE\" > /etc/default/librespot
+    SOUND_VOLUME="--initial-volume $INI__audio__mixer_volume"
+    echo DAEMON_ARGS=\"-n $CLEAN_NAME $USER $PASS $BITRATE $SOUND_VOLUME $ONSTART $DEVICE_TYPE\" > /etc/default/librespot
     /etc/init.d/librespot start
     ln -s /etc/monit/monitrc.d/librespot /etc/monit/conf.d/librespot > /dev/null 2>&1 || true
 else
