@@ -17,6 +17,7 @@ cd /tmp
 # Update system time to avoid SSL errors later.
 ntpdate-debian
 service fake-hwclock stop
+apt-get install --yes --allow-unauthenticated apt-transport-https
 
 # Things we no longer need:
 # * Favourite streams now implemented with playlists.
@@ -38,8 +39,8 @@ rm -rf /etc/mopidy/extensions.d
 apt-key adv --keyserver pool.sks-keyservers.net --recv 32D9C2A835ED066C
 apt-key adv --keyserver pool.sks-keyservers.net --recv 7808CE96D38B9201
 cat << EOF > /etc/apt/sources.list.d/upmpdcli.list
-deb http://www.lesbonscomptes.com/upmpdcli/downloads/raspbian-wheezy/ unstable main
-deb-src http://www.lesbonscomptes.com/upmpdcli/downloads/raspbian-wheezy/ unstable main
+deb https://www.lesbonscomptes.com/upmpdcli/downloads/raspbian-wheezy/ unstable main
+deb-src https://www.lesbonscomptes.com/upmpdcli/downloads/raspbian-wheezy/ unstable main
 EOF
 
 export DEBIAN_FRONTEND=noninteractive
