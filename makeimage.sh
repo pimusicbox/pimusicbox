@@ -129,7 +129,6 @@ finalise() {
     echo "Musicbox ${SRC_VERSION} built on ${TIMESTAMP}" | sudo tee ${ROOTFS_DIR}/etc/issue
 
     echo "INFO: Removing unnecessary files..."
-    sudo rm -rf ${ROOTFS_DIR}/var/lib/apt/lists/*
     sudo rm -rf ${ROOTFS_DIR}/var/cache/apt/*
     sudo rm -rf ${ROOTFS_DIR}/var/lib/apt/*
     sudo rm -rf ${ROOTFS_DIR}/etc/dropbear/*key

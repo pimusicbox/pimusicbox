@@ -36,8 +36,8 @@ rm -f /lib/modules/3.18.7+/kernel/drivers/net/wireless/8188eu.ko
 rm -f /etc/apt/sources.list.d/mopidy.list
 rm -rf /etc/mopidy/extensions.d
 
-apt-key adv --keyserver pool.sks-keyservers.net --recv 32D9C2A835ED066C
-apt-key adv --keyserver pool.sks-keyservers.net --recv 7808CE96D38B9201
+apt-key adv --keyserver pool.sks-keyservers.net --recv-keys F8E3347256922A8AE767605B7808CE96D38B9201
+
 cat << EOF > /etc/apt/sources.list.d/upmpdcli.list
 deb https://www.lesbonscomptes.com/upmpdcli/downloads/raspbian-wheezy/ unstable main
 deb-src https://www.lesbonscomptes.com/upmpdcli/downloads/raspbian-wheezy/ unstable main
@@ -178,13 +178,13 @@ do
     update-rc.d $service disable
 done
 
-# Update kernel as of 6/4/18.
+# Update kernel as of 18/12/18 (4.14.89).
 apt-get install --yes git rpi-update
-PRUNE_MODULES=1 SKIP_WARNING=1 rpi-update 064219e329252abd8532b7fa8030ed9a9f391dd3
+PRUNE_MODULES=1 SKIP_WARNING=1 rpi-update d916c9b6b302356c7c250eb23a25236aeadb0375
 
 # Very latest brcm wireless firmware
-wget http://archive.raspberrypi.org/debian/pool/main/f/firmware-nonfree/firmware-brcm80211_20161130-3+rpt3_all.deb
-dpkg -i firmware-brcm80211_20161130-3+rpt3_all.deb
+wget http://archive.raspberrypi.org/debian/pool/main/f/firmware-nonfree/firmware-brcm80211_20161130-3+rpt4_all.deb
+dpkg -i firmware-brcm80211_20161130-3+rpt4_all.deb
 
 # Remove unrequired packages (#426)
 apt-get remove --purge --yes xserver-common x11-xkb-utils xkb-data libxkbfile1 \
