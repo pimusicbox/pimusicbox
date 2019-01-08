@@ -45,7 +45,7 @@ If you want to build an image from source, note that the current v0.7 image is a
 incremental update of v0.6 and can be generated as follows::
 
     # 1. Install prerequisite packages (probably not an exhaustive list, sorry....)
-    sudo apt-get install git coreutils e2fsprogs zerofree util-linux qemu-user-static
+    sudo apt-get install git coreutils e2fsprogs zerofree util-linux qemu-user-static latexmk python-sphinx
 
     # 2. Download and unzip very latest project source files (use master.zip for current release)
     wget https://github.com/pimusicbox/pimusicbox/archive/develop.zip
