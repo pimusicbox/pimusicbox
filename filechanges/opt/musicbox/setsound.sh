@@ -7,6 +7,7 @@ CONFIG_FILE=/boot/config/settings.ini
 BOOT_CONFIG_TXT=/boot/config.txt
 TMP_CONFIG_TXT=/tmp/config.txt
 ETC_ASOUND_CONF=/etc/asound.conf
+CARD_LIST_FILE=/tmp/aplay.list
 
 echo "Setting sound configuration..."
 # Prepare to remove whatever is currently there.
@@ -32,6 +33,15 @@ function get_overlay()
         iqaudio-dac)
             overlay="iqaudio-dacplus,unmute_amp"
             ;;
+        allo-boss-dac)
+            overlay="allo-boss-dac-pcm512x-audio"
+            ;;
+        allo-piano-dac)
+            overlay="allo-piano-dac-pcm512x-audio"
+            ;;
+        allo-piano-dac-plus)
+            overlay="allo-piano-dac-plus-pcm512x-audio"
+            ;;
         *)
             ;;
     esac
@@ -42,15 +52,16 @@ function enumerate_alsa_cards()
 {
     local i2s_NAME=$(echo $1 | tr -d "[:punct:]")
     echo "Probing sound devices:"
+    aplay -l | grep card | tee $CARD_LIST_FILE
     while read -r line
     do
-        ## Dac
+        ## HifiBerry DAC
         #card 0: sndrpihifiberry [snd_rpi_hifiberry_dac], device 0: HifiBerry DAC HiFi pcm5102a-hifi-0 []
-        ## Digi
+        ## HifiBerry Digi (hifiberry-digi)
         #card 2: sndrpihifiber_1 [snd_rpi_hifiberry_digi], device 0: HifiBerry Digi HiFi wm8804-spdif-0 []
-        ## Dac+
+        ## HiFiBerry DAC+
         #card 1: sndrpihifiber_1 [snd_rpi_hifiberry_dacplus], device 0: HiFiBerry DAC+ HiFi pcm512x-hifi-0 []
-        #IQaudIO
+        # IQaudIO
         #card 1: sndrpiiqaudioda [snd_rpi_iqaudio_dac], device 0: IQaudIO DAC HiFi pcm512x-hifi-0 []
         #card 1: IQaudIODAC [IQaudIODAC], device 0: IQaudIO DAC HiFi pcm512x-hifi-0 []
         ## Wolfson
@@ -58,6 +69,12 @@ function enumerate_alsa_cards()
         ## AudioInjector stereo and octo
         #card 0: audioinjectorpi [audioinjector-pi-soundcard], device 0: AudioInjector audio wm8731-hifi-0 []
         #card 0: audioinjectoroc [audioinjector-octo-soundcard], device 0: AudioInject-HIFI cs42448-0 []
+        ## Allo Boss DAC (allo-boss-dac-pcm512x-audio)
+        #card 0: BossDAC [BossDAC], device 0: BossDAC pcm512x-hifi-0 []
+        ## Allo Piano DAC (allo-piano-dac-pcm512x-audio)
+        #card 0: PianoDAC [PianoDAC], device 0: Piano DAC HiFi pcm512x-hifi-0 []
+        ## JustBoom DAC
+        #card 0: sndrpijustboomd [snd_rpi_justboom_dac], device 0: JustBoom DAC HiFi pcm512x-hifi-0 []
         ## Onboard
         #card 0: ALSA [bcm2835 ALSA], device 0: bcm2835 ALSA [bcm2835 ALSA]
         #card 0: ALSA [bcm2835 ALSA], device 1: bcm2835 ALSA [bcm2835 IEC958/HDMI]
@@ -88,7 +105,7 @@ function enumerate_alsa_cards()
             UNKNOWN_CARD=$card_num
             echo "* Found unknown device '$name' on card$UNKNOWN_CARD"
         fi
-    done < <(aplay -l | grep card)
+    done < <(cat $CARD_LIST_FILE)
     # No usb card found, assume anything unknown is actually a usb card.
     [[ -z $USB_CARD ]] && USB_CARD=$UNKNOWN_CARD
     # Check if we need to make any changes to config.txt

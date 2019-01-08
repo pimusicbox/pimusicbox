@@ -35,7 +35,7 @@ if [ -d "$SRC_FILES" ]; then
 fi
 # Disable preloaded shared library to get everything including networking to work on x86
 sudo mv ${ROOTFS_DIR}/etc/ld.so.preload ${ROOTFS_DIR}/etc/ld.so.preload.bak
-sudo cp `which qemu-arm-static` ${ROOTFS_DIR}/usr/bin/
+sudo cp $(which qemu-arm-static) ${ROOTFS_DIR}/usr/bin/
 if [ -n "$APT_PROXY" ]; then
     echo "Using APT proxy $APT_PROXY"
     echo "Acquire::http { Proxy \"http://$APT_PROXY\"; };" | \

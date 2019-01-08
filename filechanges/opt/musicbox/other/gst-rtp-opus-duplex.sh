@@ -61,7 +61,7 @@ LOCAL_PORT=5004			# 4950 5005
 colorize() {
 	prefix=${1}
 	color=${2}
-	while read line
+	while read -r line
 	do /bin/echo -e '\033[01;30m'$(date '+%Y%m%d-%H%M%S')' \033[01;3'${color}'m'${prefix}': \033[00;3'${color}'m'${line}'\033[00m'
 	done
 }
@@ -95,7 +95,7 @@ gst-launch-1.0 -v udpsrc uri="udp://${LOCAL_HOSTNAME}:${LOCAL_PORT}" \
 trap "kill ${PID_SENDER} ${PID_RECEIVER}; exit" 2
 
 while true
-do read nothing
+do read -r nothing
 done
 
 #########

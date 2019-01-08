@@ -2,6 +2,12 @@
 Changelog
 *********
 
+v0.7.0RC7 (2019-01-08)
+======================
+- Raspberry Pi 3 A+ support
+- Linux kernel v4.14.89
+- Shairport-Sync v3.2.2
+
 v0.7.0RC6 (2018-03-20)
 ======================
 - Raspberry Pi 3 B+ support
@@ -14,7 +20,7 @@ v0.7.0RC6 (2018-03-20)
 - Backported OAuth functionality for Mopidy-Spotify to fix search
 
 v0.7.0RC5 (2017-07-28)
-===================
+======================
 - Firewall is now optional and is DISABLED by default
 - Added Spotify Connect functionality (librespot v20170717-910974e)
 - Includes mpd-watchdog for restoring stream playback following connectivity loss

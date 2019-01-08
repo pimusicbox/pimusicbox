@@ -1,2 +1,5 @@
 #!/bin/bash
-/usr/bin/mpc -q stop
+if [ "$PLAYER_EVENT" == "start" -o "$PLAYER_EVENT" == "stop" ]
+then
+    /usr/bin/mpc -q stop
+fi

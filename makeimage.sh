@@ -45,9 +45,9 @@ EOF
 
     sync
     sleep 1
-    sudo partprobe
+    sudo partprobe $LOOP_DEV
 
-    sudo e2fsck -f ${LOOP_DEV}p2
+    sudo e2fsck -yf ${LOOP_DEV}p2
     sudo resize2fs ${LOOP_DEV}p2
     sudo losetup -D $LOOP_DEV
 
@@ -129,7 +129,6 @@ finalise() {
     echo "Musicbox ${SRC_VERSION} built on ${TIMESTAMP}" | sudo tee ${ROOTFS_DIR}/etc/issue
 
     echo "INFO: Removing unnecessary files..."
-    sudo rm -rf ${ROOTFS_DIR}/var/lib/apt/lists/*
     sudo rm -rf ${ROOTFS_DIR}/var/cache/apt/*
     sudo rm -rf ${ROOTFS_DIR}/var/lib/apt/*
     sudo rm -rf ${ROOTFS_DIR}/etc/dropbear/*key
@@ -140,8 +139,8 @@ finalise() {
     sudo find ${ROOTFS_DIR}/var/log -type f | sudo xargs rm -f
     local OTHER_HOMES=$(sudo ls ${ROOTFS_DIR}/home/ | grep -v mopidy)
     sudo rm -rf ${ROOTFS_DIR}/home/${OTHER_HOMES}
-    sudo find ${ROOTFS_DIR}/home/ -type f -name *.log | xargs rm -f
-    sudo find ${ROOTFS_DIR}/home/ -type f -name *_history | xargs rm -f
+    sudo find ${ROOTFS_DIR}/home/ -type f -name "*.log" | xargs rm -f
+    sudo find ${ROOTFS_DIR}/home/ -type f -name "*_history" | xargs rm -f
 
     sync && sleep 1
 
@@ -165,8 +164,8 @@ release() {
     cp $SRC_FILES/docs/_build/text/{changes,faq}.txt  $BUILD_DIR/
     cp $SRC_FILES/docs/_build/latex/PiMusicBox.pdf  $BUILD_DIR/
     pushd $BUILD_DIR
-    md5sum * > MD5SUMS
-    zip -9 $ZIP_NAME *
+    md5sum -- * > MD5SUMS
+    zip -9 $ZIP_NAME -- *
 
     ZIP_SIZE=$(ls -lh $ZIP_NAME | cut -d' ' -f5)
     echo "INFO: Release $ZIP_NAME size is $ZIP_SIZE"

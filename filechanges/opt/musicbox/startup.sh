@@ -9,6 +9,7 @@
 #set user vars
 CONFIG_FILE=/boot/config/settings.ini
 NAME="MusicBox"
+DEFAULT_ROOT_PASSWORD="musicbox"
 
 echo "************************"
 echo "Initializing MusicBox..."
@@ -75,7 +76,7 @@ fi
 echo "MusicBox name is $CLEAN_NAME"
 
 # do the change password stuff
-if [ "$INI__musicbox__root_password" != "" ]
+if [ "$INI__musicbox__root_password" != "" -a "$INI__musicbox__root_password" != "$DEFAULT_ROOT_PASSWORD" ]
 then
     echo "Setting root user password..."
     echo "root:$INI__musicbox__root_password" | chpasswd
@@ -219,7 +220,8 @@ then
     fi
     ONSTART="--onevent  /opt/musicbox/mpc_stop.sh"
     DEVICE_TYPE="--device-type speaker"
-    echo DAEMON_ARGS=\"-n $CLEAN_NAME $USER $PASS $BITRATE $ONSTART $DEVICE_TYPE\" > /etc/default/librespot
+    SOUND_VOLUME="--initial-volume $INI__audio__mixer_volume"
+    echo DAEMON_ARGS=\"-n $CLEAN_NAME $USER $PASS $BITRATE $SOUND_VOLUME $ONSTART $DEVICE_TYPE\" > /etc/default/librespot
     /etc/init.d/librespot start
     ln -s /etc/monit/monitrc.d/librespot /etc/monit/conf.d/librespot > /dev/null 2>&1 || true
 else
@@ -254,9 +256,13 @@ then
         else
             SMB_CREDENTIALS=guest
         fi
-        mount -t cifs -o sec=ntlm,ro,$SMB_CREDENTIALS "$INI__network__mount_address" /music/Network/
-    #    mount -t cifs -o sec=ntlm,ro,rsize=2048,wsize=4096,cache=strict,user=$INI__network__mount_user,password=$INI__network__mount_password $INI__network__mount_address /music/Network/
-    #add rsize=2048,wsize=4096,cache=strict because of usb (from raspyfi)
+        if [ "$INI__network__mount_options" != "" ]
+        then
+            SMB_OPTIONS=,$INI__network__mount_options
+        else
+            SMB_OPTIONS=
+        fi
+        mount -t cifs -o ro,${SMB_CREDENTIALS}${SMB_OPTIONS} "$INI__network__mount_address" /music/Network/
     fi
 fi
 
