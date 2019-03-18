@@ -73,7 +73,7 @@ Project resources
 - `Website <http://www.pimusicbox.com/>`_
 - `Discussion forum <https://discourse.mopidy.com/c/pi-musicbox>`_
 - `Source code <https://github.com/pimusicbox/pimusicbox>`_
-- `Changelog <https://github.com/pimusicbox/pimusicbox/blob/master/changes.rst>`_
+- `Changelog <https://github.com/pimusicbox/pimusicbox/blob/develop/docs/changes.rst>`_
 - `Issue tracker <https://github.com/pimusicbox/pimusicbox/issues>`_
 - Twitter: `@PiMusicBox <https://twitter.com/pimusicbox>`_
 - Facebook: `raspberrypimusicbox <https://www.facebook.com/raspberrypimusicbox>`_
