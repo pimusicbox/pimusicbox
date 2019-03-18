@@ -14,6 +14,7 @@ following people:
 - John Cass <john.cass77@gmail.com>
 - Bastien Nocera <@hadess>
 - Stian Conradsen <@conradsen>
+- Joan Baptista <joanbaptista@gmail.com>
 
 Pi MusicBox makes use of the following great projects:
 
