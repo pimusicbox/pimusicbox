@@ -27,6 +27,8 @@ Features
 - Last.fm scrobbling.
 - Spotify Connect support.
 
+**Please note that Pi MusicBox does NOT currently support the Raspberry Pi 4.**
+
 
 Installation
 ============
@@ -82,7 +84,7 @@ Project resources
 License
 =======
 
-Copyright 2013-2017 Wouter van Wijk and contributors.
+Copyright 2013-2020 Wouter van Wijk and contributors.
 
 Licensed under the Apache License, Version 2.0. See the file LICENSE for the
 full license text.
