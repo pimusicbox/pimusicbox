@@ -6,7 +6,7 @@ Pi MusicBox was created by Wouter van Wijk and includes contributions from the
 following people:
 
 - Simon de Bakker <simon@simbits.nl>
-- Matthias Strubel
+- Matthias Strubel <matthias.strubel@aod-rpg.de>
 - Ulrich Lichtenegger <ulilicht@googlemail.com>
 - Nick Steel <kingosticks@gmail.com>
 - Remco Brink <remco@rc6.org>
