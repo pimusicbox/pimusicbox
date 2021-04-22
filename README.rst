@@ -7,6 +7,14 @@ With Pi MusicBox, you can create a cheap (Sonos-like) standalone streaming
 music player for Spotify and other online music services.
 
 
+Maintainer Wanted
+=================
+
+This project is outdated and requires more work than I am currently prepared
+to invest. If you are interested in becoming the maintainer then please get
+in touch.
+
+
 Features
 ========
 
