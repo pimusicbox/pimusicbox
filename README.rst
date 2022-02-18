@@ -1,4 +1,21 @@
 ***********
+This project is no longer maintained.
+***********
+
+There will be no more releases and probably no more support from myself.
+The Pi 4 and Zero W 2 do not work with the last release and I don't know
+of any workarounds.
+
+Potential alternative software (in no particular order):
+
+* `HiFiBerryOS <https://www.hifiberry.com/hifiberryos>`_ (Free, Open-Source)
+* `Volumio <https://volumio.com>`_ (Free?)
+* `Roon <https://roonlabs.com/>`_ (Non-free?)
+
+Have a suggestion/recommendation? Open a PR.
+
+
+***********
 Pi MusicBox
 ***********
 
